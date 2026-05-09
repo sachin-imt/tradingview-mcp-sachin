@@ -1,0 +1,137 @@
+// Meet Kevin (Kevin Paffrath) — Pricing Power Strategy Indicator
+// Based on his publicly discussed methodology:
+// - Pricing Power companies (strong moats, can raise prices)
+// - 200 SMA as primary trend filter
+// - 50 SMA for medium-term momentum
+// - RSI 30-50 dip zones as optimal buy entries
+// - Volume confirmation on bounces
+
+//@version=5
+indicator("Meet Kevin — Pricing Power Strategy", overlay=true, max_labels_count=50)
+
+// === INPUTS ===
+rsi_length    = input.int(14, "RSI Length", group="Indicators")
+sma200_len    = input.int(200, "200 SMA Length", group="Indicators")
+sma50_len     = input.int(50, "50 SMA Length", group="Indicators")
+sma20_len     = input.int(20, "20 SMA Length", group="Indicators")
+vol_ma_len    = input.int(20, "Volume MA Length", group="Indicators")
+
+rsi_buy_low   = input.int(30, "RSI Buy Zone Low", group="RSI Settings")
+rsi_buy_high  = input.int(50, "RSI Buy Zone High", group="RSI Settings")
+
+show_200      = input.bool(true, "Show 200 SMA", group="Display")
+show_50       = input.bool(true, "Show 50 SMA", group="Display")
+show_20       = input.bool(true, "Show 20 SMA", group="Display")
+show_labels   = input.bool(true, "Show Buy/Avoid Labels", group="Display")
+show_zones    = input.bool(true, "Highlight Buy Zones", group="Display")
+
+// === CALCULATIONS ===
+sma200 = ta.sma(close, sma200_len)
+sma50  = ta.sma(close, sma50_len)
+sma20  = ta.sma(close, sma20_len)
+rsi    = ta.rsi(close, rsi_length)
+vol_ma = ta.sma(volume, vol_ma_len)
+
+[macd_line, signal_line, hist] = ta.macd(close, 12, 26, 9)
+
+// === MEET KEVIN CRITERIA ===
+// 1. Price above 200 SMA (primary trend — most important for MK)
+above_200 = close > sma200
+
+// 2. Price above 50 SMA (medium-term momentum)
+above_50 = close > sma50
+
+// 3. RSI in buy dip zone (cooled off but not crashed)
+rsi_dip_zone = rsi >= rsi_buy_low and rsi <= rsi_buy_high
+
+// 4. MACD turning bullish or positive
+macd_bullish = hist > 0 or (hist > hist[1] and hist[1] > hist[2])
+
+// 5. Volume above average on this bar
+vol_confirmed = volume > vol_ma
+
+// === SCORING (0-5) ===
+score = (above_200 ? 1 : 0) + (above_50 ? 1 : 0) + (rsi_dip_zone ? 1 : 0) + (macd_bullish ? 1 : 0) + (vol_confirmed ? 1 : 0)
+
+// === SIGNAL CONDITIONS ===
+// Strong Buy: All 5 criteria met
+strong_buy = score == 5
+
+// Good Buy: 4 criteria (must include above 200 SMA)
+good_buy = score >= 4 and above_200
+
+// Watch Zone: 3 criteria with 200 SMA
+watch_zone = score == 3 and above_200
+
+// Avoid: Below 200 SMA (MK's hard rule)
+avoid_signal = not above_200
+
+// Detect first bar of new signal
+strong_buy_new = strong_buy and not strong_buy[1]
+good_buy_new   = good_buy and not strong_buy and not (score[1] >= 4 and above_200[1])
+avoid_new      = avoid_signal and not avoid_signal[1]
+
+// === PLOTS ===
+plot(show_200 ? sma200 : na, "200 SMA", color=color.new(color.orange, 0), linewidth=2)
+plot(show_50  ? sma50  : na, "50 SMA",  color=color.new(color.blue, 0),   linewidth=1)
+plot(show_20  ? sma20  : na, "20 SMA",  color=color.new(color.gray, 30),  linewidth=1)
+
+// Background color when RSI in buy zone and above 200 SMA
+bgcolor(show_zones and rsi_dip_zone and above_200 ? color.new(color.green, 90) : na, title="Buy Zone Background")
+bgcolor(show_zones and not above_200 ? color.new(color.red, 92) : na, title="Below 200 SMA Warning")
+
+// === LABELS ===
+if show_labels
+    if strong_buy_new
+        label.new(bar_index, low,
+             "★ MK STRONG BUY\nScore: 5/5\nRSI: " + str.tostring(math.round(rsi, 1)) +
+             "\nAbove 200 SMA ✓\nAbove 50 SMA ✓\nMACD Bullish ✓",
+             style=label.style_label_up,
+             color=color.new(color.green, 0),
+             textcolor=color.white,
+             size=size.normal)
+
+    if good_buy_new
+        label.new(bar_index, low,
+             "▲ MK BUY\nScore: " + str.tostring(score) + "/5\nRSI: " + str.tostring(math.round(rsi, 1)),
+             style=label.style_label_up,
+             color=color.new(color.teal, 10),
+             textcolor=color.white,
+             size=size.small)
+
+    if avoid_new
+        label.new(bar_index, high,
+             "✗ MK AVOID\nBelow 200 SMA\nRSI: " + str.tostring(math.round(rsi, 1)),
+             style=label.style_label_down,
+             color=color.new(color.red, 10),
+             textcolor=color.white,
+             size=size.small)
+
+// === TABLE (top right — live score) ===
+var table scoreTable = table.new(position.top_right, 2, 8,
+     border_color=color.gray, border_width=1,
+     frame_color=color.gray, frame_width=1)
+
+if barstate.islast
+    // Header
+    table.cell(scoreTable, 0, 0, "MEET KEVIN SCORE",
+         text_color=color.white, bgcolor=color.navy, text_size=size.small)
+    table.cell(scoreTable, 1, 0, str.tostring(score) + " / 5",
+         text_color=score >= 4 ? color.lime : score >= 3 ? color.yellow : color.red,
+         bgcolor=color.navy, text_size=size.small)
+    // Criteria rows
+    table.cell(scoreTable, 0, 1, "Above 200 SMA", text_color=color.white, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+    table.cell(scoreTable, 1, 1, above_200 ? "✓" : "✗", text_color=above_200 ? color.lime : color.red, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+    table.cell(scoreTable, 0, 2, "Above 50 SMA", text_color=color.white, bgcolor=color.new(color.gray, 85), text_size=size.tiny)
+    table.cell(scoreTable, 1, 2, above_50 ? "✓" : "✗", text_color=above_50 ? color.lime : color.red, bgcolor=color.new(color.gray, 85), text_size=size.tiny)
+    table.cell(scoreTable, 0, 3, "RSI Dip Zone (30-50)", text_color=color.white, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+    table.cell(scoreTable, 1, 3, rsi_dip_zone ? "✓ " + str.tostring(math.round(rsi,1)) : "✗ " + str.tostring(math.round(rsi,1)), text_color=rsi_dip_zone ? color.lime : color.red, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+    table.cell(scoreTable, 0, 4, "MACD Bullish", text_color=color.white, bgcolor=color.new(color.gray, 85), text_size=size.tiny)
+    table.cell(scoreTable, 1, 4, macd_bullish ? "✓" : "✗", text_color=macd_bullish ? color.lime : color.red, bgcolor=color.new(color.gray, 85), text_size=size.tiny)
+    table.cell(scoreTable, 0, 5, "Volume > Avg", text_color=color.white, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+    table.cell(scoreTable, 1, 5, vol_confirmed ? "✓" : "✗", text_color=vol_confirmed ? color.lime : color.red, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+    // Signal row
+    signal_text = score == 5 ? "★ STRONG BUY" : score >= 4 and above_200 ? "▲ BUY" : score >= 3 and above_200 ? "◆ WATCH" : not above_200 ? "✗ AVOID" : "— WAIT"
+    signal_color = score == 5 ? color.lime : score >= 4 and above_200 ? color.green : score >= 3 and above_200 ? color.yellow : color.red
+    table.cell(scoreTable, 0, 6, "SIGNAL", text_color=color.white, bgcolor=color.new(color.navy, 20), text_size=size.small)
+    table.cell(scoreTable, 1, 6, signal_text, text_color=signal_color, bgcolor=color.new(color.navy, 20), text_size=size.small)
