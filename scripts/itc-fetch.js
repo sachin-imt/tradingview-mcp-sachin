@@ -1,16 +1,14 @@
 #!/usr/bin/env node
 /**
- * ITC Data Fetch — headless scrape of ITC TradFi stocks and crypto using saved session.
+ * ITC Data Fetch — headless scrape using the persistent browser profile from itc-auth.js.
  *
- * Usage: node scripts/itc-fetch.js [--stocks] [--crypto] [--risk]
- *        node scripts/itc-fetch.js             (fetches all by default)
+ * The profile directory (scripts/.itc-profile/) stores ALL browser state including IndexedDB
+ * auth tokens, so this script is always authenticated as long as the profile exists.
  *
- * Prerequisites: Run node scripts/itc-auth.js once to save your session.
+ * Usage: node scripts/itc-fetch.js
+ * Output: JSON to stdout  { stocks: [...], crypto: [...], fetchedAt: "..." }
  *
- * Output: JSON to stdout (redirect to file if needed)
- *   { stocks: [...], crypto: [...], risk: [...], fetchedAt: "..." }
- *
- * Session auto-renews if expired (re-runs itc-auth.js flow).
+ * Prerequisites: Run node scripts/itc-auth.js once to create the profile.
  */
 
 import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
@@ -19,270 +17,182 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const SESSION_FILE = path.join(__dirname, '.itc-session.json');
+const PROFILE_DIR = path.join(__dirname, '.itc-profile');
 const CACHE_FILE = path.join(__dirname, '.itc-cache.json');
-const CACHE_MAX_AGE_MINUTES = 15;
+const CACHE_MAX_AGE_MIN = 15;
 
-async function sleep(ms) {
-  return new Promise(r => setTimeout(r, ms));
-}
-
-function loadSession() {
-  if (!fs.existsSync(SESSION_FILE)) {
-    console.error('No saved session found.');
-    console.error('Run first: node scripts/itc-auth.js');
-    process.exit(1);
-  }
-  return JSON.parse(fs.readFileSync(SESSION_FILE, 'utf8'));
-}
+async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 function checkCache() {
   if (!fs.existsSync(CACHE_FILE)) return null;
   const cache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
   const ageMs = Date.now() - new Date(cache.fetchedAt).getTime();
-  if (ageMs < CACHE_MAX_AGE_MINUTES * 60 * 1000) {
-    console.error(`Using cached data (${Math.round(ageMs / 60000)}m old, max ${CACHE_MAX_AGE_MINUTES}m)`);
+  if (ageMs < CACHE_MAX_AGE_MIN * 60 * 1000) {
+    console.error(`Using cache (${Math.round(ageMs / 60000)}m old)`);
     return cache;
   }
   return null;
 }
 
-async function fetchPage(context, url, waitFor) {
-  const page = await context.newPage();
-  const apiData = {};
-
-  page.on('response', async (res) => {
-    const resUrl = res.url();
-    if (resUrl.includes('intothecryptoverse.com') && !resUrl.match(/\.(js|css|png|svg|woff|ico)(\?|$)/)) {
-      const ct = res.headers()['content-type'] || '';
-      if (ct.includes('json') || ct.includes('text/plain')) {
-        try {
-          const body = await res.json();
-          apiData[resUrl] = body;
-        } catch {}
-      }
-    }
-  });
-
-  await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
-  await sleep(3000);
-
-  // Check if redirected to login
-  const currentUrl = page.url();
-  if (currentUrl.includes('/authentication/') || currentUrl.includes('/login')) {
-    await page.close();
-    return { error: 'SESSION_EXPIRED', url: currentUrl };
-  }
-
-  let domData = null;
-  if (waitFor) {
-    try {
-      await page.waitForSelector(waitFor, { timeout: 10000 });
-    } catch {
-      console.error(`Warning: ${waitFor} not found on ${url}`);
-    }
-  }
-
-  // Extract table data
-  domData = await page.evaluate(() => {
-    const rows = [];
-
-    // Look for data rows in tables or list items
-    const tableRows = document.querySelectorAll('table tbody tr, [role="table"] [role="row"], [class*="row"], [class*="Row"]');
-
-    tableRows.forEach(row => {
-      const cells = Array.from(row.querySelectorAll('td, [role="cell"], [class*="cell"], [class*="Cell"]'));
-      if (cells.length >= 2) {
-        const texts = cells.map(c => c.textContent.trim()).filter(t => t.length > 0);
-        if (texts.length >= 2) rows.push(texts);
-      }
-    });
-
-    // Also try to find price elements by pattern
-    const allText = document.body.innerText;
-    const lines = allText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-
-    return {
-      tableRows: rows,
-      fullText: lines.slice(0, 500),
-      title: document.title,
-      url: window.location.href,
-    };
-  });
-
-  await page.close();
-  return { domData, apiData };
-}
-
-function parseStocksFromText(lines) {
-  const stocks = [];
-  // Common stock ticker patterns: 1-5 uppercase letters followed by price
-  const tickerRegex = /^([A-Z]{1,5})\s+\$?([\d,]+\.?\d*)/;
-  const priceLineRegex = /\$?([\d,]+\.?\d{2})/;
-
-  // Try to find ticker + price pairs from consecutive lines
+function parseStocks(lines) {
+  const results = [];
+  const seen = new Set();
   for (let i = 0; i < lines.length - 1; i++) {
     const line = lines[i].trim();
-    const match = line.match(/^([A-Z]{1,5})$/);  // Just a ticker symbol
-    if (match && i + 1 < lines.length) {
-      const nextLine = lines[i + 1];
-      const priceMatch = nextLine.match(/\$?([\d,]+\.?\d{2})/);
-      if (priceMatch) {
-        stocks.push({ ticker: match[1], price: parseFloat(priceMatch[1].replace(',', '')) });
-      }
-    }
-
-    // Try ticker + price on same line
-    const sameLineMatch = line.match(tickerRegex);
-    if (sameLineMatch) {
-      stocks.push({ ticker: sameLineMatch[1], price: parseFloat(sameLineMatch[2].replace(',', '')) });
-    }
-  }
-  return stocks;
-}
-
-function parseTableRows(rows) {
-  const data = [];
-  for (const row of rows) {
-    // First cell likely ticker, second or third likely price
-    const ticker = row[0];
-    if (!ticker || !/^[A-Z]{1,5}$/.test(ticker)) continue;
-
-    for (let i = 1; i < row.length; i++) {
-      const priceMatch = row[i].match(/\$?([\d,]+\.?\d{2})/);
-      if (priceMatch) {
-        data.push({ ticker, price: parseFloat(priceMatch[1].replace(',', '')), raw: row });
-        break;
+    // Ticker on its own line
+    if (/^[A-Z]{1,5}$/.test(line) && !seen.has(line)) {
+      for (let j = i + 1; j < Math.min(i + 6, lines.length); j++) {
+        const m = lines[j].match(/\$?([\d,]+\.?\d{2})/);
+        if (m) {
+          results.push({ ticker: line, price: parseFloat(m[1].replace(',', '')) });
+          seen.add(line);
+          break;
+        }
       }
     }
   }
-  return data;
+  return results;
 }
 
 async function main() {
-  // Check cache first
   const cached = checkCache();
-  if (cached) {
-    process.stdout.write(JSON.stringify(cached, null, 2));
-    return;
+  if (cached) { process.stdout.write(JSON.stringify(cached, null, 2)); return; }
+
+  if (!fs.existsSync(PROFILE_DIR)) {
+    console.error('No browser profile found. Run: node scripts/itc-auth.js');
+    process.exit(1);
   }
 
-  const session = loadSession();
-  const sessionAgeHours = (Date.now() - new Date(session.savedAt).getTime()) / 3600000;
-  console.error(`Session age: ${Math.round(sessionAgeHours)}h (saved ${session.savedAt})`);
-
-  if (sessionAgeHours > 720) { // 30 days
-    console.error('Session is very old (>30 days). Consider re-running itc-auth.js.');
-  }
-
-  const browser = await chromium.launch({
+  console.error('Launching browser with saved profile...');
+  const context = await chromium.launchPersistentContext(PROFILE_DIR, {
     headless: true,
     executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
     args: ['--ignore-certificate-errors', '--no-sandbox', '--disable-dev-shm-usage'],
-  });
-
-  const context = await browser.newContext({
     ignoreHTTPSErrors: true,
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
   });
 
-  // Restore cookies
-  if (session.cookies && session.cookies.length > 0) {
-    const validCookies = session.cookies.map(c => ({
-      name: c.name,
-      value: c.value,
-      domain: c.domain.startsWith('.') ? c.domain : `.${c.domain}`,
-      path: c.path || '/',
-      httpOnly: c.httpOnly || false,
-      secure: c.secure || false,
-      sameSite: ['Strict', 'Lax', 'None'].includes(c.sameSite) ? c.sameSite : 'Lax',
-    }));
-    try {
-      await context.addCookies(validCookies);
-    } catch (e) {
-      console.error('Cookie restore warning:', e.message);
-    }
-  }
-
-  // Restore localStorage via a quick visit
-  if (session.localStorage && Object.keys(session.localStorage).length > 0) {
-    const initPage = await context.newPage();
-    await initPage.goto('https://app.intothecryptoverse.com', { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
-    await initPage.evaluate((lsData) => {
-      Object.entries(lsData).forEach(([k, v]) => {
-        try { localStorage.setItem(k, v); } catch {}
-      });
-    }, session.localStorage).catch(() => {});
-    await initPage.close();
-  }
-
   const result = {
     fetchedAt: new Date().toISOString(),
-    sessionAge: `${Math.round(sessionAgeHours)}h`,
     stocks: [],
     crypto: [],
-    risk: {},
     raw: {},
   };
 
-  // Fetch TradFi stocks
-  console.error('Fetching TradFi stocks...');
-  const stocksResult = await fetchPage(context, 'https://app.intothecryptoverse.com/tradfi/stocks', null);
+  async function fetchAndScrape(url, label) {
+    const page = await context.newPage();
+    const apiResponses = [];
 
-  if (stocksResult.error === 'SESSION_EXPIRED') {
-    console.error('\n✗ Session expired. Re-run: node scripts/itc-auth.js');
-    await browser.close();
+    page.on('response', async res => {
+      const u = res.url();
+      if (u.includes('intothecryptoverse.com') && !u.match(/\.(js|css|png|svg|woff|ico)(\?|$)/)) {
+        const ct = res.headers()['content-type'] || '';
+        if (ct.includes('json')) {
+          try { apiResponses.push({ url: u, body: await res.json() }); } catch {}
+        }
+      }
+    });
+
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+    await sleep(4000);
+
+    const finalUrl = page.url();
+    if (finalUrl.includes('/authentication/') || finalUrl.includes('/login')) {
+      console.error(`Session expired on ${label}. Re-run: node scripts/itc-auth.js`);
+      await page.close();
+      return { expired: true };
+    }
+
+    const domData = await page.evaluate(() => {
+      const lines = document.body.innerText.split('\n').map(l => l.trim()).filter(l => l);
+      const tableRows = Array.from(document.querySelectorAll('table tbody tr, [role="row"]')).map(row =>
+        Array.from(row.querySelectorAll('td, [role="cell"]')).map(c => c.textContent.trim()).filter(t => t)
+      ).filter(r => r.length >= 2);
+      return { lines, tableRows, title: document.title, url: window.location.href };
+    });
+
+    await page.screenshot({ path: `/tmp/itc-${label}.png` });
+    await page.close();
+    return { domData, apiResponses };
+  }
+
+  // Fetch stocks
+  console.error('Fetching TradFi stocks...');
+  const stocksResult = await fetchAndScrape('https://app.intothecryptoverse.com/tradfi/stocks', 'stocks');
+
+  if (stocksResult.expired) {
+    await context.close();
     process.exit(2);
   }
 
-  result.raw.stocks = stocksResult;
+  result.raw.stocksTitle = stocksResult.domData?.title;
+  result.raw.stocksUrl = stocksResult.domData?.url;
 
-  // Parse stocks data
-  if (stocksResult.domData) {
-    const fromTable = parseTableRows(stocksResult.domData.tableRows || []);
-    const fromText = parseStocksFromText(stocksResult.domData.fullText || []);
-    result.stocks = fromTable.length > 0 ? fromTable : fromText;
-    console.error(`  Found ${result.stocks.length} stocks from DOM`);
-  }
-
-  // Check API data for stocks
-  for (const [url, data] of Object.entries(stocksResult.apiData || {})) {
-    if (Array.isArray(data) && data.length > 0 && data[0].ticker) {
-      result.stocks = data;
-      console.error(`  Found ${data.length} stocks from API: ${url}`);
+  // Parse from API responses first
+  for (const { url, body } of stocksResult.apiResponses || []) {
+    if (Array.isArray(body) && body.length > 5) {
+      const first = body[0];
+      if (first && (first.ticker || first.symbol || first.name)) {
+        result.stocks = body.map(item => ({
+          ticker: item.ticker || item.symbol,
+          price: item.price || item.close || item.last,
+          ...item,
+        }));
+        console.error(`Stocks from API (${result.stocks.length}): ${url}`);
+        break;
+      }
     }
   }
 
-  // Fetch crypto data
-  console.error('Fetching crypto dashboard...');
-  const cryptoResult = await fetchPage(context, 'https://app.intothecryptoverse.com/dashboard', null);
-  result.raw.crypto = cryptoResult;
+  // Parse from DOM if no API data
+  if (result.stocks.length === 0 && stocksResult.domData) {
+    result.stocks = parseStocks(stocksResult.domData.lines || []);
+    console.error(`Stocks from DOM: ${result.stocks.length}`);
 
-  if (cryptoResult.domData) {
-    const cryptoLines = cryptoResult.domData.fullText || [];
-    // Look for crypto prices (BTC, ETH, SOL, etc.)
-    const cryptoTickers = ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'AVAX', 'ADA', 'LTC'];
+    // Also try table rows
+    if (result.stocks.length === 0) {
+      for (const row of stocksResult.domData.tableRows || []) {
+        if (/^[A-Z]{1,5}$/.test(row[0])) {
+          const priceStr = row.find(c => /\$?[\d,]+\.\d{2}/.test(c));
+          if (priceStr) {
+            const m = priceStr.match(/\$?([\d,]+\.?\d{2})/);
+            if (m) result.stocks.push({ ticker: row[0], price: parseFloat(m[1].replace(',', '')) });
+          }
+        }
+      }
+      console.error(`Stocks from table rows: ${result.stocks.length}`);
+    }
+  }
+
+  // Save raw page text for debugging / fallback parsing by Claude
+  result.raw.stocksLines = stocksResult.domData?.lines?.slice(0, 300) || [];
+
+  // Fetch crypto dashboard
+  console.error('Fetching crypto dashboard...');
+  const cryptoResult = await fetchAndScrape('https://app.intothecryptoverse.com/dashboard', 'crypto');
+
+  if (!cryptoResult.expired && cryptoResult.domData) {
+    const cryptoTickers = ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'AVAX', 'ADA', 'DOGE', 'LTC'];
+    const lines = cryptoResult.domData.lines || [];
     for (const ticker of cryptoTickers) {
-      const idx = cryptoLines.findIndex(l => l === ticker || l.startsWith(ticker + ' '));
+      const idx = lines.findIndex(l => l === ticker || l.startsWith(ticker + ' ') || l.startsWith('$') && false);
       if (idx >= 0) {
-        for (let i = idx + 1; i < Math.min(idx + 5, cryptoLines.length); i++) {
-          const priceMatch = cryptoLines[i].match(/\$?([\d,]+\.?\d{2})/);
-          if (priceMatch) {
-            result.crypto.push({ ticker, price: parseFloat(priceMatch[1].replace(',', '')) });
+        for (let j = idx + 1; j < Math.min(idx + 8, lines.length); j++) {
+          const m = lines[j].match(/\$?([\d,]+\.?\d{2})/);
+          if (m && parseFloat(m[1].replace(',', '')) > 0) {
+            result.crypto.push({ ticker, price: parseFloat(m[1].replace(',', '')) });
             break;
           }
         }
       }
     }
-    console.error(`  Found ${result.crypto.length} crypto prices from DOM`);
+    result.raw.cryptoLines = lines.slice(0, 200);
+    console.error(`Crypto from DOM: ${result.crypto.length}`);
   }
 
-  await browser.close();
+  await context.close();
 
-  // Save cache
   fs.writeFileSync(CACHE_FILE, JSON.stringify(result, null, 2));
-
-  // Output result
   process.stdout.write(JSON.stringify(result, null, 2));
 }
 
