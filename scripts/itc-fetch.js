@@ -34,18 +34,56 @@ function checkCache() {
   return null;
 }
 
+// Known exchange names to skip
+const EXCHANGE_NAMES = new Set(['NYSE', 'NASDAQ', 'PINK', 'OTCQX', 'OTCQB', 'AMEX', 'BATS']);
+
 function parseStocks(lines) {
   const results = [];
   const seen = new Set();
   for (let i = 0; i < lines.length - 1; i++) {
     const line = lines[i].trim();
-    // Ticker on its own line
-    if (/^[A-Z]{1,5}$/.test(line) && !seen.has(line)) {
-      for (let j = i + 1; j < Math.min(i + 6, lines.length); j++) {
-        const m = lines[j].match(/\$?([\d,]+\.?\d{2})/);
+
+    // ITC format: "Company NameTICKER" — requires lowercase (company name) + uppercase suffix (ticker)
+    // e.g. "NVIDIA CorporationNVDA", "Apple IncAAPL", "Meta Platforms Inc.FB"
+    if (!/[a-z]/.test(line)) continue; // skip all-caps headers/labels
+
+    const tickerMatch = line.match(/([A-Z]{1,5})$/);
+    if (!tickerMatch) continue;
+
+    const ticker = tickerMatch[1];
+    if (seen.has(ticker) || EXCHANGE_NAMES.has(ticker)) continue;
+    if (ticker.length === 1 && /^[A-Z]$/.test(ticker)) continue; // skip single letters from "Class A" etc.
+
+    // Next line should be the price (starts with $)
+    for (let j = i + 1; j < Math.min(i + 3, lines.length); j++) {
+      const m = lines[j].match(/^\$?([\d,]+\.?\d{1,4})$/);
+      if (m) {
+        const price = parseFloat(m[1].replace(/,/g, ''));
+        if (price > 0 && price < 5000000) {
+          results.push({ ticker, price });
+          seen.add(ticker);
+        }
+        break;
+      }
+    }
+  }
+  return results;
+}
+
+function parseCrypto(lines) {
+  const results = [];
+  const seen = new Set();
+  for (let i = 0; i < lines.length - 2; i++) {
+    // ITC crypto format: "Bitcoin" then "(BTC)" then "$73,397.50"
+    const tickerParenMatch = lines[i].match(/^\(([A-Z]{2,6})\)$/);
+    if (tickerParenMatch) {
+      const ticker = tickerParenMatch[1];
+      if (seen.has(ticker)) continue;
+      for (let j = i + 1; j < Math.min(i + 3, lines.length); j++) {
+        const m = lines[j].match(/^\$?([\d,]+\.?\d+)$/);
         if (m) {
-          results.push({ ticker: line, price: parseFloat(m[1].replace(',', '')) });
-          seen.add(line);
+          const price = parseFloat(m[1].replace(/,/g, ''));
+          if (price > 0) { results.push({ ticker, price }); seen.add(ticker); }
           break;
         }
       }
@@ -93,8 +131,8 @@ async function main() {
       }
     });
 
-    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
-    await sleep(4000);
+    await page.goto(url, { waitUntil: 'load', timeout: 30000 });
+    await sleep(6000); // Wait for React to render data
 
     const finalUrl = page.url();
     if (finalUrl.includes('/authentication/') || finalUrl.includes('/login')) {
@@ -148,20 +186,6 @@ async function main() {
   if (result.stocks.length === 0 && stocksResult.domData) {
     result.stocks = parseStocks(stocksResult.domData.lines || []);
     console.error(`Stocks from DOM: ${result.stocks.length}`);
-
-    // Also try table rows
-    if (result.stocks.length === 0) {
-      for (const row of stocksResult.domData.tableRows || []) {
-        if (/^[A-Z]{1,5}$/.test(row[0])) {
-          const priceStr = row.find(c => /\$?[\d,]+\.\d{2}/.test(c));
-          if (priceStr) {
-            const m = priceStr.match(/\$?([\d,]+\.?\d{2})/);
-            if (m) result.stocks.push({ ticker: row[0], price: parseFloat(m[1].replace(',', '')) });
-          }
-        }
-      }
-      console.error(`Stocks from table rows: ${result.stocks.length}`);
-    }
   }
 
   // Save raw page text for debugging / fallback parsing by Claude
@@ -172,20 +196,8 @@ async function main() {
   const cryptoResult = await fetchAndScrape('https://app.intothecryptoverse.com/dashboard', 'crypto');
 
   if (!cryptoResult.expired && cryptoResult.domData) {
-    const cryptoTickers = ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'AVAX', 'ADA', 'DOGE', 'LTC'];
     const lines = cryptoResult.domData.lines || [];
-    for (const ticker of cryptoTickers) {
-      const idx = lines.findIndex(l => l === ticker || l.startsWith(ticker + ' ') || l.startsWith('$') && false);
-      if (idx >= 0) {
-        for (let j = idx + 1; j < Math.min(idx + 8, lines.length); j++) {
-          const m = lines[j].match(/\$?([\d,]+\.?\d{2})/);
-          if (m && parseFloat(m[1].replace(',', '')) > 0) {
-            result.crypto.push({ ticker, price: parseFloat(m[1].replace(',', '')) });
-            break;
-          }
-        }
-      }
-    }
+    result.crypto = parseCrypto(lines);
     result.raw.cryptoLines = lines.slice(0, 200);
     console.error(`Crypto from DOM: ${result.crypto.length}`);
   }
