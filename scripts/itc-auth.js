@@ -148,30 +148,31 @@ async function main() {
   writeStatus('SUBMITTING_OTP');
   console.log('Submitting OTP...');
 
-  // Find code input — try multiple selectors
-  const codeSelectors = [
-    'input[autocomplete="one-time-code"]',
-    'input[inputmode="numeric"]',
-    'input[name="code"]',
-    'input[type="text"]',
-    'input[type="number"]',
-  ];
+  // Detect split-digit boxes (6 individual inputs) vs single input
+  const numericInputs = await page.$$('input[inputmode="numeric"]');
+  const textInputs = await page.$$('input[type="text"]');
+  const allCodeInputs = numericInputs.length > 0 ? numericInputs : textInputs;
 
-  let filled = false;
-  for (const sel of codeSelectors) {
-    const el = await page.$(sel).catch(() => null);
-    if (el) {
-      await page.fill(sel, otp);
-      filled = true;
-      console.log('Filled OTP into:', sel);
-      break;
+  if (allCodeInputs.length > 1) {
+    // Split-digit boxes — type one digit per box
+    console.log(`Split-digit OTP input (${allCodeInputs.length} boxes), typing digit by digit...`);
+    await allCodeInputs[0].click();
+    await sleep(200);
+    for (let i = 0; i < Math.min(otp.length, allCodeInputs.length); i++) {
+      await allCodeInputs[i].click();
+      await allCodeInputs[i].type(otp[i]);
+      await sleep(100);
     }
-  }
-
-  if (!filled) {
-    // Last resort: type into whatever is focused
+  } else if (allCodeInputs.length === 1) {
+    console.log('Single OTP input, filling...');
+    await allCodeInputs[0].click();
+    await page.keyboard.type(otp);
+  } else {
+    // Fallback: focus first input and type
+    console.log('Fallback: typing OTP via keyboard...');
     await page.keyboard.type(otp);
   }
+  console.log('OTP digits entered.');
 
   await sleep(500);
 
