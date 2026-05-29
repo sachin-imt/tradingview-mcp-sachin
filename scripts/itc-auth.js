@@ -1,16 +1,18 @@
 #!/usr/bin/env node
 /**
- * ITC Authentication — one-time setup to save session for automated fetches.
+ * ITC Authentication — one-time setup using file-based OTP handoff.
  *
- * Usage: node scripts/itc-auth.js [email]
- * Default email: sachin.imt@gmail.com (override via arg or ITC_EMAIL env var)
+ * Designed to be driven by Claude Code:
+ *   1. Claude runs this script in the background
+ *   2. Script submits your email to ITC and writes /tmp/.itc-otp-ready
+ *   3. Claude sees the ready signal and asks you for the OTP from your email
+ *   4. You paste the OTP in chat → Claude writes it to /tmp/.itc-otp
+ *   5. Script reads the OTP, completes login, saves session
  *
- * Flow:
- *   1. Opens ITC login page headlessly
- *   2. Enters your email → ITC emails a confirmation code
- *   3. You paste the code in the terminal
- *   4. Session cookies saved to scripts/.itc-session.json
- *   5. Future runs of itc-fetch.js use that session automatically
+ * Can also be run manually: node scripts/itc-auth.js
+ *   (falls back to stdin if /tmp/.itc-otp-ready doesn't exist within 5s)
+ *
+ * Session saved to: scripts/.itc-session.json
  */
 
 import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
@@ -21,25 +23,56 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SESSION_FILE = path.join(__dirname, '.itc-session.json');
+const OTP_READY_FILE = '/tmp/.itc-otp-ready';
+const OTP_FILE = '/tmp/.itc-otp';
+const STATUS_FILE = '/tmp/.itc-auth-status';
 
 const email = process.argv[2] || process.env.ITC_EMAIL || 'sachin.imt@gmail.com';
 
-async function prompt(question) {
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  return new Promise(resolve => {
-    rl.question(question, answer => {
-      rl.close();
-      resolve(answer.trim());
-    });
-  });
+function writeStatus(msg) {
+  fs.writeFileSync(STATUS_FILE, msg);
+  console.log(msg);
 }
 
 async function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
+async function waitForOtp() {
+  // Signal that we're waiting for OTP
+  fs.writeFileSync(OTP_READY_FILE, new Date().toISOString());
+  writeStatus(`WAITING_FOR_OTP:${email}`);
+
+  // Poll for OTP file (written by Claude when user provides the code)
+  for (let i = 0; i < 300; i++) { // 5 minutes max
+    await sleep(1000);
+    if (fs.existsSync(OTP_FILE)) {
+      const otp = fs.readFileSync(OTP_FILE, 'utf8').trim();
+      fs.unlinkSync(OTP_FILE);
+      if (otp.length >= 4) {
+        console.log('OTP received from file.');
+        return otp;
+      }
+    }
+  }
+
+  // Fallback: try stdin (for manual runs)
+  console.log('Timeout waiting for OTP file. Trying stdin...');
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise(resolve => {
+    rl.question('Paste the OTP code: ', answer => {
+      rl.close();
+      resolve(answer.trim());
+    });
+  });
+}
+
 async function main() {
-  console.log('ITC Auth — starting headless browser...');
+  // Clean up any stale signal files
+  [OTP_READY_FILE, OTP_FILE].forEach(f => { try { fs.unlinkSync(f); } catch {} });
+
+  writeStatus('STARTING');
+  console.log(`ITC Auth — email: ${email}`);
 
   const browser = await chromium.launch({
     headless: true,
@@ -55,124 +88,123 @@ async function main() {
   const page = await context.newPage();
 
   // Step 1: Load login page
-  console.log('Loading login page...');
+  writeStatus('LOADING_LOGIN_PAGE');
   await page.goto('https://app.intothecryptoverse.com/authentication/login?returnUrl=%2Ftradfi%2Fstocks', {
     waitUntil: 'networkidle',
     timeout: 30000,
   });
-
   await sleep(2000);
 
-  // Step 2: Enter email
-  console.log(`Entering email: ${email}`);
-  await page.fill('input[type="email"]', email);
-  await sleep(500);
-  await page.click('button[type="submit"]');
-
-  console.log(`\nEmail submitted. ITC is sending a confirmation code to ${email}.`);
-  console.log('Check your email inbox now.\n');
-
-  // Wait for the code input field to appear
-  let codeInputSelector = null;
-  const selectors = ['input[type="text"]', 'input[name="code"]', 'input[autocomplete="one-time-code"]', 'input[inputmode="numeric"]'];
-
-  console.log('Waiting for code entry page...');
-  for (let i = 0; i < 30; i++) {
-    await sleep(1000);
-    const currentUrl = page.url();
-    const pageText = await page.textContent('body').catch(() => '');
-
-    for (const sel of selectors) {
-      const el = await page.$(sel).catch(() => null);
-      if (el) {
-        codeInputSelector = sel;
-        break;
-      }
-    }
-
-    if (codeInputSelector || pageText.includes('code') || pageText.includes('Code') || pageText.includes('verify') || currentUrl.includes('verify') || currentUrl.includes('code') || currentUrl.includes('otp')) {
-      console.log('Code entry page detected.');
-      break;
-    }
-
-    // Check if we're already logged in (redirect to stocks)
-    if (currentUrl.includes('/tradfi/stocks') || currentUrl.includes('/dashboard')) {
-      console.log('Already logged in! URL:', currentUrl);
-      await saveSession(context, page, browser);
-      return;
-    }
-
-    process.stdout.write('.');
+  // Check if already authenticated
+  const initialUrl = page.url();
+  if (!initialUrl.includes('/authentication/') && !initialUrl.includes('/login')) {
+    writeStatus('ALREADY_AUTHENTICATED');
+    console.log('Already logged in! URL:', initialUrl);
+    await saveSession(context, page, browser);
+    return;
   }
 
-  // Take screenshot to verify state
+  // Step 2: Enter email and submit
+  writeStatus('SUBMITTING_EMAIL');
+  console.log('Entering email...');
+  await page.fill('input[type="email"]', email);
+  await sleep(300);
+  await page.click('button[type="submit"]');
+  await sleep(3000);
+
   await page.screenshot({ path: '/tmp/itc-after-email.png' });
 
-  // Step 3: Get OTP from user
-  const otp = await prompt('\nPaste the confirmation code from your email: ');
+  // Check if redirected to code entry page
+  const afterEmailUrl = page.url();
+  const pageText = await page.textContent('body').catch(() => '');
+  const hasCodePage = afterEmailUrl.includes('code') || afterEmailUrl.includes('verify') ||
+                      pageText.toLowerCase().includes('confirmation code') ||
+                      pageText.toLowerCase().includes('check your email') ||
+                      pageText.toLowerCase().includes('enter the code') ||
+                      await page.$('input[type="text"]').then(el => !!el).catch(() => false);
+
+  if (!hasCodePage) {
+    // Wait a bit longer for the page to transition
+    for (let i = 0; i < 10; i++) {
+      await sleep(1000);
+      const url = page.url();
+      if (url.includes('code') || url.includes('verify') || url !== afterEmailUrl) break;
+    }
+  }
+
+  await page.screenshot({ path: '/tmp/itc-code-page.png' });
+  console.log('Email submitted. Current URL:', page.url());
+
+  // Step 3: Wait for OTP from user (via file handoff)
+  const otp = await waitForOtp();
 
   if (!otp || otp.length < 4) {
-    console.error('Invalid code entered. Aborting.');
+    writeStatus('ERROR:invalid_otp');
     await browser.close();
     process.exit(1);
   }
 
-  // Step 4: Enter OTP
-  console.log('Entering confirmation code...');
+  // Step 4: Enter OTP on the page
+  writeStatus('SUBMITTING_OTP');
+  console.log('Submitting OTP...');
 
-  // Try to fill the OTP
-  if (codeInputSelector) {
-    await page.fill(codeInputSelector, otp);
-  } else {
-    // Try all text inputs
-    const inputs = await page.$$('input');
-    for (const input of inputs) {
-      const type = await input.getAttribute('type').catch(() => '');
-      if (type !== 'email' && type !== 'hidden') {
-        await input.fill(otp);
-        break;
-      }
+  // Find code input — try multiple selectors
+  const codeSelectors = [
+    'input[autocomplete="one-time-code"]',
+    'input[inputmode="numeric"]',
+    'input[name="code"]',
+    'input[type="text"]',
+    'input[type="number"]',
+  ];
+
+  let filled = false;
+  for (const sel of codeSelectors) {
+    const el = await page.$(sel).catch(() => null);
+    if (el) {
+      await page.fill(sel, otp);
+      filled = true;
+      console.log('Filled OTP into:', sel);
+      break;
     }
+  }
+
+  if (!filled) {
+    // Last resort: type into whatever is focused
+    await page.keyboard.type(otp);
   }
 
   await sleep(500);
 
   // Submit
-  const submitted = await page.evaluate((code) => {
-    // Try clicking submit button
-    const submitBtn = document.querySelector('button[type="submit"]') ||
-                      document.querySelector('button:not([type="button"])') ||
-                      Array.from(document.querySelectorAll('button')).find(b => /submit|verify|confirm|continue|log.?in/i.test(b.textContent));
-    if (submitBtn) { submitBtn.click(); return true; }
+  const submitted = await page.evaluate(() => {
+    const btn = document.querySelector('button[type="submit"]') ||
+                Array.from(document.querySelectorAll('button')).find(b =>
+                  /submit|verify|confirm|continue|log.?in/i.test(b.textContent));
+    if (btn) { btn.click(); return true; }
     return false;
-  }, otp);
+  });
+  if (!submitted) await page.keyboard.press('Enter');
 
-  if (!submitted) {
-    await page.keyboard.press('Enter');
-  }
-
-  console.log('Code submitted. Waiting for login...');
+  console.log('OTP submitted. Waiting for redirect...');
   await sleep(4000);
 
-  // Wait for redirect to authenticated page
+  // Step 5: Confirm authenticated
   let authenticated = false;
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 20; i++) {
     await sleep(2000);
     const url = page.url();
     if (!url.includes('/authentication/') && !url.includes('/login')) {
       authenticated = true;
-      console.log('Authenticated! Redirected to:', url);
+      console.log('Authenticated! URL:', url);
       break;
     }
-
-    // Navigate directly to stocks page and see if we have access
-    if (i === 7) {
+    // Try navigating directly
+    if (i === 8) {
       await page.goto('https://app.intothecryptoverse.com/tradfi/stocks', {
-        waitUntil: 'networkidle',
-        timeout: 20000,
+        waitUntil: 'networkidle', timeout: 20000,
       }).catch(() => {});
-      const url2 = page.url();
-      if (!url2.includes('/authentication/') && !url2.includes('/login')) {
+      const u = page.url();
+      if (!u.includes('/authentication/') && !u.includes('/login')) {
         authenticated = true;
         break;
       }
@@ -181,7 +213,8 @@ async function main() {
 
   if (!authenticated) {
     await page.screenshot({ path: '/tmp/itc-auth-failed.png' });
-    console.error('Authentication failed. Check /tmp/itc-auth-failed.png for details.');
+    writeStatus('ERROR:auth_failed');
+    console.error('Auth failed. Screenshot: /tmp/itc-auth-failed.png');
     await browser.close();
     process.exit(1);
   }
@@ -190,16 +223,14 @@ async function main() {
 }
 
 async function saveSession(context, page, browser) {
-  // Navigate to stocks to trigger data load
-  const currentUrl = page.url();
-  if (!currentUrl.includes('/tradfi/stocks')) {
+  writeStatus('SAVING_SESSION');
+
+  if (!page.url().includes('/tradfi/stocks')) {
     await page.goto('https://app.intothecryptoverse.com/tradfi/stocks', {
-      waitUntil: 'networkidle',
-      timeout: 20000,
+      waitUntil: 'networkidle', timeout: 20000,
     }).catch(() => {});
   }
-
-  await new Promise(r => setTimeout(r, 3000));
+  await sleep(3000);
 
   const cookies = await context.cookies();
   const localStorage = await page.evaluate(() => {
@@ -211,25 +242,21 @@ async function saveSession(context, page, browser) {
     return data;
   }).catch(() => ({}));
 
-  const session = {
-    email: process.argv[2] || process.env.ITC_EMAIL || 'sachin.imt@gmail.com',
-    savedAt: new Date().toISOString(),
-    cookies,
-    localStorage,
-  };
-
+  const session = { email, savedAt: new Date().toISOString(), cookies, localStorage };
   fs.writeFileSync(SESSION_FILE, JSON.stringify(session, null, 2));
 
-  console.log(`\n✓ Session saved to ${SESSION_FILE}`);
-  console.log(`  Email: ${session.email}`);
-  console.log(`  Cookies: ${cookies.length}`);
-  console.log(`  localStorage keys: ${Object.keys(localStorage).length}`);
-  console.log('\nYou can now run: node scripts/itc-fetch.js');
+  // Clean up signal files
+  [OTP_READY_FILE, OTP_FILE].forEach(f => { try { fs.unlinkSync(f); } catch {} });
+
+  writeStatus('DONE');
+  console.log(`\n✓ Session saved: ${cookies.length} cookies, ${Object.keys(localStorage).length} localStorage keys`);
+  console.log('Morning brief will now fetch ITC data automatically.');
 
   await browser.close();
 }
 
 main().catch(err => {
-  console.error('Error:', err.message);
+  writeStatus(`ERROR:${err.message}`);
+  console.error('Fatal:', err.message);
   process.exit(1);
 });
