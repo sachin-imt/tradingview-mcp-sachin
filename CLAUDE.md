@@ -2,6 +2,17 @@
 
 68 tools for reading and controlling a live TradingView Desktop chart via CDP (port 9222).
 
+## External Research Sources (authenticated, shared browser profile)
+
+Both use the persistent profile at `scripts/.itc-profile/` (gitignored — must be re-created after a sandbox reset).
+
+- **ITC (intothecryptoverse.com)** — authoritative live prices + fiat risk scores.
+  `node scripts/itc-fetch.js` (15-min cache). Session expired (exit 2) → `npm run itc:auth` (email OTP handoff).
+- **VIC (valueinvestorsclub.com)** — buy-side investment write-ups, use for fundamental research and agent-council runs.
+  `node scripts/vic-fetch.js <TICKER>` → list of write-ups; `--full[=N]` → full thesis text (~15-60KB each, cap N at 2); `--url <ideaUrl>` → specific idea.
+  Not logged in (exit 2) → VIC's login form is Cloudflare-gated and CANNOT be automated from this sandbox (datacenter IP fails Turnstile). Instead ask the user to paste their session cookies from DevTools (Application → Cookies → valueinvestorsclub.com; need `LOGIN_NAME`, `remember_web_*`, `vic_session`), write them to `/tmp/.vic-cookies`, then run `node scripts/vic-cookies.js`.
+  When running fundamental analysis or councils on a stock, check VIC for recent write-ups (last ~2 years) and feed key thesis points to the agents.
+
 ## Decision Tree — Which Tool When
 
 ### "What's on my chart right now?"

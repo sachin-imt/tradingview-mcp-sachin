@@ -1,0 +1,214 @@
+// Meet Kevin (Kevin Paffrath) — Pricing Power Strategy v2
+//
+// CHANGES FROM v1:
+//  1. Converted to strategy() with ATR-based stop-loss and take-profit
+//  2. 200 SMA is now a hard GATE (mandatory), not a +1 score point
+//  3. Score is now 0-4 across the remaining 4 criteria
+//  4. RSI buy zone widened from 30-50 → 30-60 (catches trend entries, not just dips)
+//  5. MACD condition tightened: histogram must rise for 2 consecutive bars
+//  6. Volume filter upgraded: 2 of last 3 bars above avg (was single bar — noisy)
+//  7. Recovery Mode: below 200 SMA but 50 SMA rising + RSI > 40 + MACD + vol = still enters
+//  8. Optional 200 EMA instead of 200 SMA (more responsive in recovery phases)
+//  9. Trailing stop option (activates after 1× ATR in profit)
+// 10. Hard exit when price crosses back below 200 MA or score collapses
+
+//@version=5
+strategy("Meet Kevin — Pricing Power Strategy v2",
+     overlay=true,
+     max_labels_count=50,
+     initial_capital=10000,
+     default_qty_type=strategy.percent_of_equity,
+     default_qty_value=10,
+     commission_type=strategy.commission.percent,
+     commission_value=0.1,
+     calc_on_every_tick=false)
+
+// === INPUTS ===
+rsi_length     = input.int(14, "RSI Length", group="Indicators")
+sma200_len     = input.int(200, "200 MA Length", group="Indicators")
+sma50_len      = input.int(50, "50 SMA Length", group="Indicators")
+sma20_len      = input.int(20, "20 SMA Length", group="Indicators")
+vol_ma_len     = input.int(20, "Volume MA Length", group="Indicators")
+use_ema200     = input.bool(false, "Use 200 EMA instead of SMA (faster in recoveries)", group="Indicators")
+
+rsi_buy_low    = input.int(30, "RSI Buy Zone Low",  minval=20, maxval=45, group="RSI Settings")
+rsi_buy_high   = input.int(60, "RSI Buy Zone High", minval=45, maxval=75, group="RSI Settings")
+
+atr_len        = input.int(14, "ATR Length", group="Risk Management")
+stop_atr_mult  = input.float(2.0, "Stop Loss (× ATR)",     step=0.5, minval=1.0, group="Risk Management")
+tp_atr_mult    = input.float(4.0, "Take Profit (× ATR)",   step=0.5, minval=2.0, group="Risk Management")
+use_trailing   = input.bool(true,  "Use Trailing Stop (activates after 1× ATR in profit)", group="Risk Management")
+trail_atr_mult = input.float(2.5, "Trailing Stop Distance (× ATR)", step=0.5, group="Risk Management")
+
+use_recovery       = input.bool(true, "Enable Recovery Mode (below 200 MA but uptrend signals)", group="Recovery Mode")
+recovery_min_score = input.int(4, "Recovery Mode Min Score (out of 4)", minval=3, maxval=4, group="Recovery Mode")
+
+show_200    = input.bool(true, "Show 200 MA",          group="Display")
+show_50     = input.bool(true, "Show 50 SMA",          group="Display")
+show_20     = input.bool(true, "Show 20 SMA",          group="Display")
+show_labels = input.bool(true, "Show Entry Labels",    group="Display")
+show_zones  = input.bool(true, "Highlight Zones",      group="Display")
+
+// === CALCULATIONS ===
+ma200  = use_ema200 ? ta.ema(close, sma200_len) : ta.sma(close, sma200_len)
+sma50  = ta.sma(close, sma50_len)
+sma20  = ta.sma(close, sma20_len)
+rsi    = ta.rsi(close, rsi_length)
+vol_ma = ta.sma(volume, vol_ma_len)
+atr    = ta.atr(atr_len)
+
+[macd_line, signal_line, hist] = ta.macd(close, 12, 26, 9)
+
+// === CRITERIA ===
+// Hard gate — not a score point, must be true for standard entries
+above_200 = close > ma200
+above_50  = close > sma50
+
+// RSI in buy zone (widened to 30-60)
+rsi_in_zone = rsi >= rsi_buy_low and rsi <= rsi_buy_high
+
+// MACD: histogram rising for 2 consecutive bars (tightened from v1)
+macd_bullish = hist > hist[1] and hist[1] > hist[2]
+
+// Volume: at least 2 of the last 3 bars above the volume moving average
+vol_bars_above = (volume > vol_ma ? 1 : 0) + (volume[1] > vol_ma[1] ? 1 : 0) + (volume[2] > vol_ma[2] ? 1 : 0)
+vol_confirmed  = vol_bars_above >= 2
+
+// 50 SMA trending up over last 3 bars (used in recovery mode)
+sma50_rising = sma50 > sma50[3]
+
+// === SCORING ===
+// Standard mode (above 200 MA): 4 criteria, each worth 1 point
+score = (above_50 ? 1 : 0) + (rsi_in_zone ? 1 : 0) + (macd_bullish ? 1 : 0) + (vol_confirmed ? 1 : 0)
+
+// Recovery mode (below 200 MA): 4 proxy criteria
+recovery_score = (sma50_rising ? 1 : 0) + (rsi >= 40 ? 1 : 0) + (macd_bullish ? 1 : 0) + (vol_confirmed ? 1 : 0)
+
+// === SIGNAL CONDITIONS ===
+standard_entry = above_200 and score >= 3
+recovery_entry = use_recovery and not above_200 and recovery_score >= recovery_min_score
+
+long_signal    = (standard_entry or recovery_entry) and strategy.position_size == 0
+
+// === ENTRIES ===
+var float entry_ref_price = na
+
+if long_signal
+    entry_ref_price := close
+    strategy.entry("Long", strategy.long)
+
+    stop_price = entry_ref_price - stop_atr_mult * atr
+    tp_price   = entry_ref_price + tp_atr_mult   * atr
+
+    if use_trailing
+        // Fixed TP + trailing stop that activates after 1× ATR profit
+        strategy.exit("Exit", "Long",
+             limit        = tp_price,
+             trail_price  = entry_ref_price + atr,
+             trail_offset = trail_atr_mult * atr / syminfo.mintick)
+    else
+        strategy.exit("Exit", "Long",
+             stop  = stop_price,
+             limit = tp_price)
+
+    if show_labels
+        lbl_text = recovery_entry ?
+             "⟳ RECOVERY BUY\nScore: " + str.tostring(recovery_score) + "/4\nRSI: " + str.tostring(math.round(rsi, 1)) + "\n50 SMA Rising ✓" :
+             score == 4 ?
+             "★ STRONG BUY\nScore: 4/4\nRSI: " + str.tostring(math.round(rsi, 1)) :
+             "▲ BUY\nScore: " + str.tostring(score) + "/4\nRSI: " + str.tostring(math.round(rsi, 1))
+        lbl_color = recovery_entry ? color.new(color.orange, 10) : color.new(color.green, 0)
+        label.new(bar_index, low, lbl_text,
+             style=label.style_label_up,
+             color=lbl_color, textcolor=color.white, size=size.normal)
+
+// === HARD EXITS (override strategy.exit) ===
+// Exit when standard long crosses back below 200 MA
+crossed_below_200 = strategy.position_size > 0 and ta.crossunder(close, ma200)
+
+// Exit when score degrades to 0-1 (signal gone)
+score_collapsed = strategy.position_size > 0 and above_200 and score <= 1
+
+if crossed_below_200
+    strategy.close("Long", comment="200 MA Break")
+    if show_labels
+        label.new(bar_index, high, "✗ EXIT\n200 MA Break",
+             style=label.style_label_down, color=color.new(color.red, 10),
+             textcolor=color.white, size=size.small)
+
+if score_collapsed
+    strategy.close("Long", comment="Signal Gone")
+
+// === PLOTS ===
+plot(show_200 ? ma200 : na, "200 " + (use_ema200 ? "EMA" : "SMA"),
+     color=color.new(color.orange, 0), linewidth=2)
+plot(show_50 ? sma50 : na, "50 SMA",
+     color=color.new(color.blue, 0), linewidth=1)
+plot(show_20 ? sma20 : na, "20 SMA",
+     color=color.new(color.gray, 30), linewidth=1)
+
+// Entry zone shading
+bgcolor(show_zones and rsi_in_zone and above_200 ? color.new(color.green, 90) : na, title="Standard Buy Zone")
+bgcolor(show_zones and not above_200 and use_recovery and recovery_score >= recovery_min_score ? color.new(color.orange, 88) : na, title="Recovery Entry Zone")
+bgcolor(show_zones and not above_200 and not (use_recovery and recovery_score >= recovery_min_score) ? color.new(color.red, 93) : na, title="Avoid Zone")
+
+// === DASHBOARD TABLE ===
+var table dash = table.new(position.top_right, 2, 11,
+     border_color=color.gray, border_width=1,
+     frame_color=color.gray, frame_width=1)
+
+if barstate.islast
+    mode_text  = above_200 ? "STANDARD MODE" : (use_recovery ? "RECOVERY MODE" : "AVOID")
+    mode_color = above_200 ? color.navy       : (use_recovery and recovery_score >= recovery_min_score ? color.new(color.orange, 20) : color.maroon)
+    act_score  = above_200 ? score : recovery_score
+
+    table.cell(dash, 0, 0, "MK STRATEGY v2",
+         text_color=color.white, bgcolor=mode_color, text_size=size.small)
+    table.cell(dash, 1, 0, mode_text,
+         text_color=color.white, bgcolor=mode_color, text_size=size.small)
+
+    table.cell(dash, 0, 1, "Score", text_color=color.white, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+    table.cell(dash, 1, 1, str.tostring(act_score) + " / 4",
+         text_color=act_score >= 3 ? color.lime : act_score >= 2 ? color.yellow : color.red,
+         bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+
+    table.cell(dash, 0, 2, "200 MA Gate", text_color=color.white, bgcolor=color.new(color.gray, 85), text_size=size.tiny)
+    table.cell(dash, 1, 2, above_200 ? "✓ PASS" : "✗ FAIL",
+         text_color=above_200 ? color.lime : color.red, bgcolor=color.new(color.gray, 85), text_size=size.tiny)
+
+    table.cell(dash, 0, 3, "Above 50 SMA", text_color=color.white, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+    table.cell(dash, 1, 3, above_50 ? "✓" : "✗",
+         text_color=above_50 ? color.lime : color.red, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+
+    table.cell(dash, 0, 4, "RSI (" + str.tostring(rsi_buy_low) + "-" + str.tostring(rsi_buy_high) + ")",
+         text_color=color.white, bgcolor=color.new(color.gray, 85), text_size=size.tiny)
+    table.cell(dash, 1, 4, (rsi_in_zone ? "✓ " : "✗ ") + str.tostring(math.round(rsi, 1)),
+         text_color=rsi_in_zone ? color.lime : color.red, bgcolor=color.new(color.gray, 85), text_size=size.tiny)
+
+    table.cell(dash, 0, 5, "MACD (2-bar rise)", text_color=color.white, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+    table.cell(dash, 1, 5, macd_bullish ? "✓" : "✗",
+         text_color=macd_bullish ? color.lime : color.red, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+
+    table.cell(dash, 0, 6, "Vol (2/3 bars)", text_color=color.white, bgcolor=color.new(color.gray, 85), text_size=size.tiny)
+    table.cell(dash, 1, 6, vol_confirmed ? "✓" : "✗",
+         text_color=vol_confirmed ? color.lime : color.red, bgcolor=color.new(color.gray, 85), text_size=size.tiny)
+
+    table.cell(dash, 0, 7, "50 SMA Rising", text_color=color.white, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+    table.cell(dash, 1, 7, sma50_rising ? "✓" : "✗",
+         text_color=sma50_rising ? color.lime : color.red, bgcolor=color.new(color.gray, 80), text_size=size.tiny)
+
+    table.cell(dash, 0, 8, "ATR Stop / TP", text_color=color.white, bgcolor=color.new(color.gray, 85), text_size=size.tiny)
+    table.cell(dash, 1, 8, str.tostring(math.round(stop_atr_mult * atr, 0)) + " / " + str.tostring(math.round(tp_atr_mult * atr, 0)),
+         text_color=color.yellow, bgcolor=color.new(color.gray, 85), text_size=size.tiny)
+
+    signal_text  = above_200 and score == 4                               ? "★ STRONG BUY"    :
+                   above_200 and score == 3                               ? "▲ BUY"           :
+                   above_200 and score == 2                               ? "◆ WATCH"         :
+                   not above_200 and recovery_score >= recovery_min_score ? "⟳ RECOVERY BUY" :
+                   not above_200                                          ? "✗ AVOID"         : "— WAIT"
+    signal_color = above_200 and score >= 3                               ? color.lime        :
+                   above_200 and score == 2                               ? color.yellow      :
+                   not above_200 and recovery_score >= recovery_min_score ? color.orange      : color.red
+
+    table.cell(dash, 0, 9, "SIGNAL", text_color=color.white, bgcolor=color.new(color.navy, 20), text_size=size.small)
+    table.cell(dash, 1, 9, signal_text, text_color=signal_color, bgcolor=color.new(color.navy, 20), text_size=size.small)
