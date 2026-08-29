@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "tradingview": {
+      "command": "/Users/sachinsharma/.nvm/versions/node/v24.13.0/bin/node",
+      "args": ["/Users/sachinsharma/Library/CloudStorage/OneDrive-Personal/Vibed/Trading view/src/server.js"]
+    }
+  }
+}
