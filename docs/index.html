@@ -1,0 +1,906 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+<title>Sachin's Dashboard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root {
+  --bg:#0f1118;--bg2:#181b24;--bg3:#1e2230;--bg4:#212b42;
+  --text:#c5cee0;--text-m:#6e7a91;--text-h:#e2e8f3;
+  --bdr:#282d3a;--bdr2:#323848;
+  --accent:#e84868;--accent-d:rgba(232,72,104,.15);
+  --grn:#2dd4a0;--grn-d:rgba(45,212,160,.12);
+  --amb:#f0a830;--amb-d:rgba(240,168,48,.12);
+  --red:#ef4444;--red-d:rgba(239,68,68,.12);
+  --blue:#5b8def;--blue-d:rgba(91,141,239,.12);
+  --prp:#a78bfa;--prp-d:rgba(167,139,250,.12);
+  --org:#f97316;--cyn:#06b6d4;
+  --corr-hi:#f97316;--corr-md:#eab308;--corr-lo:#22c55e;
+  --fm:'IBM Plex Mono','SF Mono',monospace;
+  --fu:'IBM Plex Sans',-apple-system,system-ui,sans-serif;
+}
+:root[data-theme="light"]{
+  --bg:#f5f6f8;--bg2:#fff;--bg3:#f0f1f4;--bg4:#e8edf3;
+  --text:#374151;--text-m:#6b7280;--text-h:#111827;
+  --bdr:#d1d5db;--bdr2:#e5e7eb;
+  --accent:#d63d5a;--accent-d:rgba(214,61,90,.1);
+  --grn:#0f9b6e;--grn-d:rgba(15,155,110,.08);
+  --amb:#ca8a04;--amb-d:rgba(202,138,4,.08);
+  --red:#dc2626;--red-d:rgba(220,38,38,.08);
+  --blue:#3b6fd4;--blue-d:rgba(59,111,212,.08);
+  --prp:#7c3aed;--prp-d:rgba(124,58,237,.08);
+  --org:#ea580c;--cyn:#0891b2;
+  --corr-hi:#ea580c;--corr-md:#ca8a04;--corr-lo:#16a34a;
+}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#f5f6f8;--bg2:#fff;--bg3:#f0f1f4;--bg4:#e8edf3;
+  --text:#374151;--text-m:#6b7280;--text-h:#111827;
+  --bdr:#d1d5db;--bdr2:#e5e7eb;
+  --accent:#d63d5a;--accent-d:rgba(214,61,90,.1);
+  --grn:#0f9b6e;--grn-d:rgba(15,155,110,.08);
+  --amb:#ca8a04;--amb-d:rgba(202,138,4,.08);
+  --red:#dc2626;--red-d:rgba(220,38,38,.08);
+  --blue:#3b6fd4;--blue-d:rgba(59,111,212,.08);
+  --prp:#7c3aed;--prp-d:rgba(124,58,237,.08);
+  --org:#ea580c;--cyn:#0891b2;
+  --corr-hi:#ea580c;--corr-md:#ca8a04;--corr-lo:#16a34a;
+}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--fu);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.w{max-width:1500px;margin:0 auto;padding:16px 20px}
+
+/* Header */
+.hdr{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+.hdr h1{font-family:var(--fm);font-size:20px;font-weight:700;color:var(--text-h);letter-spacing:-.02em}
+.tag{font-family:var(--fm);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px}
+.tag-a{color:var(--accent);background:var(--accent-d)}
+.tag-live{color:var(--grn);background:var(--grn-d);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.subtitle{color:var(--text-m);font-size:12px;margin-bottom:16px;max-width:900px;line-height:1.5}
+
+/* Macro strip */
+.macro-strip{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.mp{background:var(--bg2);border:1px solid var(--bdr);border-radius:6px;padding:7px 12px;display:flex;flex-direction:column;min-width:110px}
+.mp-l{font-family:var(--fm);font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-m);margin-bottom:1px}
+.mp-v{font-family:var(--fm);font-size:15px;font-weight:700;color:var(--text-h);font-variant-numeric:tabular-nums}
+.mp-d{font-family:var(--fm);font-size:9px;font-variant-numeric:tabular-nums}
+.up{color:var(--grn)}.dn{color:var(--red)}.fl{color:var(--amb)}
+
+/* Tabs */
+.tab-nav{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--bdr);overflow-x:auto}
+.tb{font-family:var(--fm);font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:9px 16px;background:none;border:none;color:var(--text-m);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap}
+.tb:hover{color:var(--text-h)}
+.tb.on{color:var(--accent);border-bottom-color:var(--accent)}
+.tc{display:none}.tc.on{display:block}
+
+/* Section labels */
+.sl{font-family:var(--fm);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.sl-b{font-family:var(--fm);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
+.sl-a{font-family:var(--fm);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--amb);margin-bottom:10px}
+.hr{border:none;border-top:1px solid var(--bdr);margin:20px 0}
+.note{font-size:10px;color:var(--text-m);line-height:1.4;max-width:900px}
+
+/* Signal cards */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;margin-bottom:10px}
+.sc{background:var(--bg2);border:1px solid var(--bdr);border-radius:7px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;transition:border-color .15s}
+.sc:hover{border-color:var(--bdr2)}
+.sc.fx{border-left:3px solid var(--accent)}
+.sc.fp{border-left:3px solid var(--blue)}
+.sc.fc{border-left:3px solid var(--amb)}
+.sc.fresh{background:linear-gradient(135deg,var(--bg2) 0%,var(--accent-d) 100%)}
+.st2{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.stk{font-family:var(--fm);font-weight:800;font-size:17px;color:var(--text-h);letter-spacing:-.01em}
+.sig{font-family:var(--fm);font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:600;display:inline-block;white-space:nowrap}
+.sig-buy{background:var(--grn-d);color:var(--grn)}
+.sig-trim{background:var(--amb-d);color:var(--amb)}
+.sig-sell,.sig-avoid{background:var(--red-d);color:var(--red)}
+.sig-hold{background:var(--blue-d);color:var(--blue)}
+.sig-mixed{background:var(--amb-d);color:var(--amb);border:1px dashed var(--amb)}
+.sig-new{background:var(--prp-d);color:var(--prp)}
+.sig-exit{background:var(--red-d);color:var(--red);font-weight:800}
+.sd{font-family:var(--fm);font-size:9px;color:var(--text-m);margin-left:auto}
+.ss{font-family:var(--fm);font-size:7px;letter-spacing:.04em;text-transform:uppercase;padding:1px 4px;border-radius:2px}
+.ss-x{color:var(--accent);background:var(--accent-d)}
+.ss-p{color:var(--blue);background:var(--blue-d)}
+.ss-c{color:var(--amb);background:var(--amb-d)}
+.slv{font-family:var(--fm);font-size:11px;color:var(--text-h);font-variant-numeric:tabular-nums;line-height:1.4}
+.sw{font-size:11.5px;color:var(--text-m);line-height:1.4}
+.sw strong{color:var(--text);font-weight:600}
+.qt{font-family:var(--fm);font-size:7px;padding:1px 4px;border-radius:2px;text-transform:uppercase;letter-spacing:.04em}
+.qt-ui{background:var(--grn-d);color:var(--grn)}
+.qt-ue{background:var(--amb-d);color:var(--amb)}
+.qt-de{background:var(--red-d);color:var(--red)}
+
+/* Deep cards */
+.dc{background:var(--bg2);border:1px solid var(--bdr);border-radius:7px;padding:16px 18px;margin-bottom:10px}
+.dc.fx{border-left:3px solid var(--accent)}
+.dc.fp{border-left:3px solid var(--blue)}
+.dh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.dt{font-family:var(--fm);font-weight:800;font-size:16px;color:var(--text-h)}
+.dn2{font-size:11px;color:var(--text-m)}
+.mr{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.mi{display:flex;flex-direction:column}
+.ml{font-family:var(--fm);font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-m)}
+.mv{font-family:var(--fm);font-size:12px;font-weight:600;color:var(--text-h);font-variant-numeric:tabular-nums}
+.th{font-size:12px;line-height:1.5;color:var(--text)}
+.th strong{color:var(--text-h)}
+.th+.th{margin-top:5px}
+.cl{margin-top:5px;padding-left:14px;font-size:11px;color:var(--text-m)}
+.cl li{margin-bottom:1px}
+
+/* Thematic cards */
+.tc2{background:var(--bg2);border:1px solid var(--bdr);border-radius:6px;padding:14px 16px;margin-bottom:8px}
+.tc2 h3{font-family:var(--fu);font-size:13px;font-weight:600;color:var(--text-h);margin-bottom:2px}
+.tc2 .td{font-family:var(--fm);font-size:9px;color:var(--text-m);margin-bottom:6px}
+.tc2 p{font-size:12px;line-height:1.5;max-width:900px}
+.tc2 p+p{margin-top:4px}
+
+/* Weekly strip */
+.ws{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px}
+.wc{background:var(--bg2);border:1px solid var(--bdr);border-radius:6px;padding:7px 10px;min-width:120px;flex-shrink:0}
+.wc.latest{border-color:var(--accent)}
+.wc .wd{font-family:var(--fm);font-size:9px;color:var(--text-m)}
+.wc .wv{font-family:var(--fm);font-size:13px;font-weight:700;color:var(--text-h);font-variant-numeric:tabular-nums}
+.wc .wp{font-family:var(--fm);font-size:9px;color:var(--text-m);font-variant-numeric:tabular-nums}
+
+/* Portfolio table */
+.pt{width:100%;border-collapse:collapse;margin-bottom:16px}
+.pt th{font-family:var(--fm);font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-m);text-align:left;padding:7px 10px;border-bottom:2px solid var(--bdr)}
+.pt td{padding:10px;border-bottom:1px solid var(--bdr);font-size:12px;vertical-align:top}
+.pt tr:hover{background:var(--bg3)}
+.pr{font-family:var(--fm);font-size:20px;font-weight:800;color:var(--text-h);text-align:center;min-width:36px}
+.pr.top3{color:var(--accent)}
+.ptc{display:flex;flex-direction:column;gap:1px}
+.ptk{font-family:var(--fm);font-weight:800;font-size:15px;color:var(--text-h)}
+.ptn{font-size:10px;color:var(--text-m)}
+.pch{font-family:var(--fm);font-size:9px;padding:2px 5px;border-radius:3px;white-space:nowrap}
+.pcu{background:var(--grn-d);color:var(--grn)}
+.pcd{background:var(--red-d);color:var(--red)}
+.pcf{background:var(--blue-d);color:var(--blue)}
+.pcn{background:var(--prp-d);color:var(--prp)}
+.pce{background:var(--red-d);color:var(--red);font-weight:700}
+.pno{font-size:11px;color:var(--text-m);line-height:1.4;max-width:340px}
+.pno strong{color:var(--text)}
+.pw{overflow-x:auto}
+.pl{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.pli{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-m)}
+.pld{width:7px;height:7px;border-radius:50%}
+
+/* ═══ COCKPIT & CORRIDORS (Tab 4) ═══ */
+.ck-tabs{display:flex;gap:2px;margin-bottom:8px;background:var(--bg3);padding:2px;border-radius:6px;width:fit-content}
+.ck-t{font-family:var(--fm);font-size:10px;padding:5px 14px;border-radius:4px;cursor:pointer;color:var(--text-m);transition:all .15s;border:none;background:none;letter-spacing:.02em}
+.ck-t:hover{color:var(--text-h)}
+.ck-t.on{background:var(--bg2);color:var(--text-h);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+
+.tl{background:var(--bg2);border:1px solid var(--bdr);border-radius:6px;padding:7px 10px;margin-bottom:8px}
+.tl-r{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+.tl-l{font-family:var(--fm);font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-m)}
+.tl-d{font-family:var(--fm);font-size:12px;font-weight:700;color:var(--text-h)}
+.tl-n{display:flex;gap:3px}
+.btn{background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;color:var(--text-m);cursor:pointer;font-family:var(--fm);font-size:9px;padding:2px 6px;transition:all .12s}
+.btn:hover:not(:disabled){background:var(--accent-d);color:var(--accent);border-color:var(--accent)}
+.btn:disabled{opacity:.3;cursor:default}
+.btn.on2{background:var(--accent-d);color:var(--accent);border-color:var(--accent)}
+.chips{display:flex;gap:2px;flex-wrap:wrap}
+.chip{font-family:var(--fm);font-size:7px;padding:1px 4px;border-radius:3px;background:var(--bg3);border:1px solid var(--bdr);color:var(--text-m);cursor:pointer;transition:all .12s}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on2{background:var(--accent-d);border-color:var(--accent);color:var(--accent);font-weight:600}
+
+.sr{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.stt{background:var(--bg3);border:1px solid var(--bdr);border-radius:4px;padding:3px 7px;min-width:75px}
+.stt-l{font-family:var(--fm);font-size:7px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-m)}
+.stt-v{font-family:var(--fm);font-size:12px;font-weight:700;color:var(--text-h);font-variant-numeric:tabular-nums}
+
+.ck-row{display:flex;gap:10px;margin-bottom:8px}
+.ck-main{flex:1;min-width:0}
+.ck-side{width:240px;flex-shrink:0}
+.ck-wrap{background:var(--bg2);border:1px solid var(--bdr);border-radius:6px;position:relative;overflow:hidden}
+canvas#ckChart{display:block;width:100%;height:auto}
+.tt{position:absolute;pointer-events:none;background:var(--bg3);border:1px solid var(--bdr2);border-radius:5px;padding:5px 7px;font-family:var(--fm);font-size:9px;color:var(--text);z-index:10;display:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.tt b{font-size:11px;color:var(--text-h)}
+.tt .muted{color:var(--text-m);font-size:8px}
+.qb{border:1px solid var(--bdr);border-radius:5px;padding:6px 8px;margin-bottom:5px;background:var(--bg2)}
+.qb-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+.qb-tt{font-family:var(--fm);font-size:9px;font-weight:600}
+.qb-c{font-family:var(--fm);font-size:11px;font-weight:700;color:var(--text-h);background:var(--bg3);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.qb-chips{display:flex;flex-wrap:wrap;gap:2px}
+.qb-chip{font-family:var(--fm);font-size:8px;padding:1px 5px;border-radius:3px;background:var(--bg3);border:1px solid var(--bdr);color:var(--text)}
+
+/* Corridor card grid */
+.corr-hdr{background:var(--bg2);border:1px solid var(--bdr);border-radius:6px 6px 0 0;padding:7px 10px;display:grid;grid-template-columns:170px 44px 1fr 320px;gap:6px;align-items:center;font-family:var(--fm);font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-m)}
+.corr-grid2{display:flex;flex-direction:column;gap:1px}
+.cc{background:var(--bg2);border:1px solid var(--bdr);padding:8px 10px;display:grid;grid-template-columns:170px 44px 1fr 320px;gap:6px;align-items:center;transition:background .15s}
+.cc:hover{background:var(--bg3)}
+.cc:last-child{border-radius:0 0 6px 6px}
+.cc-name{font-family:var(--fu);font-weight:700;font-size:13px;color:var(--org);line-height:1.2}
+.cc-tick{font-family:var(--fm);font-size:9px;color:var(--text-m);margin-top:1px}
+.cc-rank{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-weight:700;font-size:13px;color:#fff;margin:0 auto}
+.cc-rank.top{background:var(--grn)}.cc-rank.mid{background:var(--blue)}.cc-rank.low{background:var(--text-m)}
+.cc-tgt{font-family:var(--fm)}
+.cc-tgt-d{font-size:8px;color:var(--text-m)}
+.cc-tgt-p{font-size:18px;font-weight:700;color:var(--text-h)}
+.cc-tgt-u{display:inline-flex;align-items:center;gap:2px;font-size:12px;font-weight:600;margin-left:4px}
+.cc-tgt-u.pos{color:var(--grn)}.cc-tgt-u.neg{color:var(--red)}
+.cc-cur{font-size:9px;color:var(--text-m);margin-top:1px}
+.cc-est{display:inline-block;font-size:7px;padding:1px 3px;border-radius:2px;margin-left:3px;text-transform:uppercase;letter-spacing:.04em}
+.cc-est.aj{background:var(--grn-d);color:var(--grn)}
+.cc-est.cons{background:var(--blue-d);color:var(--blue)}
+.cc-spark canvas{display:block;width:100%;height:70px}
+
+.ck-view{display:none}.ck-view.show{display:block}
+
+/* Cockpit daily snapshots (from signal tracker Tab 4) */
+.snap-wrap{overflow-x:auto;margin-bottom:16px;max-height:500px;overflow-y:auto}
+.snap-t{width:100%;border-collapse:collapse;font-family:var(--fm);font-size:10px}
+.snap-t th{font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-m);text-align:center;padding:5px 3px;border-bottom:2px solid var(--bdr);position:sticky;top:0;background:var(--bg)}
+.snap-t th:first-child{text-align:left}
+.snap-t td{text-align:center;padding:4px 3px;border-bottom:1px solid var(--bdr);font-variant-numeric:tabular-nums}
+.snap-t td:first-child{text-align:left;font-weight:700;color:var(--text-h)}
+.snap-t tr:hover{background:var(--bg3)}
+.q-dot{display:inline-block;width:7px;height:7px;border-radius:2px}
+.q-ui{background:var(--grn)}.q-ue{background:var(--amb)}.q-di{background:var(--blue)}.q-de{background:var(--red)}
+.q-changed{outline:2px solid var(--accent);outline-offset:1px}
+
+/* Corridor bars (from signal tracker) */
+.corr-card2{background:var(--bg2);border:1px solid var(--bdr);border-radius:6px;padding:10px 12px;margin-bottom:6px}
+.corr-card2 .ch{display:flex;align-items:baseline;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.corr-card2 .ch .ctk{font-family:var(--fm);font-weight:800;font-size:14px;color:var(--text-h)}
+.corr-card2 .ch .cn{font-size:10px;color:var(--text-m)}
+.cb-w{position:relative;height:24px;background:var(--bg3);border-radius:4px;margin-bottom:4px;overflow:visible}
+.cb-z{position:absolute;top:0;height:100%;border-radius:4px}
+.cb-zg{background:var(--grn-d)}.cb-zr{background:var(--red-d)}
+.cb-mk{position:absolute;top:-2px;width:3px;height:28px;border-radius:2px;z-index:3}
+.cb-mk-p{background:var(--text-h)}.cb-mk-m{background:var(--amb);opacity:.4;width:1px}
+.cb-pl{position:absolute;top:-15px;font-family:var(--fm);font-size:8px;font-weight:700;color:var(--text-h);transform:translateX(-50%);white-space:nowrap}
+.cb-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(85px,1fr));gap:3px;font-family:var(--fm);font-size:9px;margin-top:14px}
+.cb-meta dt{color:var(--text-m);font-size:7px;text-transform:uppercase;letter-spacing:.04em}
+.cb-meta dd{color:var(--text-h);font-weight:600;font-variant-numeric:tabular-nums}
+.corr-bars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:6px;margin-bottom:16px}
+.ce{font-family:var(--fm);font-size:8px;padding:2px 5px;border-radius:3px}
+.ce-a{background:var(--grn-d);color:var(--grn)}
+.ce-f{background:var(--amb-d);color:var(--amb)}
+.ce-s{background:var(--red-d);color:var(--red)}
+
+@media(max-width:960px){.ck-row{flex-direction:column}.ck-side{width:100%}.corr-hdr,.cc{grid-template-columns:130px 36px 1fr 220px}}
+@media(max-width:700px){.sg{grid-template-columns:1fr}.corr-hdr,.cc{grid-template-columns:1fr;gap:3px}.corr-bars-grid{grid-template-columns:1fr}}
+</style>
+
+<div class="w">
+  <div class="hdr">
+    <h1>Sachin's Dashboard</h1>
+    <span class="tag tag-a">AJ Signals</span>
+    <span class="tag tag-live">LIVE AUG 29</span>
+  </div>
+  <p class="subtitle">
+    Signal hierarchy: <strong style="color:var(--accent)">X trade</strong> > <strong style="color:var(--blue)">Portal memo</strong> > <strong style="color:var(--amb)">Cockpit</strong>. NVDA earnings "Bullseye" &mdash; guidance resets entire sector. New positions: AMAT $466, more ASML + AMD. 29 stocks tracked.
+  </p>
+
+  <div class="macro-strip">
+    <div class="mp"><span class="mp-l">S&P 500</span><span class="mp-v">7,674</span><span class="mp-d up">19.5x P/E</span></div>
+    <div class="mp"><span class="mp-l">NVDA Earnings</span><span class="mp-v" style="font-size:12px;color:var(--grn)">Bullseye</span><span class="mp-d up">Resets sector</span></div>
+    <div class="mp"><span class="mp-l">MRVL Post-ER</span><span class="mp-v" style="font-size:12px;color:var(--red)">-10.3%</span><span class="mp-d dn">Nailed it</span></div>
+    <div class="mp"><span class="mp-l">New Position</span><span class="mp-v" style="font-size:11px">AMAT</span><span class="mp-d up">$466 entry</span></div>
+    <div class="mp"><span class="mp-l">Cockpit</span><span class="mp-v" style="font-size:11px">PEG+</span><span class="mp-d fl">17 UI stocks</span></div>
+  </div>
+
+  <div class="tab-nav">
+    <button class="tb on" onclick="switchTab('signals',this)">Signals</button>
+    <button class="tb" onclick="switchTab('deep',this)">Deep Dive</button>
+    <button class="tb" onclick="switchTab('portfolio',this)">Portfolio</button>
+    <button class="tb" onclick="switchTab('cockpit',this)">Cockpit & Corridors</button>
+    <button class="tb" onclick="switchTab('macro',this)">Macro & Weekly</button>
+  </div>
+
+  <!-- ═══ TAB 1: SIGNAL BOARD ═══ -->
+  <div id="tab-signals" class="tc on">
+    <div class="sl">X Trade Alerts &mdash; Aug 27&ndash;29</div>
+    <div class="sg">
+      <div class="sc fx fresh"><div class="st2"><span class="stk">AMAT</span><span class="sig sig-new">New Position</span><span class="ss ss-x">X</span><span class="sd">Aug 29</span></div><div class="slv">Entry $466 &middot; "Been waiting for this one"</div><div class="sw"><strong>New position in Applied Materials.</strong> AMAT dropped -3.21% to $466 when AJ entered. Semiconductor equipment play benefiting from AI capex cycle.</div></div>
+      <div class="sc fx fresh"><div class="st2"><span class="stk">ASML</span><span class="sig sig-buy">Added More</span><span class="ss ss-x">X</span><span class="sd">Aug 29</span></div><div class="slv">Adding on weakness &middot; Litho monopoly</div><div class="sw"><strong>Increased ASML position alongside AMD.</strong> Taking advantage of sector weakness post-MRVL miss. ASML is the monopoly EUV supplier.</div></div>
+      <div class="sc fx fresh"><div class="st2"><span class="stk">AMD</span><span class="sig sig-buy">Added More</span><span class="ss ss-x">X</span><span class="sd">Aug 29</span></div><div class="slv">Adding on weakness &middot; AI GPU #2</div><div class="sw"><strong>Increased AMD position.</strong> NVDA guidance is bullish for entire AI chip ecosystem. AMD benefits as #2 GPU supplier.</div></div>
+      <div class="sc fx fresh"><div class="st2"><span class="stk">MU</span><span class="sig sig-buy">Added Meaningfully</span><span class="ss ss-x">X</span><span class="sd">Aug 28</span></div><div class="slv">Added at $910 &middot; "Reverse X feed undefeated"</div><div class="sw"><strong>Contrarian add on "memory is dead" narrative.</strong> ~80% of NVDA revenue needs DRAM. MU up 4% pre-market on NVDA results.</div></div>
+      <div class="sc fx fresh"><div class="st2"><span class="stk">META</span><span class="sig sig-exit">Swing Exits</span><span class="ss ss-x">X</span><span class="sd">Aug 28&ndash;29</span></div><div class="slv">Bought $569 &rarr; Sold $588 (+3.3%) &middot; Also exit $598</div><div class="sw"><strong>Multiple rapid META swing trades.</strong> Buy $569, exit $588 within ~20 hours. Also exited $598 "all on margin." Pure tactical margin trades.</div></div>
+      <div class="sc fx fresh"><div class="st2"><span class="stk">EOS</span><span class="sig sig-exit">Short Closed</span><span class="ss ss-x">X</span><span class="sd">Aug 29</span></div><div class="slv">Closed short &middot; $3.26 &middot; "Probably dead"</div><div class="sw"><strong>Closed EOS short.</strong> "A rotten company in its core, aka a scam." Didn't even post the original short alert.</div></div>
+      <div class="sc fx fresh"><div class="st2"><span class="stk">NVDA</span><span class="sig sig-buy">Bullseye</span><span class="ss ss-x">X</span><span class="sd">Aug 27&ndash;28</span></div><div class="slv">Called "high chance of ripping" pre-ER &middot; Confirmed</div><div class="sw"><strong>AJ nailed the NVDA earnings call.</strong> Guidance "so crazy it could reset the entire sector." 12M target $369&ndash;$420. Next ER Nov 19.</div></div>
+      <div class="sc fx fresh"><div class="st2"><span class="stk">MRVL</span><span class="sig sig-sell">Nailed It</span><span class="ss ss-x">X</span><span class="sd">Aug 28&ndash;29</span></div><div class="slv">Warned "too expensive" at $250 &rarr; Down 10.3%</div><div class="sw"><strong>Called MRVL drop perfectly.</strong> "Doesn't screen well: near the bottom of the cockpit." Stock dropped 10.3% to $216.63.</div></div>
+    </div>
+    <hr class="hr">
+    <div class="sl-b">Portal Investment Memos &mdash; Aug 2026</div>
+    <div class="sg">
+      <div class="sc fp"><div class="st2"><span class="stk">NVDA</span><span class="sig sig-buy">High Conviction Long</span><span class="ss ss-p">Memo</span><span class="sd">Aug 27</span></div><div class="slv">At $221 &middot; 12M: $371&ndash;$420 &middot; FY28 EPS $16.16 vs cons $13.13 (+23%)</div><div class="sw"><strong>AJ's FY2028 EPS 23% above consensus.</strong> Prior forecast error just 0.5%. Price corridor shows massive upside.</div></div>
+      <div class="sc fp"><div class="st2"><span class="stk">COHR</span><span class="sig sig-new">Initiate Long</span><span class="ss ss-p">Memo</span><span class="sd">Aug 25</span></div><div class="slv">At $275.49 &middot; 12M: $454 (+65%) &middot; FY28 EPS $16.38 vs cons $13.95 (+17%)</div><div class="sw"><strong>NEW COVERAGE &mdash; Coherent.</strong> 65% upside in 12 months. Optical networking + AI datacom play. Upside + Inexpensive quadrant.</div></div>
+      <div class="sc fp"><div class="st2"><span class="stk">MRVL</span><span class="sig sig-hold">Hold &middot; Accumulate Lower</span><span class="ss ss-p">Memo</span><span class="sd">Aug 28</span></div><div class="slv">At $221 &middot; Accumulate ~$166 &middot; 37.1x vs 25.4x median</div><div class="sw"><strong>Too expensive at current levels.</strong> Wait for pullback. Forecast error 0%. Corridor won't move on latest guidance.</div></div>
+      <div class="sc fp"><div class="st2"><span class="stk">XPEV</span><span class="sig sig-buy">Constructive</span><span class="ss ss-p">Memo</span><span class="sd">Aug 24</span></div><div class="slv">At $11.36 &middot; 4x NTM GP &middot; 39&ndash;90% upside &middot; VW = 50% GP</div><div class="sw"><strong>Deep value China EV play.</strong> AJ 91% below consensus (conservative), yet still sees 39&ndash;90% upside.</div></div>
+    </div>
+    <hr class="hr">
+    <div class="sl-a">Cockpit Quadrants &mdash; Aug 28</div>
+    <div class="sg">
+      <div class="sc fc"><div class="st2"><span class="stk">17 Stocks</span><span class="qt qt-ui">Upside + Inexpensive</span></div><div class="slv">COHR, NVDA, MU, ASML, TSM, AMD, AMAT, XPEV, INTC, AVGO, PLTR + more</div><div class="sw"><strong>Bullish quadrant.</strong> Most of AJ's active buys sit here. NVDA anchors post-earnings.</div></div>
+      <div class="sc fc"><div class="st2"><span class="stk">7 Stocks</span><span class="qt qt-ue">Upside + Expensive</span></div><div class="slv">MRVL, META, GOOGL, AMZN, AAPL, CRM, SNOW</div><div class="sw"><strong>Upside exists but premium valuations.</strong> MRVL near bottom of cockpit. META is swing vehicle.</div></div>
+      <div class="sc fc"><div class="st2"><span class="stk">2 Stocks</span><span class="qt qt-de">Downside + Expensive</span></div><div class="slv">UBER, MSFT</div><div class="sw"><strong>Worst quadrant &mdash; avoid.</strong> Both expensive with limited upside.</div></div>
+    </div>
+    <hr class="hr">
+    <p class="note">Sources: X @alojohhardcore Aug 27&ndash;29, Portal weekly Aug 22, NVDA memo Aug 27, MRVL memo Aug 28, XPEV memo Aug 24, COHR initiation Aug 25, Cockpit Aug 28.</p>
+  </div>
+
+  <!-- ═══ TAB 2: DEEP DIVE ═══ -->
+  <div id="tab-deep" class="tc">
+    <div class="sl">NVDA &mdash; Post Q2 FY2027 Investment Memo</div>
+    <div class="dc fp">
+      <div class="dh"><span class="dt">NVDA</span><span class="dn2">NVIDIA Corporation</span><span class="sig sig-buy">High Conviction Long</span><span class="ss ss-p">Portal</span><span class="sd">Aug 27</span></div>
+      <div class="mr"><div class="mi"><span class="ml">Price</span><span class="mv">$221</span></div><div class="mi"><span class="ml">12M Target</span><span class="mv up">$371&ndash;$420</span></div><div class="mi"><span class="ml">AJ FY28 EPS</span><span class="mv">$16.16</span></div><div class="mi"><span class="ml">Cons FY28</span><span class="mv">$13.13</span></div><div class="mi"><span class="ml">AJ vs Cons</span><span class="mv up">+23%</span></div><div class="mi"><span class="ml">Fwd P/E</span><span class="mv">18.7x</span></div><div class="mi"><span class="ml">Fcst Error</span><span class="mv">0.5%</span></div></div>
+      <p class="th"><strong>AJ's highest conviction name.</strong> FY2028 EPS $16.16 is 23% above Street at $13.13. Prior forecast track record 0.5% error. Price corridor implies $371&ndash;$420 from $221 entry (68&ndash;90% upside).</p>
+      <p class="th"><strong>X confirms conviction.</strong> Pre-earnings: "high chance of ripping/rerating." Post-earnings: "Bullseye." Guidance "so crazy it could reset the entire sector." Next ER Nov 19, buy point ~Oct 30.</p>
+      <ul class="cl"><li>Q2 FY2027 earnings blowout &mdash; massive beat</li><li>Guidance reset for entire AI semiconductor sector</li><li>Next ER ~Nov 19 &mdash; optimal entry ~Oct 30</li><li>Analyst upgrade cycle just beginning</li></ul>
+    </div>
+    <div class="sl">MRVL &mdash; Post Q2 FY2027 Investment Memo</div>
+    <div class="dc fp">
+      <div class="dh"><span class="dt">MRVL</span><span class="dn2">Marvell Technology</span><span class="sig sig-hold">Hold &middot; Accumulate Lower</span><span class="ss ss-p">Portal</span><span class="sd">Aug 28</span></div>
+      <div class="mr"><div class="mi"><span class="ml">Price</span><span class="mv">$221</span></div><div class="mi"><span class="ml">Accumulate At</span><span class="mv up">~$166</span></div><div class="mi"><span class="ml">Fwd P/E</span><span class="mv">37.1x</span></div><div class="mi"><span class="ml">Peer Median</span><span class="mv">25.4x</span></div><div class="mi"><span class="ml">AJ FY28 Rev</span><span class="mv">$20.6B</span></div><div class="mi"><span class="ml">Fcst Error</span><span class="mv">0%</span></div></div>
+      <p class="th"><strong>Called this drop perfectly.</strong> Pre-earnings: "near bottom of cockpit." Stock fell 10.3%. Post-ER: corridor won't move much. Trading at 37.1x vs median 25.4x &mdash; only accumulate near $166.</p>
+      <ul class="cl"><li>Needs to pull back to ~$166 for attractive entry</li><li>Premium valuation (37.1x vs 25.4x) limits upside</li><li>AI custom silicon growing but priced in</li></ul>
+    </div>
+    <div class="sl">COHR &mdash; Initiation of Coverage</div>
+    <div class="dc fp">
+      <div class="dh"><span class="dt">COHR</span><span class="dn2">Coherent Corp</span><span class="sig sig-new">Initiate Long</span><span class="ss ss-p">Portal</span><span class="sd">Aug 25</span></div>
+      <div class="mr"><div class="mi"><span class="ml">Price</span><span class="mv">$275.49</span></div><div class="mi"><span class="ml">12M Target</span><span class="mv up">$454 (+65%)</span></div><div class="mi"><span class="ml">AJ FY28 EPS</span><span class="mv">$16.38</span></div><div class="mi"><span class="ml">Cons FY28</span><span class="mv">$13.95</span></div><div class="mi"><span class="ml">AJ vs Cons</span><span class="mv up">+17%</span></div></div>
+      <p class="th"><strong>NEW COVERAGE.</strong> 65% 12-month upside. Optical networking and AI datacom play in the best Cockpit quadrant (Upside + Inexpensive).</p>
+      <ul class="cl"><li>First-time entry opportunity</li><li>AI datacom optical networking secular tailwind</li></ul>
+    </div>
+    <div class="sl">XPEV &mdash; Post Q2 Investment Memo</div>
+    <div class="dc fp">
+      <div class="dh"><span class="dt">XPEV</span><span class="dn2">XPeng Inc</span><span class="sig sig-buy">Constructive</span><span class="ss ss-p">Portal</span><span class="sd">Aug 24</span></div>
+      <div class="mr"><div class="mi"><span class="ml">Price</span><span class="mv">$11.36</span></div><div class="mi"><span class="ml">Upside</span><span class="mv up">39&ndash;90%</span></div><div class="mi"><span class="ml">Valuation</span><span class="mv">4x NTM GP</span></div><div class="mi"><span class="ml">VW of GP</span><span class="mv">~50%</span></div></div>
+      <p class="th"><strong>Deep value China EV with VW optionality.</strong> AJ 91% below consensus yet sees 39&ndash;90% upside. VW partnership ~50% of gross profit.</p>
+    </div>
+    <hr class="hr">
+    <div class="sl">X Trade Deep Dives</div>
+    <div class="dc fx">
+      <div class="dh"><span class="dt">MU</span><span class="dn2">Micron &mdash; DRAM Thesis</span><span class="sig sig-buy">Added Meaningfully</span><span class="ss ss-x">X</span><span class="sd">Aug 28</span></div>
+      <div class="mr"><div class="mi"><span class="ml">Entry</span><span class="mv">$910</span></div><div class="mi"><span class="ml">Pre-Mkt</span><span class="mv up">$976 (+4%)</span></div></div>
+      <p class="th"><strong>Contrarian DRAM thesis anchored to NVDA earnings.</strong> "Reverse X feed undefeated." ~80% of NVDA revenue needs DRAM. MU up 4% pre-market confirming thesis.</p>
+    </div>
+    <div class="dc fx">
+      <div class="dh"><span class="dt">AMAT</span><span class="dn2">Applied Materials &mdash; New Position</span><span class="sig sig-new">New Buy</span><span class="ss ss-x">X</span><span class="sd">Aug 29</span></div>
+      <div class="mr"><div class="mi"><span class="ml">Entry</span><span class="mv">$466</span></div><div class="mi"><span class="ml">Day Chg</span><span class="mv dn">-3.21%</span></div></div>
+      <p class="th"><strong>Long-awaited entry into semi equipment.</strong> Had post-Q2 memo ready. Waited for pullback. "Been waiting for this one for quite a while."</p>
+    </div>
+  </div>
+
+  <!-- ═══ TAB 3: PORTFOLIO ═══ -->
+  <div id="tab-portfolio" class="tc">
+    <div class="sl">AJ's Active Positions &mdash; Reconstructed from X Posts</div>
+    <p class="note" style="margin-bottom:12px">Rankings from X trade alerts Aug 27&ndash;29. Exact rankings not disclosed &mdash; order reflects trade activity and commentary. All estimates.</p>
+    <div class="pl">
+      <div class="pli"><div class="pld" style="background:var(--grn)"></div>Added/New</div>
+      <div class="pli"><div class="pld" style="background:var(--red)"></div>Trimmed/Exited</div>
+      <div class="pli"><div class="pld" style="background:var(--blue)"></div>Unchanged</div>
+      <div class="pli"><div class="pld" style="background:var(--prp)"></div>New Position</div>
+    </div>
+    <div class="pw">
+      <table class="pt">
+        <thead><tr><th>#</th><th>Ticker</th><th>Signal</th><th>Action</th><th>Context</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pr top3">1</span></td><td><div class="ptc"><span class="ptk">NVDA</span><span class="ptn">NVIDIA</span></div></td><td><span class="sig sig-buy">BUY</span></td><td><span class="pch pcf">Core Hold</span></td><td><span class="pno"><strong>"Bullseye" on earnings.</strong> 12M $371&ndash;$420. FY28 EPS 23% above cons.</span></td></tr>
+          <tr><td><span class="pr top3">2</span></td><td><div class="ptc"><span class="ptk">MU</span><span class="ptn">Micron</span></div></td><td><span class="sig sig-buy">BUY</span></td><td><span class="pch pcu">Added $910</span></td><td><span class="pno"><strong>"Added meaningfully."</strong> 80% of NVDA rev needs DRAM.</span></td></tr>
+          <tr><td><span class="pr top3">3</span></td><td><div class="ptc"><span class="ptk">ASML</span><span class="ptn">ASML Holding</span></div></td><td><span class="sig sig-buy">BUY</span></td><td><span class="pch pcu">Added More</span></td><td><span class="pno"><strong>Added alongside AMD.</strong> EUV lithography monopoly.</span></td></tr>
+          <tr><td><span class="pr">4</span></td><td><div class="ptc"><span class="ptk">AMD</span><span class="ptn">Advanced Micro Devices</span></div></td><td><span class="sig sig-buy">BUY</span></td><td><span class="pch pcu">Added More</span></td><td><span class="pno"><strong>Added alongside ASML.</strong> #2 AI GPU. Benefits from NVDA guidance.</span></td></tr>
+          <tr><td><span class="pr">5</span></td><td><div class="ptc"><span class="ptk">AMAT</span><span class="ptn">Applied Materials</span></div></td><td><span class="sig sig-new">NEW</span></td><td><span class="pch pcn">New $466</span></td><td><span class="pno"><strong>"Been waiting for this one."</strong> Semi equipment = pickaxe play.</span></td></tr>
+          <tr><td><span class="pr">6</span></td><td><div class="ptc"><span class="ptk">COHR</span><span class="ptn">Coherent Corp</span></div></td><td><span class="sig sig-new">INITIATE</span></td><td><span class="pch pcn">New Coverage</span></td><td><span class="pno"><strong>$275 &rarr; $454 (+65%).</strong> Optical AI play. FY28 EPS 17% above cons.</span></td></tr>
+          <tr><td><span class="pr">7</span></td><td><div class="ptc"><span class="ptk">XPEV</span><span class="ptn">XPeng</span></div></td><td><span class="sig sig-buy">BUY</span></td><td><span class="pch pcf">Held</span></td><td><span class="pno"><strong>39&ndash;90% upside at $11.36.</strong> VW = 50% GP.</span></td></tr>
+          <tr><td><span class="pr">&mdash;</span></td><td><div class="ptc"><span class="ptk">META</span><span class="ptn">Meta</span></div></td><td><span class="sig sig-mixed">SWING</span></td><td><span class="pch pce">Exit $588/$598</span></td><td><span class="pno"><strong>Swing trading vehicle.</strong> Buy $569 &rarr; sell $588. Margin trades.</span></td></tr>
+          <tr><td><span class="pr">&mdash;</span></td><td><div class="ptc"><span class="ptk">MRVL</span><span class="ptn">Marvell</span></div></td><td><span class="sig sig-hold">HOLD</span></td><td><span class="pch pcf">Watch Only</span></td><td><span class="pno"><strong>Called -10.3% drop.</strong> Accumulate near $166 only.</span></td></tr>
+          <tr><td><span class="pr">&mdash;</span></td><td><div class="ptc"><span class="ptk">EOS</span><span class="ptn">Eos Energy</span></div></td><td><span class="sig sig-exit">CLOSED</span></td><td><span class="pch pce">Short Closed</span></td><td><span class="pno"><strong>"Rotten company, aka a scam."</strong> Closed at $3.26.</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">"&mdash;" = swing or watch-list without confirmed sizing. Core #1&ndash;#7 estimated from activity.</p>
+  </div>
+
+  <!-- ═══ TAB 4: COCKPIT & CORRIDORS ═══ -->
+  <div id="tab-cockpit" class="tc">
+    <div class="ck-tabs">
+      <button class="ck-t on" onclick="switchCkView('scatter',this)">Cockpit</button>
+      <button class="ck-t" onclick="switchCkView('cards',this)">Corridors</button>
+      <button class="ck-t" onclick="switchCkView('bars',this)">Corridor Bars</button>
+      <button class="ck-t" onclick="switchCkView('snap',this)">Daily Snapshots</button>
+    </div>
+
+    <div class="tl" id="ckTimeline">
+      <div class="tl-r">
+        <div><span class="tl-l">Viewing </span><span class="tl-d" id="tlDate"></span></div>
+        <div class="tl-n">
+          <button class="btn" id="btnPrev" onclick="ckNav(-1)">&larr; Prev</button>
+          <button class="btn" id="btnGhost" onclick="toggleGhost()">Ghost</button>
+          <button class="btn" id="btnNext" onclick="ckNav(1)">Next &rarr;</button>
+        </div>
+      </div>
+      <div class="chips" id="tlChips"></div>
+    </div>
+
+    <div class="sr" id="statsRow"></div>
+
+    <!-- COCKPIT SCATTER -->
+    <div class="ck-view show" id="vScatter">
+      <div class="ck-row">
+        <div class="ck-main"><div class="ck-wrap"><canvas id="ckChart" width="900" height="580"></canvas><div class="tt" id="tooltip"></div></div></div>
+        <div class="ck-side" id="sidebar"></div>
+      </div>
+    </div>
+
+    <!-- CORRIDORS CARDS -->
+    <div class="ck-view" id="vCards">
+      <div class="corr-hdr"><span>Company</span><span>Rank</span><span>1-Year Target Price</span><span>Share Price Corridor</span></div>
+      <div class="corr-grid2" id="corrGrid"></div>
+    </div>
+
+    <!-- CORRIDOR BARS (from signal tracker) -->
+    <div class="ck-view" id="vBars">
+      <p class="note" style="margin-bottom:10px">Corridor = NTM EPS &times; P/E range. Green zone = attractive. Red zone = stretched. Bar shows price position within corridor.</p>
+      <div class="corr-bars-grid" id="corrBarsGrid"></div>
+    </div>
+
+    <!-- DAILY SNAPSHOTS -->
+    <div class="ck-view" id="vSnap">
+      <p class="note" style="margin-bottom:10px">Each cell shows quadrant assignment. <span class="q-dot q-ui"></span> UI <span class="q-dot q-ue"></span> UE <span class="q-dot q-de"></span> DE. Highlighted = changed from prior day.</p>
+      <div class="snap-wrap"><table class="snap-t" id="snapTable"><thead><tr id="snapHead"></tr></thead><tbody id="snapBody"></tbody></table></div>
+    </div>
+
+    <p class="note" style="margin-top:8px">AJ Investment Research Cockpit & Corridor replica. Corridors = AJ NTM EPS &times; historical P/E range. PEG = Fwd P/E &divide; EPS growth rate. Green = AJ est; blue = consensus. Not investment advice.</p>
+  </div>
+
+  <!-- ═══ TAB 5: MACRO & WEEKLY ═══ -->
+  <div id="tab-macro" class="tc">
+    <div class="sl">Weekly Progression</div>
+    <div class="ws">
+      <div class="wc latest"><div class="wd">Aug 22</div><div class="wv">7,674</div><div class="wp">P/E 19.5x</div><div class="wp up">Latest</div></div>
+      <div class="wc"><div class="wd">Aug 15</div><div class="wv">~7,500</div><div class="wp">P/E ~19.2x</div></div>
+      <div class="wc"><div class="wd">Aug 8</div><div class="wv">~7,450</div><div class="wp">P/E ~19.0x</div></div>
+      <div class="wc"><div class="wd">Aug 1</div><div class="wv">~7,350</div><div class="wp">P/E ~18.8x</div></div>
+    </div>
+    <div class="sl">Macro Thesis &mdash; Aug 2026</div>
+    <div class="tc2"><h3>NVDA Guidance Resets Sector</h3><div class="td">Aug 27&ndash;28 &middot; X</div><p>AJ's biggest macro call: NVDA guidance "so crazy it could reset the entire sector." AI infrastructure spend accelerating faster than anyone modeled. Adding aggressively across the AI semi complex.</p></div>
+    <div class="tc2"><h3>DRAM = Nvidia Derivative Play</h3><div class="td">Aug 28 &middot; X</div><p>"About 80% of the revenue Nvidia guided for can't happen without DRAM." MU is the direct derivative play. "Reverse X feed is undefeated" &mdash; when X is bearish, AJ buys.</p></div>
+    <div class="tc2"><h3>Cockpit Now Includes PEG Ratio</h3><div class="td">Aug 2026 &middot; Portal</div><p>PEG ratio added alongside Corridor Method. 17 stocks in Upside+Inexpensive, 7 in Upside+Expensive, 2 in Downside+Expensive (UBER, MSFT). Zero value traps.</p></div>
+    <div class="tc2"><h3>Active Swing Trading Strategy</h3><div class="td">Aug 27&ndash;29 &middot; X</div><p>Multiple META swing trades: buy $569 &rarr; sell $588, exit $598 "all on margin." Tactical income overlay on core AI positions. 3&ndash;7% returns in 1&ndash;3 days on high-liquidity names.</p></div>
+    <hr class="hr">
+    <p class="note">Sources: AJ portal (ajinvestmentresearch.com) and X @alojohhardcore, Aug 22&ndash;29. Weekly Aug 22, NVDA memo Aug 27, MRVL memo Aug 28, XPEV memo Aug 24, COHR init Aug 25, Cockpit Aug 28, X alerts Aug 27&ndash;29.</p>
+  </div>
+</div>
+
+<script>
+// ═══ UNIFIED DATA ═══
+const STOCKS=[{"t":"MU","n":"Micron","est":"cons","epsGr":120,"iu":0.4,"ajPeg":0.16,"yahoo":"MU"},{"t":"SNDK","n":"SanDisk","est":"aj","epsGr":85,"iu":0.47,"ajPeg":0.21,"yahoo":"WDC"},{"t":"LITE","n":"Lumentum","est":"aj","epsGr":267,"iu":0.8,"ajPeg":0.47,"yahoo":"LITE"},{"t":"ORCL","n":"Oracle","est":"aj","epsGr":35,"iu":0.38,"ajPeg":0.43,"yahoo":"ORCL"},{"t":"META","n":"Meta","est":"cons","epsGr":22,"iu":0.24,"ajPeg":0.67,"yahoo":"META"},{"t":"NVDA","n":"Nvidia","est":"aj","epsGr":55,"iu":0.7,"ajPeg":0.27,"yahoo":"NVDA"},{"t":"UBER","n":"Uber","est":"aj","epsGr":15,"iu":-0.01,"ajPeg":2.78,"yahoo":"UBER"},{"t":"TSLA","n":"Tesla","est":"cons","epsGr":45,"iu":1.44,"ajPeg":1.71,"yahoo":"TSLA"},{"t":"AMZN","n":"Amazon","est":"cons","epsGr":28,"iu":0.21,"ajPeg":1.06,"yahoo":"AMZN"},{"t":"TSM","n":"TSMC","est":"cons","epsGr":38,"iu":0.32,"ajPeg":0.74,"yahoo":"TSM"},{"t":"PLTR","n":"Palantir","est":"aj","epsGr":50,"iu":0.19,"ajPeg":1.37,"yahoo":"PLTR"},{"t":"AMD","n":"AMD","est":"aj","epsGr":105,"iu":0.94,"ajPeg":0.62,"yahoo":"AMD"},{"t":"ASML","n":"ASML","est":"aj","epsGr":42,"iu":0.39,"ajPeg":1.02,"yahoo":"ASML"},{"t":"INTC","n":"Intel","est":"cons","epsGr":140,"iu":0.98,"ajPeg":0.54,"yahoo":"INTC"},{"t":"MRVL","n":"Marvell","est":"aj","epsGr":75,"iu":0.78,"ajPeg":0.62,"yahoo":"MRVL"},{"t":"AMAT","n":"Appl. Materials","est":"cons","epsGr":30,"iu":0.61,"ajPeg":0.69,"yahoo":"AMAT"},{"t":"AVGO","n":"Broadcom","est":"cons","epsGr":25,"iu":0.34,"ajPeg":0.96,"yahoo":"AVGO"},{"t":"MSFT","n":"Microsoft","est":"cons","epsGr":14,"iu":-0.05,"ajPeg":1.28,"yahoo":"MSFT"},{"t":"AAPL","n":"Apple","est":"cons","epsGr":10,"iu":0.08,"ajPeg":3.04,"yahoo":"AAPL"},{"t":"GOOGL","n":"Alphabet","est":"cons","epsGr":18,"iu":0.26,"ajPeg":1.34,"yahoo":"GOOGL"},{"t":"XPEV","n":"XPeng","est":"aj","epsGr":null,"iu":null,"ajPeg":null,"yahoo":"XPEV"},{"t":"RKLB","n":"Rocket Lab","est":"aj","epsGr":null,"iu":null,"ajPeg":null,"yahoo":"RKLB"},{"t":"EOSE","n":"Eos Energy","est":"aj","epsGr":null,"iu":null,"ajPeg":null,"yahoo":"EOSE"},{"t":"COHR","n":"Coherent","est":"aj","epsGr":65,"iu":0.84,"ajPeg":0.5,"yahoo":"COHR"},{"t":"SSNLF","n":"Samsung","est":"cons","epsGr":90,"iu":0.35,"ajPeg":0.17,"yahoo":"SSNLF"},{"t":"SKHYN","n":"SK Hynix","est":"cons","epsGr":100,"iu":0.28,"ajPeg":0.47,"yahoo":"000660.KS"},{"t":"AIXA","n":"Aixtron","est":"cons","epsGr":55,"iu":0.82,"ajPeg":0.49,"yahoo":"AIXA.DE"},{"t":"IFX","n":"Infineon","est":"cons","epsGr":45,"iu":0.81,"ajPeg":0.5,"yahoo":"IFX.DE"},{"t":"XIACF","n":"Xiaomi","est":"cons","epsGr":30,"iu":0.02,"ajPeg":3.86,"yahoo":"XIACF"}];
+
+const C={
+  MU:{"eps":90,"peL":8,"peM":10.5,"peH":13,"tgt":1307,"bL":811,"bM":988,"bH":1165},
+  SNDK:{"eps":52,"peL":22,"peM":28,"peH":34,"tgt":2219,"bL":1174,"bM":1702,"bH":2231},
+  LITE:{"eps":23.29,"peL":30,"peM":42,"peH":54,"tgt":1695,"bL":733,"bM":895,"bH":1057},
+  ORCL:{"eps":8.3,"peL":14,"peM":17,"peH":22,"tgt":199,"bL":96,"bM":148,"bH":199},
+  META:{"eps":30.5,"peL":16,"peM":19,"peH":22,"tgt":718,"bL":545,"bM":598,"bH":652},
+  NVDA:{"eps":16.16,"peL":18,"peM":24,"peH":28,"tgt":369,"bL":205,"bM":221,"bH":238},
+  UBER:{"eps":3.69,"peL":18,"peM":21,"peH":24,"tgt":78,"bL":69,"bM":73.4,"bH":77.9},
+  TSLA:{"eps":4.8,"peL":50,"peM":65,"peH":80,"tgt":852,"bL":332,"bM":407,"bH":483},
+  AMZN:{"eps":7.8,"peL":28,"peM":34,"peH":40,"tgt":322,"bL":238,"bM":256,"bH":275},
+  TSM:{"eps":22.5,"peL":16,"peM":20,"peH":25,"tgt":551,"bL":399,"bM":434,"bH":470},
+  PLTR:{"eps":2.46,"peL":50,"peM":70,"peH":90,"tgt":221,"bL":115,"bM":145,"bH":175},
+  AMD:{"eps":11.82,"peL":30,"peM":40,"peH":52,"tgt":902,"bL":479,"bM":561,"bH":643},
+  ASML:{"eps":53,"peL":28,"peM":34,"peH":40,"tgt":2079,"bL":1722,"bM":1888,"bH":2053},
+  INTC:{"eps":3.6,"peL":18,"peM":23,"peH":28,"tgt":176,"bL":82,"bM":112,"bH":142},
+  MRVL:{"eps":6.2,"peL":32,"peM":40,"peH":48,"tgt":386,"bL":166,"bM":240,"bH":315},
+  AMAT:{"eps":12.5,"peL":18,"peM":28,"peH":35,"tgt":741,"bL":450,"bM":555,"bH":659},
+  AVGO:{"eps":16,"peL":18,"peM":23,"peH":28,"tgt":493,"bL":358,"bM":408,"bH":459},
+  MSFT:{"eps":16.2,"peL":28,"peM":31,"peH":35,"tgt":488,"bL":338,"bM":409,"bH":479},
+  AAPL:{"eps":8.8,"peL":28,"peM":32,"peH":36,"tgt":344,"bL":292,"bM":313,"bH":333},
+  GOOGL:{"eps":11.5,"peL":18,"peM":22,"peH":26,"tgt":433,"bL":337,"bM":361,"bH":384},
+  COHR:{"eps":16.38,"peL":18,"peM":24,"peH":30,"tgt":515,"bL":244,"bM":341,"bH":439},
+  SSNLF:{"eps":5.5,"peL":6,"peM":9,"peH":12,"tgt":null,"bL":35.3,"bM":48.7,"bH":61.8},
+  SKHYN:{"eps":45,"peL":5,"peM":8,"peH":11,"tgt":null,"bL":162,"bM":252,"bH":342},
+  AIXA:{"eps":2.8,"peL":18,"peM":28,"peH":38,"tgt":null,"bL":58,"bM":90,"bH":122},
+  IFX:{"eps":3.2,"peL":14,"peM":20,"peH":26,"tgt":null,"bL":40.2,"bM":54.6,"bH":69},
+  XIACF:{"eps":0.9,"peL":18,"peM":26,"peH":34,"tgt":null,"bL":5.7,"bM":6.7,"bH":7.7}
+};
+
+const DATES=["2026-08-03","2026-08-04","2026-08-05","2026-08-06","2026-08-07","2026-08-10","2026-08-11","2026-08-12","2026-08-13","2026-08-14","2026-08-17","2026-08-18","2026-08-19","2026-08-20","2026-08-21","2026-08-24","2026-08-25","2026-08-26"];
+const P={
+  MU:[829.5,892.67,893.19,881.47,877.57,861,868.52,911.29,949.83,971.66,1011.75,940.76,937.11,974.33,966.78,910.43,932.97,938.4],
+  SNDK:[1288.03,1427.62,1350.5,1258.58,1212.21,1237.92,1271.05,1344.29,1528.11,1641.11,1786.85,1625.78,1568.87,1600.62,1596.08,1493.12,1480.77,1499.37],
+  XPEV:[12.37,12.05,11.75,11.68,12.13,12,11.88,11.75,11.78,11.7,12.2,11.74,11.99,12,12.19,11.15,11.6,11.71],
+  LITE:[779.89,849.47,826.26,838.06,890.17,813.51,820.59,932.47,880.41,926.14,968.9,873.31,827.6,879.28,866.71,830.17,885.57,939.03],
+  ORCL:[141.85,145.74,144.39,143.47,147.02,151.05,145.48,153.28,156.22,150.52,146.65,142.79,143.81,142.07,146.47,142.45,144.76,148.87],
+  META:[590.24,587.94,588.77,589.9,592.1,594.92,599.12,578.85,594.97,589.85,568.97,543.67,546.03,545.83,549.9,559.02,570.05,576.14],
+  NVDA:[206.64,211.94,219.22,218.99,223.96,217.55,217.5,224.09,225.3,225.16,225.01,219.74,217.56,216.85,214.72,208.48,213.05,209.66],
+  UBER:[71.61,71.99,68.18,70.47,75.02,78.03,78.54,75.36,75.88,75.95,74.99,74.66,78.04,78.55,78.8,79.29,80.35,78.49],
+  TSLA:[322.08,327.35,321.55,319.53,328.58,330.88,332.81,327.51,339.96,342.27,339.3,336.87,351.12,345.13,362.86,348.95,350.25,345.82],
+  AMZN:[284.02,277.42,272.65,272.26,274.48,278.09,272.27,267.28,265.13,262.65,261.31,259.45,265.84,260.11,258.63,262.07,261.06,260.28],
+  TSM:[406.11,417.17,414,418.2,420.04,418.47,422.06,429.15,430.49,426.35,430.97,413.41,412.09,416,418.95,410.12,417.41,417.69],
+  PLTR:[125.65,162.66,158.43,155.92,172.01,175.23,174.94,171.04,179.01,174.04,172.55,171.54,175.19,173.96,179.94,175.89,172.73,177.5],
+  AMD:[484.64,518.58,482.05,489.28,483.36,469.56,474.32,482.93,483.01,514.39,506,484.39,466.42,469.46,473.25,456.75,479.18,480.93],
+  ASML:[1642.52,1711.89,1678.22,1704.37,1740.99,1733.48,1799.38,1810.07,1847.9,1844.08,1883.12,1802.98,1751.73,1750.31,1763.76,1740.13,1744.16,1745.64],
+  INTC:[91,100.86,101.06,99.81,101.65,97.52,97.71,100.95,104.56,102.5,103.49,96.69,92.8,92.13,90.07,87.26,87.48,88.24],
+  MRVL:[193.78,218.59,211.02,210.54,218.72,208.56,212.31,217.08,222.18,222.02,234.33,216,237.27,251.01,237.04,229.29,240.38,245.11],
+  AMAT:[518.21,546.62,534.24,527.48,539.14,522.12,525.61,548.15,534.54,507.18,535.31,514.33,496.17,496.21,492.32,484.19,480.04,479.76],
+  AVGO:[392.23,418.16,418.28,420.57,427.76,422.4,416.08,416.05,417.82,392.99,392.43,380,362.48,364.03,368.45,358.76,356.74,355.59],
+  RKLB:[70.43,74.48,74.82,75.67,82.83,80.04,80.01,81.17,80.1,80.25,82.08,79.16,75.84,72.95,72.57,68.28,66.91,66.18],
+  EOSE:[3.75,4.35,3.82,3.94,4.15,4.05,4.24,4.24,4.16,4.02,3.93,3.67,3.74,3.46,3.81,3.46,3.54,3.34],
+  MSFT:[487.65,492.81,487.46,499.86,499.99,506.06,503.81,492.43,496.88,495.4,480.35,481.63,484.31,481.15,483.24,487.31,491.71,496.37],
+  AAPL:[303.42,309.38,311,312.41,313.33,308.26,304.91,302.25,305.26,305.93,305.59,310.03,316.83,311.3,309.35,310.34,309.9,313.45],
+  GOOGL:[373.51,377.65,362.43,357.75,354.3,357.52,343.8,343.54,346.36,345.9,344,344.2,344.72,340.67,344.82,348.06,346.96,342],
+  COHR:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,265,270,275.49],
+  SSNLF:[42,43.5,43.2,44,43.8,44.5,45,44.8,45.2,45.5,46,44.5,43.8,44.2,44.5,43.8,44,44.5],
+  SKHYN:[195,202,198,200,205,208,210,206,212,215,218,210,205,208,210,205,208,212],
+  AIXA:[68,72,70,71,73,75,74,76,78,76,80,75,72,74,73,70,72,74],
+  IFX:[42,44,43.5,44.2,45,44,43.5,45,46,45.5,46.5,44,42.5,43,42.8,41.5,42,43],
+  XIACF:[6.8,7,6.9,7.1,7.2,7.3,7.1,7.4,7.5,7.3,7.6,7.2,7,7.1,7.2,7,7.1,7.3]
+};
+
+// Signal tracker corridor extra data (memo, src, ajVsCons, etc.)
+const CORR_META={
+  NVDA:{"memo":"High Conviction Long","src":"Portal Aug 27","ajVsCons":"+23%","consEps":13.13,"fcastErr":"0.5%"},
+  MU:{"memo":"Added Meaningfully","src":"X Aug 28","ajVsCons":"+8%","consEps":83,"fcastErr":"—"},
+  COHR:{"memo":"Initiate Long","src":"Portal Aug 25","ajVsCons":"+17%","consEps":13.95,"fcastErr":"—"},
+  MRVL:{"memo":"Hold · Accumulate $166","src":"Portal Aug 28","ajVsCons":"+15%","consEps":5.4,"fcastErr":"0%"},
+  ASML:{"memo":"Added More","src":"X Aug 29","ajVsCons":"—","fcastErr":"—"},
+  AMD:{"memo":"Added More","src":"X Aug 29","ajVsCons":"—","fcastErr":"—"},
+  AMAT:{"memo":"New Position $466","src":"X Aug 29","ajVsCons":"+5%","fcastErr":"—"},
+  TSM:{"memo":"BUY","src":"Corridor","ajVsCons":"+5%","fcastErr":"—"},
+  META:{"memo":"Swing Trade","src":"X Aug 29","ajVsCons":"+5%","fcastErr":"—"},
+  INTC:{"memo":"BUY","src":"Cockpit","ajVsCons":"+5%","fcastErr":"—"},
+  PLTR:{"memo":"TRIM in $140s","src":"Portal","ajVsCons":"—","fcastErr":"—"},
+  UBER:{"memo":"Downside+Expensive","src":"Cockpit","ajVsCons":"—","fcastErr":"—"},
+  MSFT:{"memo":"Downside+Expensive","src":"Cockpit","ajVsCons":"+3%","fcastErr":"—"},
+  AAPL:{"memo":"Most Expensive Growth","src":"Corridor","ajVsCons":"+3%","fcastErr":"—"},
+  GOOGL:{"memo":"HOLD","src":"Corridor","ajVsCons":"+3%","fcastErr":"—"},
+  AVGO:{"memo":"EXITED at $428","src":"X","ajVsCons":"—","fcastErr":"—"},
+  TSLA:{"memo":"BUY · Corridor unreliable","src":"Corridor","ajVsCons":"+10%","fcastErr":"—"},
+  AMZN:{"memo":"BUY","src":"Corridor","ajVsCons":"+5%","fcastErr":"—"},
+  XPEV:{"memo":"Constructive · 4x GP","src":"Portal Aug 24","ajVsCons":"-91%","fcastErr":"—"}
+};
+
+// Daily snapshots
+const SNAP_DATES=["Aug 14","Aug 17","Aug 18","Aug 19","Aug 20","Aug 21","Aug 24","Aug 25","Aug 26","Aug 28"];
+const SNAP={
+  NVDA:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  MU:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  ASML:["UE","UE","UE","UE","UE","UE","UE","UE","UE","UE"],
+  AMD:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  TSM:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  AMAT:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  COHR:["—","—","—","—","—","—","—","UI","UI","UI"],
+  INTC:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  MRVL:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  META:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  PLTR:["UE","UE","UE","UE","UE","UE","UE","UE","UE","UE"],
+  GOOGL:["UE","UE","UE","UE","UE","UE","UE","UE","UE","UE"],
+  AMZN:["UE","UE","UE","UE","UE","UE","UE","UE","UE","UE"],
+  AAPL:["UE","UE","UE","UE","UE","UE","UE","UE","UE","UE"],
+  TSLA:["UE","UE","UE","UE","UE","UE","UE","UE","UE","UE"],
+  UBER:["UE","UE","UE","UE","UE","UE","DE","DE","DE","DE"],
+  MSFT:["DE","DE","DE","DE","DE","DE","DE","DE","DE","DE"],
+  AVGO:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  XPEV:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  SNDK:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  LITE:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  ORCL:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  SSNLF:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  SKHYN:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  AIXA:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  IFX:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  XIACF:["UE","UE","UE","UE","UE","UE","UE","UE","UE","UE"],
+  RKLB:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"],
+  EOSE:["UI","UI","UI","UI","UI","UI","UI","UI","UI","UI"]
+};
+
+let curIdx=DATES.length-1, showGhost=true, curCkView='scatter';
+
+// ═══ TAB SWITCHING ═══
+function switchTab(id,btn){
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+  if(id==='cockpit')renderCk();
+}
+function switchCkView(v,btn){
+  curCkView=v;
+  document.querySelectorAll('.ck-t').forEach(t=>t.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  document.querySelectorAll('.ck-view').forEach(el=>el.classList.remove('show'));
+  var map={scatter:'vScatter',cards:'vCards',bars:'vBars',snap:'vSnap'};
+  document.getElementById(map[v]).classList.add('show');
+  document.getElementById('ckTimeline').style.display=(v==='snap')?'none':'';
+  renderCk();
+}
+
+// ═══ DATA HELPERS ═══
+function pr(t,i){return P[t]?P[t][i]:null;}
+function fmtD(d){return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function fmtS(d){return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+
+function calc(s,idx){
+  var p=pr(s.t,idx);if(!p)return null;
+  var c=C[s.t];if(!c||!c.eps)return null;
+  var cL=c.bL||(c.eps*c.peL),cM=c.bM||(c.eps*c.peM),cH=c.bH||(c.eps*c.peH);
+  var fpe=p/c.eps;
+  var corrPos=(p-cL)/(cH-cL);
+  var prev=idx>0?pr(s.t,idx-1):null;
+  var chg=prev?((p-prev)/prev*100):null;
+  var upside=(s.iu!=null)?s.iu:((c.tgt||cH)-p)/p;
+  var peg=(s.ajPeg!=null)?s.ajPeg:(s.epsGr?(fpe/s.epsGr):null);
+  var tgt=(s.iu!=null)?p*(1+s.iu):(c.tgt||cH);
+  var quad='OOS';
+  if(peg!==null){
+    if(upside>0&&peg<=1)quad='UI';
+    else if(upside>0&&peg>1)quad='UE';
+    else if(upside<=0&&peg<=1)quad='DI';
+    else quad='DE';
+  }
+  return{t:s.t,n:s.n,est:s.est,p:p,fpe:fpe,peg:peg,upside:upside,chg:chg,quad:quad,corrPos:corrPos,tgt:tgt,cL:cL,cM:cM,cH:cH};
+}
+
+// ═══ COCKPIT SCATTER ═══
+var PAD={t:45,r:25,b:45,l:50};
+var CW2=900,CH2=580,CWi=CW2-PAD.l-PAD.r,CHi=CH2-PAD.t-PAD.b;
+var X_MIN=-0.25,X_MAX=1.8,Y_MIN=0,Y_MAX=4.2;
+function toX(u){return PAD.l+((u-X_MIN)/(X_MAX-X_MIN))*CWi;}
+function toY(p){return PAD.t+((p-Y_MIN)/(Y_MAX-Y_MIN))*CHi;}
+
+function drawCockpit(){
+  var canvas=document.getElementById('ckChart');
+  var ctx=canvas.getContext('2d');
+  var dpr=window.devicePixelRatio||1;
+  canvas.width=CW2*dpr;canvas.height=CH2*dpr;
+  canvas.style.width=CW2+'px';canvas.style.height=CH2+'px';
+  ctx.scale(dpr,dpr);
+  var cs=getComputedStyle(document.body).backgroundColor.match(/\d+/g);
+  var dark=cs?parseInt(cs[0])<80:true;
+  var bgc=dark?'#181b24':'#fff';
+  var bdr=dark?'#252f45':'#d1d5db';
+  var txtm=dark?'#6e7a91':'#6b7280';
+  var txth=dark?'#e2e8f3':'#111827';
+  ctx.fillStyle=bgc;ctx.fillRect(0,0,CW2,CH2);
+  var xZ=toX(0),y1=toY(1);
+  ctx.fillStyle=dark?'rgba(34,197,94,0.04)':'rgba(34,197,94,0.06)';ctx.fillRect(xZ,PAD.t,PAD.l+CWi-xZ,y1-PAD.t);
+  ctx.fillStyle=dark?'rgba(234,179,8,0.03)':'rgba(234,179,8,0.05)';ctx.fillRect(xZ,y1,PAD.l+CWi-xZ,PAD.t+CHi-y1);
+  ctx.fillStyle=dark?'rgba(100,116,139,0.03)':'rgba(100,116,139,0.04)';ctx.fillRect(PAD.l,PAD.t,xZ-PAD.l,y1-PAD.t);
+  ctx.fillStyle=dark?'rgba(239,68,68,0.03)':'rgba(239,68,68,0.04)';ctx.fillRect(PAD.l,y1,xZ-PAD.l,PAD.t+CHi-y1);
+  ctx.strokeStyle=bdr;ctx.lineWidth=0.5;ctx.setLineDash([4,4]);
+  for(var p2=0;p2<=4;p2+=0.5){var yy=toY(p2);ctx.beginPath();ctx.moveTo(PAD.l,yy);ctx.lineTo(PAD.l+CWi,yy);ctx.stroke();}
+  for(var u=-0.2;u<=1.8;u+=0.25){var xx=toX(u);ctx.beginPath();ctx.moveTo(xx,PAD.t);ctx.lineTo(xx,PAD.t+CHi);ctx.stroke();}
+  ctx.setLineDash([]);
+  ctx.strokeStyle='rgba(239,68,68,0.3)';ctx.lineWidth=1;ctx.setLineDash([6,4]);
+  ctx.beginPath();ctx.moveTo(xZ,PAD.t);ctx.lineTo(xZ,PAD.t+CHi);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(PAD.l,y1);ctx.lineTo(PAD.l+CWi,y1);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle=txtm;ctx.font='10px IBM Plex Mono';ctx.textAlign='center';
+  for(var u2=-0.2;u2<=1.6;u2+=0.25)ctx.fillText((u2>=0?'+':'')+Math.round(u2*100)+'%',toX(u2),PAD.t+CHi+14);
+  ctx.fillText('Implied Upside/Downside',PAD.l+CWi/2,CH2-6);
+  ctx.textAlign='right';
+  for(var p3=0;p3<=4;p3+=0.5)ctx.fillText(p3.toFixed(1),PAD.l-6,toY(p3)+4);
+  ctx.save();ctx.translate(10,PAD.t+CHi/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillText('PEG Ratio',0,0);ctx.restore();
+  ctx.font='9px IBM Plex Mono';ctx.fillStyle=txtm;ctx.textAlign='left';
+  ctx.fillText('▲ Inexpensive',PAD.l+6,PAD.t+14);
+  ctx.textAlign='right';ctx.fillText('Upside ▸',PAD.l+CWi-6,toY(1)-6);
+  ctx.textAlign='left';ctx.fillText('◂ Downside',PAD.l+6,toY(1)-6);
+  ctx.fillText('▼ Expensive',PAD.l+6,PAD.t+CHi-6);
+  var cur=[],prev=[];
+  STOCKS.forEach(function(s){
+    var c2=calc(s,curIdx);if(c2&&c2.peg!==null)cur.push(c2);
+    if(showGhost&&curIdx>0){var p4=calc(s,curIdx-1);if(p4&&p4.peg!==null)prev.push(p4);}
+  });
+  if(showGhost)prev.forEach(function(d){
+    var x=toX(d.upside),y=toY(d.peg);
+    if(x<PAD.l||x>PAD.l+CWi||y<PAD.t||y>PAD.t+CHi)return;
+    ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.fillStyle='rgba(107,114,128,0.15)';ctx.fill();
+  });
+  cur.sort(function(a,b){return b.peg-a.peg;});
+  cur.forEach(function(d){
+    var x=toX(d.upside),y=toY(d.peg);
+    var cx=Math.max(PAD.l+10,Math.min(PAD.l+CWi-10,x));
+    var cy=Math.max(PAD.t+10,Math.min(PAD.t+CHi-10,y));
+    var col=d.quad==='UI'?'#e8622c':d.quad==='UE'?'#2bb5a0':d.quad==='DE'?'#8b95a5':'#5b9bd5';
+    ctx.beginPath();ctx.arc(cx,cy,10,0,Math.PI*2);
+    ctx.fillStyle=col;ctx.globalAlpha=0.9;ctx.fill();ctx.globalAlpha=1;
+    ctx.strokeStyle=dark?'rgba(255,255,255,0.15)':'rgba(0,0,0,0.1)';ctx.lineWidth=1;ctx.stroke();
+    ctx.fillStyle=txth;ctx.font='600 9px IBM Plex Sans';ctx.textAlign='center';
+    ctx.fillText(d.n,cx,cy-14);
+  });
+  canvas._dots=cur.map(function(d){return Object.assign({},d,{cx:Math.max(PAD.l,Math.min(PAD.l+CWi,toX(d.upside))),cy:Math.max(PAD.t,Math.min(PAD.t+CHi,toY(d.peg)))});});
+  updateSidebar(cur);
+}
+
+function updateSidebar(cur){
+  var sb=document.getElementById('sidebar');
+  var quads={UI:[],UE:[],DI:[],DE:[],OOS:[]};
+  cur.forEach(function(d){quads[d.quad].push(d);});
+  STOCKS.forEach(function(s){if(!cur.find(function(c){return c.t===s.t;}))quads.OOS.push({t:s.t,n:s.n});});
+  var qM={UI:{t:'Upside – Inexpensive',c:'#e8622c'},UE:{t:'Upside – Expensive',c:'#2bb5a0'},DI:{t:'Downside – Inexpensive',c:'#5b9bd5'},DE:{t:'Downside – Expensive',c:'#8b95a5'},OOS:{t:'Out of scope',c:'var(--text-m)'}};
+  var h='';
+  ['UI','UE','DI','DE','OOS'].forEach(function(q){
+    var m=qM[q],items=quads[q];
+    h+='<div class="qb" style="border-left:3px solid '+m.c+'"><div class="qb-h"><span class="qb-tt" style="color:'+m.c+'">'+m.t+'</span><span class="qb-c">'+items.length+'</span></div><div class="qb-chips">'+items.map(function(d){return '<span class="qb-chip">'+(d.n||d.t)+'</span>';}).join('')+'</div></div>';
+  });
+  sb.innerHTML=h;
+}
+
+// ═══ CORRIDORS GRID ═══
+function drawCorridors(){
+  var grid=document.getElementById('corrGrid');
+  var all=[];
+  STOCKS.forEach(function(s){
+    var c=C[s.t];if(!c)return;
+    var p=pr(s.t,curIdx);if(!p)return;
+    var cL=c.bL||(c.eps*c.peL),cM=c.bM||(c.eps*c.peM),cH=c.bH||(c.eps*c.peH);
+    var tgt=(s.iu!=null)?p*(1+s.iu):(c.tgt||cH);
+    var upside=(s.iu!=null)?s.iu:((tgt-p)/p);
+    all.push(Object.assign({},s,{p:p,cL:cL,cM:cM,cH:cH,tgt:tgt,upside:upside,fpe:p/c.eps}));
+  });
+  all.sort(function(a,b){return b.upside-a.upside;});
+  var h='';
+  all.forEach(function(s,i){
+    var rank=i+1;
+    var rankCls=rank<=8?'top':rank<=18?'mid':'low';
+    var up=s.upside*100;
+    var upCls=up>=0?'pos':'neg';
+    var upStr=up>=0?'▲ '+Math.round(up)+'%':'▼ '+Math.round(Math.abs(up))+'%';
+    var estCls=s.est==='aj'?'aj':'cons';
+    var estLbl=s.est==='aj'?'AJ Est':'Cons Est';
+    var cur2=s.p>=1000?'$'+s.p.toLocaleString(undefined,{maximumFractionDigits:0}):'$'+s.p.toFixed(0);
+    var tgtP=s.tgt>=1000?'$'+s.tgt.toLocaleString(undefined,{maximumFractionDigits:0}):'$'+s.tgt.toFixed(0);
+    h+='<div class="cc"><div><span class="cc-name">'+s.n+'</span><div class="cc-tick">'+s.t+'</div></div><div><span class="cc-rank '+rankCls+'">'+rank+'</span></div><div class="cc-tgt"><div class="cc-tgt-d">27 August 2027</div><div><span class="cc-tgt-p">'+tgtP+'</span><span class="cc-tgt-u '+upCls+'">'+upStr+'</span></div><div class="cc-cur">Current: <b>'+cur2+'</b><span class="cc-est '+estCls+'">'+estLbl+'</span></div></div><div class="cc-spark"><canvas data-ticker="'+s.t+'" width="320" height="70"></canvas></div></div>';
+  });
+  grid.innerHTML=h;
+  requestAnimationFrame(function(){
+    grid.querySelectorAll('canvas[data-ticker]').forEach(function(cvs){drawSparkline(cvs,cvs.dataset.ticker);});
+  });
+}
+
+function drawSparkline(canvas,ticker){
+  var ctx=canvas.getContext('2d');
+  var dpr=window.devicePixelRatio||1;
+  var cw=320,ch=70;
+  canvas.width=cw*dpr;canvas.height=ch*dpr;
+  canvas.style.width=cw+'px';canvas.style.height=ch+'px';
+  ctx.scale(dpr,dpr);
+  var cs=getComputedStyle(document.body).backgroundColor.match(/\d+/g);
+  var dark=cs?parseInt(cs[0])<80:true;
+  var c=C[ticker];if(!c)return;
+  var cL=c.bL||(c.eps*c.peL),cM=c.bM||(c.eps*c.peM),cH=c.bH||(c.eps*c.peH);
+  var prices=[];
+  for(var i=0;i<=curIdx;i++){var p=pr(ticker,i);if(p!==null)prices.push({i:i,p:p});}
+  if(!prices.length)return;
+  var allVals=prices.map(function(p){return p.p;}).concat([cL,cM,cH]);
+  var mn=Math.min.apply(null,allVals)*0.96,mx=Math.max.apply(null,allVals)*1.04;
+  var pad2={l:2,r:2,t:4,b:4};
+  var pw=cw-pad2.l-pad2.r,ph=ch-pad2.t-pad2.b;
+  var yOf=function(v){return pad2.t+ph*(1-(v-mn)/(mx-mn));};
+  var xOf=function(i2,total){return pad2.l+(i2/(Math.max(total-1,1)))*pw;};
+  var yL=yOf(cL),yM=yOf(cM),yH=yOf(cH);
+  ctx.fillStyle=dark?'rgba(34,197,94,0.08)':'rgba(34,197,94,0.1)';ctx.fillRect(pad2.l,yM,pw,yL-yM);
+  ctx.fillStyle=dark?'rgba(239,68,68,0.06)':'rgba(239,68,68,0.08)';ctx.fillRect(pad2.l,pad2.t,pw,yH-pad2.t);
+  ctx.setLineDash([3,3]);ctx.lineWidth=1;
+  ctx.strokeStyle=dark?'rgba(34,197,94,0.5)':'rgba(22,163,74,0.5)';ctx.beginPath();ctx.moveTo(pad2.l,yL);ctx.lineTo(pad2.l+pw,yL);ctx.stroke();
+  ctx.strokeStyle=dark?'rgba(234,179,8,0.5)':'rgba(202,138,4,0.5)';ctx.beginPath();ctx.moveTo(pad2.l,yM);ctx.lineTo(pad2.l+pw,yM);ctx.stroke();
+  ctx.strokeStyle=dark?'rgba(249,115,22,0.5)':'rgba(234,88,12,0.5)';ctx.beginPath();ctx.moveTo(pad2.l,yH);ctx.lineTo(pad2.l+pw,yH);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.strokeStyle=dark?'#06b6d4':'#0891b2';ctx.lineWidth=1.5;ctx.beginPath();
+  prices.forEach(function(pt,j){var x=xOf(j,prices.length),y=yOf(pt.p);j===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.stroke();
+  if(prices.length){var last=prices[prices.length-1];var lx=xOf(prices.length-1,prices.length),ly=yOf(last.p);ctx.beginPath();ctx.arc(lx,ly,3,0,Math.PI*2);ctx.fillStyle=dark?'#06b6d4':'#0891b2';ctx.fill();}
+  var s2=STOCKS.find(function(s){return s.t===ticker;});
+  ctx.fillStyle=dark?'rgba(249,115,22,0.15)':'rgba(234,88,12,0.12)';ctx.font='bold 10px IBM Plex Sans';ctx.textAlign='right';ctx.fillText(s2?s2.n:ticker,cw-4,ch-4);
+}
+
+// ═══ CORRIDOR BARS (signal tracker style) ═══
+function drawCorrBars(){
+  var el=document.getElementById('corrBarsGrid');
+  var items=[];
+  STOCKS.forEach(function(s){
+    var c=C[s.t];if(!c||!c.eps)return;
+    var p=pr(s.t,curIdx);if(!p)return;
+    var low=c.bL||(c.eps*c.peL),mid=c.bM||(c.eps*c.peM),high=c.bH||(c.eps*c.peH);
+    var pos=Math.max(0,Math.min(1,(p-low)/(high-low)));
+    var midPos=(mid-low)/(high-low);
+    var tgt=(s.iu!=null)?p*(1+s.iu):(c.tgt||high);
+    var upside=(s.iu!=null)?(s.iu*100).toFixed(0):((tgt-p)/p*100).toFixed(0);
+    var entryClass=pos<0.45?'ce-a':pos<0.75?'ce-f':'ce-s';
+    var entryLabel=pos<0.45?'Attractive':pos<0.75?'Fair Value':'Stretched';
+    var fpe=(p/c.eps).toFixed(1);
+    var meta=CORR_META[s.t]||{};
+    var estBadge=s.est==='aj'?'<span style="font-family:var(--fm);font-size:7px;padding:1px 3px;border-radius:2px;background:var(--grn-d);color:var(--grn);letter-spacing:.04em">AJ EST</span>':'<span style="font-family:var(--fm);font-size:7px;padding:1px 3px;border-radius:2px;background:var(--blue-d);color:var(--blue);letter-spacing:.04em">CONS EST</span>';
+    items.push({s:s,p:p,low:low,mid:mid,high:high,pos:pos,midPos:midPos,tgt:tgt,upside:upside,entryClass:entryClass,entryLabel:entryLabel,fpe:fpe,meta:meta,estBadge:estBadge,posP:(pos*100).toFixed(0)});
+  });
+  items.sort(function(a,b){return a.pos-b.pos;});
+  var h='';
+  items.forEach(function(c){
+    h+='<div class="corr-card2"><div class="ch"><span class="ctk">'+c.s.t+'</span><span class="cn">'+c.s.n+'</span>'+c.estBadge+'<span class="ce '+c.entryClass+'">'+c.entryLabel+' · '+c.posP+'%</span>'+(c.s.t!=='XPEV'?'<span style="font-family:var(--fm);font-size:9px;color:var(--grn);margin-left:auto">↑'+c.upside+'%</span>':'')+'</div><div class="cb-w" style="margin-top:14px"><div class="cb-z cb-zg" style="left:0;width:'+c.midPos*100+'%"></div><div class="cb-z cb-zr" style="left:'+c.midPos*100+'%;width:'+(1-c.midPos)*100+'%"></div><div class="cb-mk cb-mk-m" style="left:'+c.midPos*100+'%"></div><div class="cb-mk cb-mk-p" style="left:'+c.pos*100+'%"></div><div class="cb-pl" style="left:'+c.pos*100+'%">$'+c.p.toLocaleString()+'</div><div style="position:absolute;bottom:-12px;left:0;font-family:var(--fm);font-size:7px;color:var(--text-m)">$'+Math.round(c.low).toLocaleString()+'</div><div style="position:absolute;bottom:-12px;left:'+c.midPos*100+'%;transform:translateX(-50%);font-family:var(--fm);font-size:7px;color:var(--amb)">$'+Math.round(c.mid).toLocaleString()+'</div><div style="position:absolute;bottom:-12px;right:0;font-family:var(--fm);font-size:7px;color:var(--text-m)">$'+Math.round(c.high).toLocaleString()+'</div></div><dl class="cb-meta"><div><dt>NTM EPS</dt><dd>$'+C[c.s.t].eps+'</dd></div><div><dt>Fwd P/E</dt><dd>'+c.fpe+'x</dd></div><div><dt>P/E Range</dt><dd>'+C[c.s.t].peL+'–'+C[c.s.t].peH+'x</dd></div>'+(c.meta.ajVsCons?'<div><dt>AJ vs Cons</dt><dd>'+c.meta.ajVsCons+'</dd></div>':'')+(c.meta.memo?'<div><dt>Signal</dt><dd>'+c.meta.memo+'</dd></div>':'')+'</dl></div>';
+  });
+  el.innerHTML=h;
+}
+
+// ═══ DAILY SNAPSHOTS ═══
+function renderSnapshots(){
+  var head=document.getElementById('snapHead');
+  var body=document.getElementById('snapBody');
+  if(!head||!body)return;
+  var hH='<th>Stock</th>';
+  SNAP_DATES.forEach(function(d,i){hH+='<th'+(i===SNAP_DATES.length-1?' style="color:var(--accent)"':'')+'>'+d+'</th>';});
+  head.innerHTML=hH;
+  var qDot={UI:'q-ui',UE:'q-ue',DI:'q-di',DE:'q-de'};
+  var qLabel={UI:'Upside+Inexp',UE:'Upside+Exp',DI:'Down+Inexp',DE:'Down+Exp'};
+  var bH='';
+  Object.keys(SNAP).forEach(function(ticker){
+    var days=SNAP[ticker];
+    bH+='<tr><td>'+ticker+'</td>';
+    days.forEach(function(q,i){
+      if(q==='—'){bH+='<td>—</td>';return;}
+      var changed=i>0&&days[i-1]!=='—'&&days[i-1]!==q;
+      bH+='<td title="'+(qLabel[q]||q)+'"><span class="q-dot '+(qDot[q]||'')+(changed?' q-changed':'')+'"></span></td>';
+    });
+    bH+='</tr>';
+  });
+  body.innerHTML=bH;
+}
+
+// ═══ STATS ═══
+function updateStats(){
+  var all=[];
+  STOCKS.forEach(function(s){var d=calc(s,curIdx);if(d)all.push(d);});
+  var ui=all.filter(function(d){return d.quad==='UI';}).length;
+  var ue=all.filter(function(d){return d.quad==='UE';}).length;
+  var de=all.filter(function(d){return d.quad==='DE';}).length;
+  var withPeg=all.filter(function(d){return d.peg!==null;});
+  var cheapest=withPeg.length?withPeg.reduce(function(a,b){return a.peg<b.peg?a:b;}):null;
+  var most=all.length?all.reduce(function(a,b){return a.upside>b.upside?a:b;}):null;
+  document.getElementById('statsRow').innerHTML='<div class="stt"><span class="stt-l">UI</span><span class="stt-v" style="color:var(--grn)">'+ui+'</span></div><div class="stt"><span class="stt-l">UE</span><span class="stt-v" style="color:var(--amb)">'+ue+'</span></div><div class="stt"><span class="stt-l">DE</span><span class="stt-v" style="color:var(--red)">'+de+'</span></div><div class="stt"><span class="stt-l">Cheapest PEG</span><span class="stt-v">'+(cheapest?cheapest.t+' '+cheapest.peg.toFixed(2):'—')+'</span></div><div class="stt"><span class="stt-l">Most Upside</span><span class="stt-v">'+(most?most.t+' +'+Math.round(most.upside*100)+'%':'—')+'</span></div><div class="stt"><span class="stt-l">Stocks</span><span class="stt-v">'+all.length+'</span></div><div class="stt"><span class="stt-l">Days</span><span class="stt-v">'+(curIdx+1)+'/'+DATES.length+'</span></div>';
+}
+
+// ═══ NAVIGATION ═══
+function buildChips(){
+  document.getElementById('tlChips').innerHTML=DATES.map(function(d,i){return '<span class="chip'+(i===curIdx?' on2':'')+'" onclick="goTo('+i+')">'+fmtS(d)+'</span>';}).join('');
+}
+function goTo(i){
+  curIdx=Math.max(0,Math.min(DATES.length-1,i));
+  document.getElementById('tlDate').textContent=fmtD(DATES[curIdx]);
+  document.getElementById('btnPrev').disabled=curIdx===0;
+  document.getElementById('btnNext').disabled=curIdx===DATES.length-1;
+  buildChips();renderCk();
+}
+function ckNav(d){goTo(curIdx+d);}
+function toggleGhost(){showGhost=!showGhost;document.getElementById('btnGhost').classList.toggle('on2',showGhost);renderCk();}
+
+function renderCk(){
+  updateStats();
+  if(curCkView==='scatter')drawCockpit();
+  else if(curCkView==='cards')drawCorridors();
+  else if(curCkView==='bars')drawCorrBars();
+  else if(curCkView==='snap')renderSnapshots();
+}
+
+// Tooltip
+document.getElementById('ckChart').addEventListener('mousemove',function(e){
+  var rect=this.getBoundingClientRect();
+  var mx=e.clientX-rect.left,my=e.clientY-rect.top;
+  var dots=this._dots||[];
+  var tt=document.getElementById('tooltip');
+  var hit=null;
+  for(var i=0;i<dots.length;i++)if(Math.hypot(dots[i].cx-mx,dots[i].cy-my)<14){hit=dots[i];break;}
+  if(hit){
+    tt.style.display='block';tt.style.left=(hit.cx+12)+'px';tt.style.top=(hit.cy-8)+'px';
+    var s=STOCKS.find(function(s){return s.t===hit.t;});
+    var eb=s&&s.est==='aj'?'AJ Est':'Cons Est';
+    tt.innerHTML='<b>'+hit.t+' — '+hit.n+'</b><div class="muted">'+eb+'</div><div>$'+hit.p.toLocaleString(undefined,{maximumFractionDigits:0})+' · Fwd P/E '+hit.fpe.toFixed(1)+'x</div><div>PEG: '+hit.peg.toFixed(2)+' · Upside: '+(hit.upside>=0?'+':'')+Math.round(hit.upside*100)+'%</div>'+(hit.chg!==null?'<div>Day Chg: '+(hit.chg>=0?'+':'')+hit.chg.toFixed(1)+'%</div>':'');
+  }else tt.style.display='none';
+});
+
+document.addEventListener('keydown',function(e){
+  if(document.getElementById('tab-cockpit').classList.contains('on')){
+    if(e.key==='ArrowLeft')ckNav(-1);if(e.key==='ArrowRight')ckNav(1);
+  }
+});
+
+// Init
+document.getElementById('btnGhost').classList.add('on2');
+goTo(DATES.length-1);
+renderSnapshots();
+</script>
+
+</body></html>
