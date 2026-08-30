@@ -89,38 +89,68 @@ async function main() {
   const detailsBtn = await page.$('text=Details');
   if (detailsBtn) {
     await detailsBtn.click();
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(2500);
   }
 
-  // Extract the corridor band table
+  // Extract corridor bands. AJ's Details view is a scrollable table:
+  // rows include "NTM EPS", "-1.5σ P/E", "-1σ P/E", "Median P/E", "+1σ P/E", "+1.5σ P/E"
+  // (and their implied share prices), columns are ticker symbols.
+  // We try several table shapes and log what we found so selectors can be tuned.
   const corridorData = await page.evaluate(() => {
-    const tables = document.querySelectorAll('table');
-    const result = [];
-    tables.forEach(table => {
-      const headers = [...table.querySelectorAll('th')].map(th => th.textContent?.trim());
-      const rows = [...table.querySelectorAll('tbody tr')].map(tr =>
-        [...tr.querySelectorAll('td')].map(td => td.textContent?.trim())
+    const norm = s => (s || '').replace(/\s+/g, ' ').trim();
+    const num = s => {
+      if (!s) return null;
+      const m = String(s).replace(/[,\s$€£¥₩]/g, '').match(/-?\d+(\.\d+)?/);
+      return m ? parseFloat(m[0]) : null;
+    };
+    const tables = [...document.querySelectorAll('table')];
+    const raw = [];
+    const details = {}; // ticker → { eps, peBands, priceBands }
+
+    // Row-label patterns for the 5 σ-bands plus median plus NTM EPS
+    const labelMap = [
+      { key: 'eps',      re: /^ntm\s*eps$/i },
+      { key: 'pe_m15',   re: /-\s*1\.5\s*(σ|sigma|std).*(p\/?e|multiple)/i },
+      { key: 'pe_m10',   re: /-\s*1(?![.\d])\s*(σ|sigma|std).*(p\/?e|multiple)/i },
+      { key: 'pe_med',   re: /median.*(p\/?e|multiple)/i },
+      { key: 'pe_p10',   re: /\+?\s*1(?![.\d])\s*(σ|sigma|std).*(p\/?e|multiple)/i },
+      { key: 'pe_p15',   re: /\+?\s*1\.5\s*(σ|sigma|std).*(p\/?e|multiple)/i },
+      { key: 'price_m15', re: /-\s*1\.5\s*(σ|sigma|std).*(price|share)/i },
+      { key: 'price_m10', re: /-\s*1(?![.\d])\s*(σ|sigma|std).*(price|share)/i },
+      { key: 'price_med', re: /median.*(price|share)/i },
+      { key: 'price_p10', re: /\+?\s*1(?![.\d])\s*(σ|sigma|std).*(price|share)/i },
+      { key: 'price_p15', re: /\+?\s*1\.5\s*(σ|sigma|std).*(price|share)/i }
+    ];
+
+    tables.forEach((table, tIdx) => {
+      const headerCells = [...table.querySelectorAll('thead th, thead td')].map(c => norm(c.textContent));
+      const bodyRows = [...table.querySelectorAll('tbody tr')].map(tr =>
+        [...tr.querySelectorAll('td, th')].map(td => norm(td.textContent))
       );
-      if (headers.length > 5) {
-        result.push({ headers, rows });
+      raw.push({ tableIdx: tIdx, headers: headerCells, rowCount: bodyRows.length, sampleRow: bodyRows[0]?.slice(0, 8) });
+      // If headers look like tickers, treat this as a per-ticker table
+      const tickers = headerCells.slice(1).filter(h => /^[A-Z][A-Z0-9.]{0,6}$/.test(h));
+      if (tickers.length >= 5) {
+        // Each row is a metric across all tickers
+        bodyRows.forEach(row => {
+          if (row.length < headerCells.length) return;
+          const label = row[0];
+          const match = labelMap.find(m => m.re.test(label));
+          if (!match) return;
+          headerCells.slice(1).forEach((tick, i) => {
+            if (!/^[A-Z][A-Z0-9.]{0,6}$/.test(tick)) return;
+            const val = num(row[i + 1]);
+            if (val == null) return;
+            details[tick] = details[tick] || { eps: null, peBands: {}, priceBands: {} };
+            if (match.key === 'eps') details[tick].eps = val;
+            else if (match.key.startsWith('pe_')) details[tick].peBands[match.key.slice(3)] = val;
+            else if (match.key.startsWith('price_')) details[tick].priceBands[match.key.slice(6)] = val;
+          });
+        });
       }
     });
 
-    // Also try reading from the rendered chart/data layer
-    // The Details view has a table with columns per stock
-    // Try to find it by looking for elements with price-like content
-    const allText = document.body.innerText;
-    const currencies = [];
-    const priceRows = {};
-
-    // Look for the "Corridor Bands Implied Share Prices" section
-    const section = document.querySelector('[class*="corridor"], [id*="corridor"]');
-    if (section) {
-      const sectionText = section.innerText;
-      result.push({ type: 'corridor-section', text: sectionText.substring(0, 2000) });
-    }
-
-    return result;
+    return { raw, details, tickerCount: Object.keys(details).length };
   });
 
   // Step 4: Scrape the Dashboard page for 90-day targets
@@ -144,7 +174,7 @@ async function main() {
     return { tableCount: result.length, tables: result, textPreview: text.substring(0, 3000) };
   });
 
-  // Step 5: Take screenshots for reference
+  // Step 5: Take screenshots for reference (Overview + Details)
   console.log('Taking screenshots...');
   await page.goto(config.aj.cockpitUrl, { waitUntil: 'networkidle' });
   await page.waitForTimeout(2000);
@@ -153,22 +183,41 @@ async function main() {
   if (detailsBtn) {
     const detBtn2 = await page.$('text=Details');
     if (detBtn2) await detBtn2.click();
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(2500);
     await page.screenshot({ path: join(__dir, 'data', 'aj-details-screenshot.png'), fullPage: true });
   }
 
   await browser.close();
 
-  // Write raw scraped data
-  const output = {
+  // Write raw scraped payload (for debugging + audit)
+  const rawOutput = {
     cockpit: cockpitData,
     corridors: corridorData,
     dashboard: dashboardData,
     scrapedAt: new Date().toISOString()
   };
-  writeFileSync(join(__dir, 'data', 'aj-raw.json'), JSON.stringify(output, null, 2));
+  writeFileSync(join(__dir, 'data', 'aj-raw.json'), JSON.stringify(rawOutput, null, 2));
+
+  // Write structured Details data (5-band multiples + EPS per ticker) if we got it
+  const stocks = corridorData?.details || {};
+  const tickers = Object.keys(stocks);
+  if (tickers.length > 0) {
+    const detailsOutput = {
+      scrapedAt: new Date().toISOString(),
+      date: new Date().toISOString().split('T')[0],
+      tickerCount: tickers.length,
+      stocks
+    };
+    writeFileSync(join(__dir, 'data', 'aj-details.json'), JSON.stringify(detailsOutput, null, 2));
+    console.log(`\n✓ Wrote pipeline/data/aj-details.json: ${tickers.length} tickers with 5-band multiples`);
+    console.log(`  Tickers found: ${tickers.slice(0, 10).join(', ')}${tickers.length > 10 ? '…' : ''}`);
+  } else {
+    console.log(`\n⚠ Details table not extracted — selectors may need tuning.`);
+    console.log(`  Inspect pipeline/data/aj-raw.json ("corridors.raw") to see actual table shapes.`);
+    console.log(`  Screenshot: pipeline/data/aj-details-screenshot.png`);
+  }
+
   console.log(`\n✓ Wrote pipeline/data/aj-raw.json`);
-  console.log('  Review the raw data and update config.json corridor/cockpit values as needed.');
   console.log('  Screenshots saved to pipeline/data/aj-*-screenshot.png');
 }
 
