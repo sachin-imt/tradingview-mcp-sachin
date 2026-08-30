@@ -224,6 +224,14 @@ canvas#ckChart{display:block;width:100%;height:auto}
 .cc-est.aj{background:var(--grn-d);color:var(--grn)}
 .cc-est.cons{background:var(--blue-d);color:var(--blue)}
 .cc-spark canvas{display:block;width:100%;height:120px;border-radius:4px}
+.corr-legend{background:linear-gradient(180deg,#1e2745 0%,#242e50 100%);border:1px solid #2a3444;border-radius:6px;padding:10px 14px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;color:#e6ebf5;font-family:var(--fu);font-size:11px;line-height:1.4}
+.corr-legend .cl-title{font-family:var(--fm);font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#a8b3d1;margin-right:4px;width:100%;margin-bottom:2px}
+.corr-legend .cl-key{display:flex;align-items:center;gap:6px}
+.corr-legend .cl-swatch{width:20px;height:8px;border-radius:2px;display:inline-block;flex-shrink:0}
+.corr-legend .cl-swatch.cl-dash{height:0;width:24px;border-radius:0}
+.corr-legend .cl-swatch.cl-dashline{width:24px;height:0;border-top:2px dashed rgba(220,220,230,0.7)}
+.corr-legend .cl-lbl{font-size:11px}
+.corr-legend .cl-lbl b{font-weight:700}
 
 .ck-view{display:none}.ck-view.show{display:block}
 
@@ -428,6 +436,14 @@ canvas#ckChart{display:block;width:100%;height:auto}
 
     <!-- CORRIDORS CARDS -->
     <div class="ck-view" id="vCards">
+      <div class="corr-legend">
+        <div class="cl-title">Share Price Corridor — how to read</div>
+        <div class="cl-key"><span class="cl-swatch" style="background:#5b8def"></span><span class="cl-lbl">Blue line = actual share price</span></div>
+        <div class="cl-key"><span class="cl-swatch cl-dash" style="background:transparent;border-top:2px solid #ee5a3a"></span><span class="cl-lbl"><b>Red</b> outer bands = ±1.5σ (rarely-seen extremes)</span></div>
+        <div class="cl-key"><span class="cl-swatch cl-dash" style="background:transparent;border-top:2px solid #7ab88f"></span><span class="cl-lbl"><b>Green</b> inner bands = ±1σ (normal range)</span></div>
+        <div class="cl-key"><span class="cl-swatch cl-dashline"></span><span class="cl-lbl">Dashed white = median (fair value)</span></div>
+        <div class="cl-key"><span class="cl-lbl" style="color:var(--text-m)">Rule: buy near red-low, trim near red-high. Bands = NTM EPS × historical P/E range × FX.</span></div>
+      </div>
       <div class="corr-hdr"><span>Company</span><span>Rank</span><span>1-Year Target Price</span><span>Share Price Corridor</span></div>
       <div class="corr-grid2" id="corrGrid"></div>
     </div>
@@ -840,15 +856,43 @@ function drawSparkline(canvas,ticker){
   drawBand('m10',flat_m10,'#7ab88f',false);
   drawBand('m15',flat_m15,'#ee5a3a',false);
   ctx.setLineDash([]);
+  // σ labels on right edge — small, aligned to the last visible band value
+  var lastPi=prices[prices.length-1].i;
+  var lastVals={};
+  ['m15','m10','med','p10','p15'].forEach(function(bk){
+    var v=hasBANDS?bandSeries[bk][lastPi]:({m15:flat_m15,m10:flat_m10,med:flat_med,p10:flat_p10,p15:flat_p15}[bk]);
+    if(v==null)return;
+    lastVals[bk]=v;
+  });
+  ctx.font='600 8px IBM Plex Mono';ctx.textAlign='left';ctx.textBaseline='middle';
+  var labelMap={p15:{t:'+1.5σ',c:'#ee5a3a'},p10:{t:'+1σ',c:'#7ab88f'},med:{t:'MED',c:'rgba(220,220,230,0.75)'},m10:{t:'-1σ',c:'#7ab88f'},m15:{t:'-1.5σ',c:'#ee5a3a'}};
+  Object.keys(lastVals).forEach(function(bk){
+    var y=yOf(lastVals[bk]);
+    // background pill for legibility
+    ctx.fillStyle='rgba(30,39,69,0.85)';
+    var lbl=labelMap[bk].t;
+    var w=ctx.measureText(lbl).width;
+    ctx.fillRect(cw-w-6,y-6,w+4,12);
+    ctx.fillStyle=labelMap[bk].c;
+    ctx.fillText(lbl,cw-w-4,y);
+  });
+  ctx.textBaseline='alphabetic';
   // Price line (blue like AJ)
   ctx.strokeStyle='#5b8def';ctx.lineWidth=1.5;ctx.beginPath();
   prices.forEach(function(pt,j){var x=xOf(j,prices.length),y=yOf(pt.p);j===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
   ctx.stroke();
   // Endpoint dot
   if(prices.length){var last=prices[prices.length-1];var lx=xOf(prices.length-1,prices.length),ly=yOf(last.p);ctx.beginPath();ctx.arc(lx,ly,3,0,Math.PI*2);ctx.fillStyle='#5b8def';ctx.fill();}
-  // Stock name watermark (subtle, bottom-right like AJ)
+  // Stock name watermark (subtle, bottom-left so it doesn't collide with σ labels)
   var s2=STOCKS.find(function(s){return s.t===ticker;});
-  ctx.fillStyle='rgba(238,90,58,0.35)';ctx.font='italic bold 13px IBM Plex Sans';ctx.textAlign='right';ctx.fillText(s2?s2.n:ticker,cw-8,ch-8);
+  ctx.fillStyle='rgba(238,90,58,0.3)';ctx.font='italic bold 11px IBM Plex Sans';ctx.textAlign='left';ctx.fillText(s2?s2.n:ticker,10,ch-8);
+  // Tooltip with all 5 current band values for hover
+  var fmt=function(v){return v>=1000?'$'+Math.round(v).toLocaleString():'$'+v.toFixed(2);};
+  var lastP=prices[prices.length-1].p;
+  var title=(s2?s2.n:ticker)+' — corridor at '+DATES[lastPi];
+  ['p15','p10','med','m10','m15'].forEach(function(bk){if(lastVals[bk]!=null){title+='\n'+labelMap[bk].t+': '+fmt(lastVals[bk]);}});
+  title+='\nPrice: '+fmt(lastP);
+  canvas.title=title;
 }
 
 // ═══ CORRIDOR BARS (signal tracker style) ═══
