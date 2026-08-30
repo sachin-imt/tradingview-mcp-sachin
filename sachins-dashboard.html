@@ -789,15 +789,25 @@ function drawSparkline(canvas,ticker){
   canvas.style.width=cw+'px';canvas.style.height=ch+'px';
   ctx.scale(dpr,dpr);
   var c=C[ticker];if(!c)return;
-  // AJ shows 5 bands: -1.5σ, -1σ, median, +1σ, +1.5σ
-  // bL/bM/bH map to -1.5σ / median / +1.5σ — interpolate -1σ and +1σ (2/3 of the way in)
-  var b_m15=c.bL||(c.eps*c.peL), b_med=c.bM||(c.eps*c.peM), b_p15=c.bH||(c.eps*c.peH);
-  var b_m10=b_m15+(b_med-b_m15)*(1/3);
-  var b_p10=b_med+(b_p15-b_med)*(2/3);
+  // Collect price points up to curIdx (keep index for band alignment)
   var prices=[];
   for(var i=0;i<=curIdx;i++){var p=pr(ticker,i);if(p!==null)prices.push({i:i,p:p});}
   if(!prices.length)return;
-  var allVals=prices.map(function(p){return p.p;}).concat([b_m15,b_p15]);
+  // Prefer BANDS time series (sloped bands from eps × pe multiples × fx per date)
+  // Fall back to flat bands from C if BANDS not injected
+  var hasBANDS=typeof BANDS!=='undefined'&&BANDS[ticker];
+  var bandSeries=hasBANDS?BANDS[ticker]:null;
+  var flat_m15=c.bL||(c.eps*c.peL), flat_med=c.bM||(c.eps*c.peM), flat_p15=c.bH||(c.eps*c.peH);
+  var flat_m10=flat_m15+(flat_med-flat_m15)*(1/3);
+  var flat_p10=flat_med+(flat_p15-flat_med)*(2/3);
+  // Extract all band values within the visible window
+  var bandValsInRange=[];
+  if(hasBANDS){
+    for(var k=0;k<prices.length;k++){var pi=prices[k].i;['m15','m10','med','p10','p15'].forEach(function(bk){var v=bandSeries[bk][pi];if(v!=null)bandValsInRange.push(v);});}
+  } else {
+    bandValsInRange=[flat_m15,flat_p15];
+  }
+  var allVals=prices.map(function(p){return p.p;}).concat(bandValsInRange);
   var mn=Math.min.apply(null,allVals)*0.95,mx=Math.max.apply(null,allVals)*1.05;
   var pad2={l:6,r:6,t:8,b:8};
   var pw=cw-pad2.l-pad2.r,ph=ch-pad2.t-pad2.b;
@@ -810,20 +820,27 @@ function drawSparkline(canvas,ticker){
   ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=0.5;
   for(var g=0;g<5;g++){var gy=pad2.t+ph*(g/4);ctx.beginPath();ctx.moveTo(pad2.l,gy);ctx.lineTo(pad2.l+pw,gy);ctx.stroke();}
   for(var gx=0;gx<6;gx++){var gxp=pad2.l+pw*(gx/5);ctx.beginPath();ctx.moveTo(gxp,pad2.t);ctx.lineTo(gxp,pad2.t+ph);ctx.stroke();}
-  // 5 corridor bands like AJ: outer=red, inner=green, median=dashed gray
-  var yLine=function(v,color,dashed){
-    var y=yOf(v);
+  // Draw a sloped band across the visible window
+  var drawBand=function(bandKey,flatVal,color,dashed){
     if(dashed){ctx.setLineDash([4,3]);}else{ctx.setLineDash([]);}
-    ctx.strokeStyle=color;ctx.lineWidth=1.5;
-    ctx.beginPath();ctx.moveTo(pad2.l,y);ctx.lineTo(pad2.l+pw,y);ctx.stroke();
+    ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.beginPath();
+    var moved=false;
+    for(var m=0;m<prices.length;m++){
+      var pi=prices[m].i;
+      var v=hasBANDS?bandSeries[bandKey][pi]:flatVal;
+      if(v==null)continue;
+      var x=xOf(m,prices.length),y=yOf(v);
+      if(!moved){ctx.moveTo(x,y);moved=true;}else{ctx.lineTo(x,y);}
+    }
+    ctx.stroke();
   };
-  yLine(b_p15,'#ee5a3a',false);
-  yLine(b_p10,'#7ab88f',false);
-  yLine(b_med,'rgba(220,220,230,0.6)',true);
-  yLine(b_m10,'#7ab88f',false);
-  yLine(b_m15,'#ee5a3a',false);
+  drawBand('p15',flat_p15,'#ee5a3a',false);
+  drawBand('p10',flat_p10,'#7ab88f',false);
+  drawBand('med',flat_med,'rgba(220,220,230,0.6)',true);
+  drawBand('m10',flat_m10,'#7ab88f',false);
+  drawBand('m15',flat_m15,'#ee5a3a',false);
   ctx.setLineDash([]);
-  // Price line (blue like AJ) — thinner + more precise
+  // Price line (blue like AJ)
   ctx.strokeStyle='#5b8def';ctx.lineWidth=1.5;ctx.beginPath();
   prices.forEach(function(pt,j){var x=xOf(j,prices.length),y=yOf(pt.p);j===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
   ctx.stroke();

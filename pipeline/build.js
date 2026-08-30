@@ -17,6 +17,7 @@ const outPath = join(root, 'docs', 'index.html');
 const configPath = join(__dir, 'config.json');
 const pricesPath = join(__dir, 'data', 'prices.json');
 const snapPath = join(__dir, 'data', 'snapshots.json');
+const bandsPath = join(__dir, 'data', 'bands.json');
 
 function main() {
   if (!existsSync(templatePath)) {
@@ -90,6 +91,21 @@ function main() {
     );
 
     console.log(`Injected ${snapData.dates.length} snapshots`);
+  }
+
+  // Inject bands time series (sloped corridor lines) if available
+  if (existsSync(bandsPath)) {
+    const bandsData = JSON.parse(readFileSync(bandsPath, 'utf8'));
+    const bLines = Object.entries(bandsData.bands)
+      .map(([k, v]) => `  ${k}:${JSON.stringify(v)}`)
+      .join(',\n');
+    // Inject BANDS block just after CORR_META. If a BANDS block already exists, replace it.
+    if (/const BANDS=\{[\s\S]*?\};/.test(html)) {
+      html = html.replace(/const BANDS=\{[\s\S]*?\};/, `const BANDS={\n${bLines}\n};`);
+    } else {
+      html = html.replace(/(const CORR_META=\{[\s\S]*?\};)/, `$1\n\nconst BANDS={\n${bLines}\n};`);
+    }
+    console.log(`Injected bands time series: ${Object.keys(bandsData.bands).length} tickers × ${bandsData.dates.length} dates × 5 σ-bands`);
   }
 
   // Strip artifact frame-runtime wrapper if present (from Claude artifact export)

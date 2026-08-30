@@ -37,7 +37,7 @@ jobs:
           AJ_PASSWORD: ${{ secrets.AJ_PASSWORD }}
         continue-on-error: true
 
-      - name: Update computed data
+      - name: Update computed data (bands, snapshots, eps sync)
         run: node pipeline/update-data.js
 
       - name: Build dashboard

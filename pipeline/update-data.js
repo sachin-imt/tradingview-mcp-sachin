@@ -13,6 +13,48 @@ const __dir = dirname(fileURLToPath(import.meta.url));
 const config = JSON.parse(readFileSync(join(__dir, 'config.json'), 'utf8'));
 const pricesPath = join(__dir, 'data', 'prices.json');
 const snapPath = join(__dir, 'data', 'snapshots.json');
+const epsPath = join(__dir, 'data', 'eps.json');
+const bandsPath = join(__dir, 'data', 'bands.json');
+
+// Derive 5 P/E multiples from AJ's 3-point corridor (peL=-1.5σ, peM=median, peH=+1.5σ).
+// Assumes linear P/E ↔ σ mapping.
+function deriveMultiples(peL, peM, peH) {
+  return {
+    m15: peL,
+    m10: peL + (peM - peL) * (1/3),
+    med: peM,
+    p10: peM + (peH - peM) * (2/3),
+    p15: peH
+  };
+}
+
+// Compute daily 5-band time series in USD-equivalent for all stocks.
+function computeBands(config, epsData) {
+  const dates = epsData.dates;
+  const bands = {};
+  for (const [ticker, corridor] of Object.entries(config.corridors)) {
+    if (!corridor.peL || !corridor.peM || !corridor.peH) continue;
+    const epsSeries = epsData.eps[ticker];
+    if (!epsSeries) continue;
+    const fx = config.fx?.[ticker] ?? 1;
+    const mult = deriveMultiples(corridor.peL, corridor.peM, corridor.peH);
+    const out = { m15: [], m10: [], med: [], p10: [], p15: [] };
+    for (let i = 0; i < dates.length; i++) {
+      const e = epsSeries[i];
+      if (e == null) {
+        Object.keys(out).forEach(k => out[k].push(null));
+      } else {
+        out.m15.push(e * mult.m15 * fx);
+        out.m10.push(e * mult.m10 * fx);
+        out.med.push(e * mult.med * fx);
+        out.p10.push(e * mult.p10 * fx);
+        out.p15.push(e * mult.p15 * fx);
+      }
+    }
+    bands[ticker] = out;
+  }
+  return { dates, bands, lastUpdated: new Date().toISOString() };
+}
 
 function computeQuadrant(stock, price, corridor) {
   if (!corridor || !corridor.eps) return 'OOS';
@@ -100,6 +142,46 @@ function main() {
 
   console.log(`\nQuadrant summary: UI=${summary.UI} UE=${summary.UE} DI=${summary.DI} DE=${summary.DE} OOS=${summary.OOS}`);
   console.log(`Wrote ${snapPath}`);
+
+  // Sync eps.json to prices.json dates: for any new date, use current config eps
+  // (carrying forward from the last known value). This way when someone updates
+  // config.corridors[t].eps, the bands slope naturally from that date forward.
+  let epsData;
+  if (existsSync(epsPath)) {
+    epsData = JSON.parse(readFileSync(epsPath, 'utf8'));
+  } else {
+    epsData = { dates: [], eps: {}, lastUpdated: null };
+  }
+  const oldDateSet = new Set(epsData.dates);
+  const newDates = dates.filter(d => !oldDateSet.has(d));
+  if (newDates.length > 0 || epsData.dates.length !== dates.length) {
+    const oldEps = epsData.eps;
+    const oldDates = epsData.dates;
+    const dateToIdx = new Map(oldDates.map((d, i) => [d, i]));
+    const newEps = {};
+    for (const [ticker, corridor] of Object.entries(config.corridors)) {
+      if (corridor.eps == null) continue;
+      const series = dates.map(d => {
+        const idx = dateToIdx.get(d);
+        if (idx != null && oldEps[ticker]?.[idx] != null) return oldEps[ticker][idx];
+        return corridor.eps; // carry forward from config
+      });
+      newEps[ticker] = series;
+    }
+    epsData = {
+      dates,
+      eps: newEps,
+      lastUpdated: new Date().toISOString(),
+      _comment: 'NTM EPS estimates per stock per date, in native currency. Maintained by update-data.js: new dates use current config.corridors[t].eps, older dates preserved.'
+    };
+    writeFileSync(epsPath, JSON.stringify(epsData, null, 2));
+    console.log(`Synced ${epsPath}: ${Object.keys(newEps).length} tickers × ${dates.length} dates (${newDates.length} new)`);
+  }
+
+  // Compute bands time series from eps × P/E multiples × fx
+  const bandsData = computeBands(config, epsData);
+  writeFileSync(bandsPath, JSON.stringify(bandsData, null, 2));
+  console.log(`Wrote ${bandsPath}: ${Object.keys(bandsData.bands).length} tickers × ${bandsData.dates.length} dates × 5 σ-bands`);
 }
 
 main();

@@ -51,9 +51,14 @@ async function main() {
   for (const { ticker, yahoo } of yahooSymbols) {
     try {
       const points = await fetchYahooQuote(yahoo);
+      // Apply fx to convert native → USD-equivalent so prices align with bands
+      const fx = config.fx?.[ticker] ?? 1;
+      if (fx !== 1) {
+        points.forEach(p => { p.close = Math.round(p.close * fx * 100) / 100; });
+      }
       results[ticker] = points;
       points.forEach(p => allDatesSet.add(p.date));
-      console.log(`  ✓ ${ticker} (${yahoo}): ${points.length} bars`);
+      console.log(`  ✓ ${ticker} (${yahoo}): ${points.length} bars${fx !== 1 ? ` (fx ${fx})` : ''}`);
       await new Promise(r => setTimeout(r, 300)); // rate limit
     } catch (e) {
       console.error(`  ✗ ${ticker} (${yahoo}): ${e.message}`);
