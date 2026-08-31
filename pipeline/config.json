@@ -67,10 +67,10 @@
     "AMD":{"memo":"Added More","src":"X Aug 29","ajVsCons":"—","fcastErr":"—"},
     "AMAT":{"memo":"New Position $466","src":"X Aug 29","ajVsCons":"+5%","fcastErr":"—"},
     "TSM":{"memo":"BUY","src":"Corridor","ajVsCons":"+5%","fcastErr":"—"},
-    "META":{"memo":"Swing Trade","src":"X Aug 29","ajVsCons":"+5%","fcastErr":"—"},
+    "META":{"memo":"Moved UE→UI · Top +5% wow","src":"Cockpit Aug 31","ajVsCons":"+5%","fcastErr":"—"},
     "INTC":{"memo":"BUY","src":"Cockpit","ajVsCons":"+5%","fcastErr":"—"},
     "PLTR":{"memo":"TRIM in $140s","src":"Portal","ajVsCons":"—","fcastErr":"—"},
-    "UBER":{"memo":"Downside+Expensive","src":"Cockpit","ajVsCons":"—","fcastErr":"—"},
+    "UBER":{"memo":"Upgraded DE→UE","src":"Cockpit Aug 31","ajVsCons":"—","fcastErr":"—"},
     "MSFT":{"memo":"Downside+Expensive","src":"Cockpit","ajVsCons":"+3%","fcastErr":"—"},
     "AAPL":{"memo":"Most Expensive Growth","src":"Corridor","ajVsCons":"+3%","fcastErr":"—"},
     "GOOGL":{"memo":"HOLD","src":"Corridor","ajVsCons":"+3%","fcastErr":"—"},
@@ -80,10 +80,10 @@
     "XPEV":{"memo":"Constructive · 4x GP","src":"Portal Aug 24","ajVsCons":"-91%","fcastErr":"—"}
   },
   "macro": {
-    "sp500": 7674,
+    "sp500": 7712,
     "fwdPE": 19.5,
-    "outlook": "Bullish — AI capex super-cycle",
-    "bearTrigger": "10Y > 5% or earnings miss cluster"
+    "outlook": "Bullish — AI capex super-cycle · Credit constructive at index",
+    "bearTrigger": "BB spreads > 200bps (currently 153bps) or CCC contagion"
   },
   "aj": {
     "cockpitUrl": "https://www.ajinvestmentresearch.com/cockpit/",

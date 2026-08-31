@@ -101,7 +101,15 @@ function main() {
 
   const priceData = JSON.parse(readFileSync(pricesPath, 'utf8'));
   const { dates, prices } = priceData;
-  const lastIdx = dates.length - 1;
+  // Find the last date where at least half the tickers have a real price.
+  // Yahoo returns nulls on non-trading days (weekends, holidays, pre-open).
+  let lastIdx = dates.length - 1;
+  const tickers = Object.keys(prices);
+  while (lastIdx > 0) {
+    const filled = tickers.filter(t => prices[t]?.[lastIdx] != null).length;
+    if (filled >= tickers.length / 2) break;
+    lastIdx--;
+  }
   const today = dates[lastIdx];
 
   console.log(`Computing data for ${dates.length} dates, latest: ${today}`);
