@@ -1,36 +1,46 @@
-Scan AJ Investment Research portal and @alojohhardcore X account for the latest signals, then update Sachin's Dashboard with daily data.
+Scan AJ Investment Research portal and @alojohhardcore X account for the latest signals, then update Sachin's Dashboard — publishing to the Claude artifact FIRST, then pushing to git (which redeploys the public GitHub Pages site).
 
-## RULE ZERO — NEVER RECREATE THE DASHBOARD
+## RULE ZERO — SOURCE OF TRUTH & UPDATE MODEL
 
-Sachin's Dashboard already exists as a fully built, unified artifact. It contains all HTML structure, CSS design system, JavaScript rendering logic, and historical data arrays. **You must NEVER recreate it.** On every run:
+The dashboard now has a **pipeline** in the git repo. There are TWO deploy targets and the repo is the master source:
 
-1. **Read the existing artifact** (`action: "read"` with the URL below) to get the current HTML
-2. **Write it to the scratchpad** as a working file
-3. **Edit only the data arrays** (STOCKS, C, DATES, P, SNAP_DATES, SNAP, CORR_META, signal cards) — leave all HTML structure, CSS, and JS rendering code untouched
-4. **Append** new daily prices, dates, and snapshots — never overwrite historical data
-5. **Republish** with `url` parameter to keep the same link
+| Location | Role |
+|---|---|
+| `sachins-dashboard.html` (repo root) | **Master template** — HTML, CSS, JS rendering, data placeholders |
+| `pipeline/config.json` | Stock metadata, corridor params, corrMeta, macro, fx |
+| `pipeline/data/prices.json` | Daily prices time series (Yahoo, auto-fetched) |
+| `pipeline/data/eps.json` | Daily NTM EPS time series (native currency) |
+| `pipeline/data/bands.json` | Computed 5-band time series (USD-equiv) |
+| `pipeline/data/snapshots.json` | Daily quadrant snapshots |
+| `pipeline/data/aj-details.json` | AJ Details view scrape (5 P/E multiples + EPS per ticker), preferred over config |
+| `docs/index.html` | Pipeline output — deployed by GitHub Pages |
+| Claude Artifact (URL below) | Mirror of the built dashboard, for Sachin's review |
 
-**Dashboard URL** (always pass as `url` to Artifact tool):
+**Never** create a new artifact or rebuild `sachins-dashboard.html` from scratch. Edit the data sources, run the pipeline, then publish.
+
+**Dashboard Artifact URL** (always pass as `url` to Artifact tool):
 https://claude.ai/code/artifact/51860e0b-f148-4afa-ac41-db6965a28419
 
-What "update only" means in practice:
-- **DO**: Edit `var DATES=[...]` to append today's date
-- **DO**: Edit `var P={...}` to append today's closing price to each stock's array
-- **DO**: Edit `var SNAP_DATES=[...]` and `var SNAP={...}` to append today's quadrant snapshot
-- **DO**: Edit signal card HTML to update changed signals, add new ones
-- **DO**: Edit `var C=[...]` to update corridor params IF AJ published new estimates
-- **DO**: Edit macro strip values if new macro data available
-- **DO NOT**: Regenerate the HTML skeleton, CSS, tab structure, or JS rendering functions
-- **DO NOT**: Create a new artifact or a new file from scratch
-- **DO NOT**: Rewrite the entire file — use surgical edits to the data sections only
+**GitHub Pages URL**:
+https://sachin-imt.github.io/tradingview-mcp-sachin/
 
-If the artifact read fails or returns empty, STOP and ask the user — do not rebuild from memory.
+## RULE ONE — PUBLISH ORDER (STRICT)
 
-### Rolling Window
+For every dashboard change, in this exact order:
 
-- Maintain **45 trading days** of daily data
-- When DATES exceeds 45 entries, drop the oldest date and corresponding entries from P arrays, SNAP_DATES, and SNAP
-- Always preserve the most recent 45 days
+1. Edit `sachins-dashboard.html` (signal cards, macro strip, Deep Dive HTML) and/or `pipeline/config.json` (corridors, stocks, corrMeta)
+2. Run `node pipeline/update-data.js` (recompute snapshots + bands; syncs eps.json)
+3. Run `node pipeline/build.js` (rebuild `docs/index.html`)
+4. **PUBLISH TO ARTIFACT FIRST** — strip frame-runtime from the built HTML into a scratchpad file, then `Artifact({file_path, url: <dashboard URL>, favicon: "📊"})`
+5. **THEN commit and push to git** — the GitHub Actions daily workflow will handle the routine daily price/snapshot append on its own
+
+Never git-push before publishing the artifact.
+
+## Rolling Window
+
+- The pipeline maintains **45 trading days** in `pipeline/data/prices.json` (auto-trimmed by `fetch-prices.js`)
+- Snapshots keep the last 20 (auto-trimmed by `update-data.js`)
+- No manual trimming needed — the pipeline handles it
 
 ---
 
@@ -43,7 +53,6 @@ Use Chrome MCP tools (mcp__claude-in-chrome__*) to access subscriber content. Th
    - S&P 500 level, forward P/E, Nasdaq weekly performance
    - Top/worst weekly performers
    - Corridor Method rankings: Best Buys (1Y + 90D), Least Attractive (1Y + 90D)
-   - Long-term upside ranking
    - PEG analysis (cheapest and most expensive growth)
    - Trading volume interest (most traded stocks globally)
 3. Read **new investment memos** published since the last update — extract from each:
@@ -59,7 +68,8 @@ Use Chrome MCP tools (mcp__claude-in-chrome__*) to access subscriber content. Th
    - Upside + Expensive (UE) — hold/watch
    - Downside + Inexpensive (DI) — value trap risk
    - Downside + Expensive (DE) — avoid
-   - Out of scope — stocks without corridor data (e.g., pre-earnings companies)
+   - Out of scope — stocks without corridor data
+5. **Screenshot the Cockpit → Details view** — this is the definitive source for corridor bands. Extract the 5-band P/E multiples per stock: -1.5σ, -1σ, Median, +1σ, +1.5σ. If any changed vs current config, update `pipeline/config.json` corridors OR let `pipeline/fetch-aj.js` (with `AJ_USERNAME`/`AJ_PASSWORD`) scrape it into `pipeline/data/aj-details.json`.
 
 ## Step 2: Read X (@alojohhardcore)
 
@@ -87,73 +97,94 @@ Recent overrides old. Tag each stock with:
 - **Source**: X / Portal / Cockpit
 - **Price levels** if available (entry, trim, target)
 - **Portfolio rank** if disclosed
-- **Corridor data**: corridor low/mid/high, current price position %, forward P/E
+- **Corridor data**: 5 P/E multiples if changed
 - **Thesis context**: WHY, key metrics, catalysts, risks
 
-## Step 4: Update the Dashboard Data (EDIT, NOT REBUILD)
+## Step 4: Update Data Sources (EDIT, NOT REBUILD)
 
-### 4a. Read the existing artifact
+Follow this exact order:
 
-```
-Artifact({ action: "read", url: "https://claude.ai/code/artifact/51860e0b-f148-4afa-ac41-db6965a28419" })
-```
+### 4a. Update `pipeline/config.json` (corridors, corrMeta, macro)
 
-Write the returned HTML to the scratchpad. All edits happen on this file.
+Only touch what actually changed:
+- `corridors.<ticker>.eps` — if AJ published a new NTM EPS estimate
+- `corridors.<ticker>.peL/peM/peH` — if AJ's Details view shows new multiples
+- `corrMeta.<ticker>` — new memo, signal, ajVsCons, consEps
+- `macro` — S&P level, fwd P/E, outlook, bearTrigger
 
-### 4b. Identify what changed today
+### 4b. Update signal cards in `sachins-dashboard.html`
 
-Compare the data you gathered (Steps 1-3) against the existing data arrays in the artifact:
-- Are there new dates to append to DATES?
-- Are there new closing prices to append to P?
-- Did any quadrant assignments change (compare SNAP with today's Cockpit screenshot)?
-- Did AJ publish new estimates that change C (corridor params)?
-- Are there new X trade alerts or portal memos that change signal cards?
+The 5 tabs' HTML content lives directly in this file. Use Edit tool for surgical changes:
+- **Signals tab** — hero cards under "X Trade Alerts", "Portal Investment Memos", "Cockpit Quadrants"
+- **Deep Dive tab** — investment memo cards
+- **Portfolio tab** — ranked positions table
+- **Macro & Weekly tab** — weekly progression, macro thesis cards
+- Add `.fresh` class to today's new cards; drop old fresh classes
 
-### 4c. Make surgical edits to data arrays only
+Do NOT touch:
+- The template's data-placeholder arrays (`const STOCKS`, `const C`, `const DATES`, `const P`, `const SNAP_DATES`, `const SNAP`, `const CORR_META`, `const BANDS`) — these are injected by `build.js` from `pipeline/config.json` + `pipeline/data/*.json`
+- The `<script>` rendering functions
+- The CSS
+- Tab structure
 
-Use the Edit tool to update specific data sections:
+### 4c. Run the pipeline
 
-**Daily price append** — add today's date to DATES and today's price to each stock in P:
-```
-Edit: var DATES=[...existing dates...] → var DATES=[...existing dates...,"2026-08-29"]
-Edit: "NVDA":[...existing prices...] → "NVDA":[...existing prices...,148.50]
-```
-
-**Quadrant snapshot append** — add today to SNAP_DATES and each stock's quadrant to SNAP:
-```
-Edit: var SNAP_DATES=[...] → var SNAP_DATES=[...,"2026-08-29"]
-Edit: "NVDA":[...existing quads...] → "NVDA":[...existing quads...,"UI"]
-```
-
-**Corridor param updates** — ONLY if AJ published new estimates:
-```
-Edit: {t:"NVDA",n:"Nvidia",...,eps:OLD,...} → {t:"NVDA",n:"Nvidia",...,eps:NEW,...}
+```bash
+node pipeline/fetch-prices.js     # optional — usually the GitHub Actions cron handles this
+node pipeline/update-data.js       # recompute snapshots, sync eps, produce bands.json
+node pipeline/build.js             # inject data into template → docs/index.html
 ```
 
-**Signal card updates** — update only changed signals in the HTML body.
+### 4d. Publish to Claude Artifact FIRST
 
-**Macro strip** — update S&P level, P/E, outlook text if new data.
+Prepare a scratchpad copy without the frame-runtime wrapper:
 
-### 4d. Republish to the same URL
+```bash
+node -e "
+const fs=require('fs');
+let h=fs.readFileSync('sachins-dashboard.html','utf8');
+h=h.replace(/^[\s\S]*?<body>/,'').replace(/<\/body>\s*<\/html>/,'');
+fs.writeFileSync('<scratchpad>/sachins-dashboard-artifact.html', h);
+"
+```
+
+Then publish:
 
 ```
-Artifact({ file_path: "scratchpad/sachins-dashboard.html", url: "https://claude.ai/code/artifact/51860e0b-f148-4afa-ac41-db6965a28419", favicon: "..." })
+Artifact({
+  file_path: "<scratchpad>/sachins-dashboard-artifact.html",
+  url: "https://claude.ai/code/artifact/51860e0b-f148-4afa-ac41-db6965a28419",
+  title: "Sachin's Dashboard",
+  favicon: "📊"
+})
 ```
+
+If publish is refused because the remote has drifted, `action: "read"` the URL first, merge onto the returned source, publish again.
+
+### 4e. Commit and push to git
+
+```bash
+git add sachins-dashboard.html pipeline/config.json pipeline/data/ docs/index.html
+git commit -m "Daily update: <date> AJ signals + prices"
+git push
+```
+
+The GitHub Actions daily workflow (6 PM ET) handles routine daily price/snapshot updates on its own — this manual run is only for signal/memo/config changes that need human input.
 
 ### EPS & Valuation Estimates — Source Priority
 
-1. **AJ's estimates first** — world-class (0-2% forecast error). Extract from portal memos.
-2. **Consensus estimates as fallback** — if AJ hasn't published an estimate for a stock.
-3. **Flag which is which** — mark "AJ Est" vs "Cons Est" in the data.
-4. **Update when AJ publishes new estimates** — his override consensus immediately.
+1. **AJ Details view scrape** (`pipeline/data/aj-details.json`) — most authoritative; 5-band multiples + AJ's NTM EPS per ticker. Set by `fetch-aj.js` when credentials available.
+2. **AJ portal memos** — extract manually via Chrome MCP; update `pipeline/config.json` corridor entries.
+3. **Consensus estimates** — fallback for stocks without AJ estimates.
+4. **Flag which is which** — `est: "aj"` vs `est: "cons"` in `pipeline/config.json` stocks array.
 
 ### Dashboard Structure Reference
 
-The dashboard has 5 tabs (DO NOT modify tab structure):
+5 tabs (DO NOT modify tab structure):
 1. **Signals** — hero signal cards grouped by source (X trades, Portal, Cockpit)
 2. **Deep Dive** — investment memo summaries with thesis, metrics, catalysts
 3. **Portfolio** — AJ's top holdings ranked by position size
-4. **Cockpit & Corridors** — 4 sub-views: Cockpit scatter, Corridors card grid, Corridor Bars, Daily Snapshots
+4. **Cockpit & Corridors** — 4 sub-views: Cockpit scatter, Corridors card grid (with 5-band sparklines + legend), Corridor Bars, Daily Snapshots
 5. **Macro & Weekly** — weekly progression strip, macro thesis cards
 
 Design system (DO NOT modify):
@@ -161,6 +192,7 @@ Design system (DO NOT modify):
 - Signal badges: BUY/SELL/TRIM/HOLD/AVOID/SHORT/MIXED/NEW
 - `.fresh` class on today's cards
 - Cockpit quadrant colors: UI=#e8622c, UE=#2bb5a0, DI=#5b9bd5, DE=#8b95a5
+- Corridor sparkline colors: red (±1.5σ), green (±1σ), dashed white (median), blue price line
 - PEG formula: `peg = fpe / epsGr` (epsGr is raw number, NOT divided by 100)
 - Dark/light theme via CSS variables
 
@@ -170,21 +202,23 @@ After updating, summarize what changed day-over-day:
 - New signals or signal changes
 - New investment memos published
 - Position ranking changes
-- Corridor position shifts (e.g., "AMAT moved from 82% to 65% in corridor")
-- Cockpit quadrant changes (e.g., "MRVL moved from UI to UE")
+- Corridor position shifts
+- Cockpit quadrant changes
 - Macro thesis shifts
-- New stocks added to or dropped from coverage
+- Confirm: artifact URL updated ✓ and git pushed ✓
 
 ## Context Management
 
-- Use `get_page_text` for article content (reports, weekly updates)
-- Use `computer screenshot` for the Cockpit page (interactive chart, not text)
-- Cap at reading 6-8 full reports per run to avoid context bloat
+- Use `get_page_text` for article content
+- Use `computer screenshot` for the Cockpit page (interactive chart)
+- Cap at reading 6-8 full reports per run
 - Prioritize reports for stocks with X trade alerts
 - Close all Chrome MCP tabs when done
 
 ## Related Artifacts
 
-- **Sachin's Dashboard** (THE single artifact — never recreate): https://claude.ai/code/artifact/51860e0b-f148-4afa-ac41-db6965a28419
+- **Sachin's Dashboard** (artifact mirror): https://claude.ai/code/artifact/51860e0b-f148-4afa-ac41-db6965a28419
+- **GitHub Pages** (public): https://sachin-imt.github.io/tradingview-mcp-sachin/
+- **Git repo**: https://github.com/sachin-imt/tradingview-mcp-sachin
 - **Corridor Engine** (reference only): https://claude.ai/code/artifact/3105c0ef-751f-42af-b374-65360ca69540
 - **Old Cockpit** (DEPRECATED — merged into Dashboard): https://claude.ai/code/artifact/3541f246-927e-450d-8220-eb62bb51cac3
