@@ -9,10 +9,12 @@
     "Aug 24",
     "Aug 25",
     "Aug 26",
-    "Aug 28"
+    "Aug 28",
+    "Aug 31"
   ],
   "snapshots": {
     "NVDA": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -34,9 +36,11 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "ASML": [
+      "UE",
       "UE",
       "UE",
       "UE",
@@ -58,9 +62,11 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "TSM": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -82,6 +88,7 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "COHR": [
@@ -94,9 +101,11 @@
       "—",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "INTC": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -118,9 +127,11 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "META": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -142,9 +153,11 @@
       "UE",
       "UE",
       "UE",
+      "UE",
       "UE"
     ],
     "GOOGL": [
+      "UE",
       "UE",
       "UE",
       "UE",
@@ -166,9 +179,11 @@
       "UE",
       "UE",
       "UE",
+      "UE",
       "UE"
     ],
     "AAPL": [
+      "UE",
       "UE",
       "UE",
       "UE",
@@ -190,6 +205,7 @@
       "UE",
       "UE",
       "UE",
+      "UE",
       "UE"
     ],
     "UBER": [
@@ -202,9 +218,11 @@
       "DE",
       "DE",
       "DE",
+      "DE",
       "DE"
     ],
     "MSFT": [
+      "DE",
       "DE",
       "DE",
       "DE",
@@ -226,6 +244,7 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "XPEV": [
@@ -238,9 +257,11 @@
       "UI",
       "UI",
       "UI",
-      "UI"
+      "UI",
+      "OOS"
     ],
     "SNDK": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -262,9 +283,11 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "ORCL": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -286,9 +309,11 @@
       "UI",
       "UI",
       "UI",
-      "UI"
+      "UI",
+      "OOS"
     ],
     "SKHYN": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -310,9 +335,11 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "IFX": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -334,6 +361,7 @@
       "UE",
       "UE",
       "UE",
+      "UE",
       "UE"
     ],
     "RKLB": [
@@ -346,7 +374,8 @@
       "UI",
       "UI",
       "UI",
-      "UI"
+      "UI",
+      "OOS"
     ],
     "EOSE": [
       "UI",
@@ -358,8 +387,9 @@
       "UI",
       "UI",
       "UI",
-      "UI"
+      "UI",
+      "OOS"
     ]
   },
-  "lastUpdated": "2026-08-31T12:21:06.225Z"
+  "lastUpdated": "2026-09-01T00:51:23.500Z"
 }
