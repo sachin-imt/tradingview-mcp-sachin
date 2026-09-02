@@ -1,83 +1,656 @@
 {
   "stocks": [
-    {"t":"MU","n":"Micron","est":"cons","epsGr":120,"iu":0.40,"ajPeg":0.16,"yahoo":"MU"},
-    {"t":"SNDK","n":"SanDisk","est":"aj","epsGr":85,"iu":0.47,"ajPeg":0.21,"yahoo":"WDC"},
-    {"t":"LITE","n":"Lumentum","est":"aj","epsGr":267,"iu":0.80,"ajPeg":0.47,"yahoo":"LITE"},
-    {"t":"ORCL","n":"Oracle","est":"aj","epsGr":35,"iu":0.38,"ajPeg":0.43,"yahoo":"ORCL"},
-    {"t":"META","n":"Meta","est":"cons","epsGr":22,"iu":0.24,"ajPeg":0.67,"yahoo":"META"},
-    {"t":"NVDA","n":"Nvidia","est":"aj","epsGr":55,"iu":0.70,"ajPeg":0.27,"yahoo":"NVDA"},
-    {"t":"UBER","n":"Uber","est":"aj","epsGr":15,"iu":-0.01,"ajPeg":2.78,"yahoo":"UBER"},
-    {"t":"TSLA","n":"Tesla","est":"cons","epsGr":45,"iu":1.44,"ajPeg":1.71,"yahoo":"TSLA"},
-    {"t":"AMZN","n":"Amazon","est":"cons","epsGr":28,"iu":0.21,"ajPeg":1.06,"yahoo":"AMZN"},
-    {"t":"TSM","n":"TSMC","est":"cons","epsGr":38,"iu":0.32,"ajPeg":0.74,"yahoo":"TSM"},
-    {"t":"PLTR","n":"Palantir","est":"aj","epsGr":50,"iu":0.19,"ajPeg":1.37,"yahoo":"PLTR"},
-    {"t":"AMD","n":"AMD","est":"aj","epsGr":105,"iu":0.94,"ajPeg":0.62,"yahoo":"AMD"},
-    {"t":"ASML","n":"ASML","est":"aj","epsGr":42,"iu":0.39,"ajPeg":1.02,"yahoo":"ASML"},
-    {"t":"INTC","n":"Intel","est":"cons","epsGr":140,"iu":0.98,"ajPeg":0.54,"yahoo":"INTC"},
-    {"t":"MRVL","n":"Marvell","est":"aj","epsGr":75,"iu":0.78,"ajPeg":0.62,"yahoo":"MRVL"},
-    {"t":"AMAT","n":"Appl. Materials","est":"cons","epsGr":30,"iu":0.61,"ajPeg":0.69,"yahoo":"AMAT"},
-    {"t":"AVGO","n":"Broadcom","est":"cons","epsGr":25,"iu":0.34,"ajPeg":0.96,"yahoo":"AVGO"},
-    {"t":"MSFT","n":"Microsoft","est":"cons","epsGr":14,"iu":-0.05,"ajPeg":1.28,"yahoo":"MSFT"},
-    {"t":"AAPL","n":"Apple","est":"cons","epsGr":10,"iu":0.08,"ajPeg":3.04,"yahoo":"AAPL"},
-    {"t":"GOOGL","n":"Alphabet","est":"cons","epsGr":18,"iu":0.26,"ajPeg":1.34,"yahoo":"GOOGL"},
-    {"t":"XPEV","n":"XPeng","est":"aj","epsGr":null,"iu":null,"ajPeg":null,"yahoo":"XPEV"},
-    {"t":"RKLB","n":"Rocket Lab","est":"aj","epsGr":null,"iu":null,"ajPeg":null,"yahoo":"RKLB"},
-    {"t":"EOSE","n":"Eos Energy","est":"aj","epsGr":null,"iu":null,"ajPeg":null,"yahoo":"EOSE"},
-    {"t":"COHR","n":"Coherent","est":"aj","epsGr":65,"iu":0.84,"ajPeg":0.50,"yahoo":"COHR"},
-    {"t":"SSNLF","n":"Samsung","est":"cons","epsGr":90,"iu":0.35,"ajPeg":0.17,"yahoo":"SSNLF"},
-    {"t":"SKHYN","n":"SK Hynix","est":"cons","epsGr":100,"iu":0.28,"ajPeg":0.47,"yahoo":"000660.KS"},
-    {"t":"AIXA","n":"Aixtron","est":"cons","epsGr":55,"iu":0.82,"ajPeg":0.49,"yahoo":"AIXA.DE"},
-    {"t":"IFX","n":"Infineon","est":"cons","epsGr":45,"iu":0.81,"ajPeg":0.50,"yahoo":"IFX.DE"},
-    {"t":"XIACF","n":"Xiaomi","est":"cons","epsGr":30,"iu":0.02,"ajPeg":3.86,"yahoo":"XIACF"}
+    {
+      "t": "MU",
+      "n": "Micron",
+      "est": "cons",
+      "epsGr": 120,
+      "iu": 0.4,
+      "ajPeg": 0.16,
+      "yahoo": "MU"
+    },
+    {
+      "t": "SNDK",
+      "n": "SanDisk",
+      "est": "aj",
+      "epsGr": 85,
+      "iu": 0.47,
+      "ajPeg": 0.21,
+      "yahoo": "WDC"
+    },
+    {
+      "t": "LITE",
+      "n": "Lumentum",
+      "est": "aj",
+      "epsGr": 267,
+      "iu": 0.8,
+      "ajPeg": 0.47,
+      "yahoo": "LITE"
+    },
+    {
+      "t": "ORCL",
+      "n": "Oracle",
+      "est": "aj",
+      "epsGr": 35,
+      "iu": 0.38,
+      "ajPeg": 0.43,
+      "yahoo": "ORCL"
+    },
+    {
+      "t": "META",
+      "n": "Meta",
+      "est": "cons",
+      "epsGr": 22,
+      "iu": 0.24,
+      "ajPeg": 0.67,
+      "yahoo": "META"
+    },
+    {
+      "t": "NVDA",
+      "n": "Nvidia",
+      "est": "aj",
+      "epsGr": 55,
+      "iu": 0.7,
+      "ajPeg": 0.27,
+      "yahoo": "NVDA"
+    },
+    {
+      "t": "UBER",
+      "n": "Uber",
+      "est": "aj",
+      "epsGr": 15,
+      "iu": -0.01,
+      "ajPeg": 2.78,
+      "yahoo": "UBER"
+    },
+    {
+      "t": "TSLA",
+      "n": "Tesla",
+      "est": "cons",
+      "epsGr": 45,
+      "iu": 1.44,
+      "ajPeg": 1.71,
+      "yahoo": "TSLA"
+    },
+    {
+      "t": "AMZN",
+      "n": "Amazon",
+      "est": "cons",
+      "epsGr": 28,
+      "iu": 0.21,
+      "ajPeg": 1.06,
+      "yahoo": "AMZN"
+    },
+    {
+      "t": "TSM",
+      "n": "TSMC",
+      "est": "cons",
+      "epsGr": 38,
+      "iu": 0.32,
+      "ajPeg": 0.74,
+      "yahoo": "TSM"
+    },
+    {
+      "t": "PLTR",
+      "n": "Palantir",
+      "est": "aj",
+      "epsGr": 50,
+      "iu": 0.19,
+      "ajPeg": 1.37,
+      "yahoo": "PLTR"
+    },
+    {
+      "t": "AMD",
+      "n": "AMD",
+      "est": "aj",
+      "epsGr": 105,
+      "iu": 0.94,
+      "ajPeg": 0.62,
+      "yahoo": "AMD"
+    },
+    {
+      "t": "ASML",
+      "n": "ASML",
+      "est": "aj",
+      "epsGr": 42,
+      "iu": 0.39,
+      "ajPeg": 1.02,
+      "yahoo": "ASML.AS",
+      "cur": "€"
+    },
+    {
+      "t": "INTC",
+      "n": "Intel",
+      "est": "cons",
+      "epsGr": 140,
+      "iu": 0.98,
+      "ajPeg": 0.54,
+      "yahoo": "INTC"
+    },
+    {
+      "t": "MRVL",
+      "n": "Marvell",
+      "est": "aj",
+      "epsGr": 75,
+      "iu": 0.78,
+      "ajPeg": 0.62,
+      "yahoo": "MRVL"
+    },
+    {
+      "t": "AMAT",
+      "n": "Appl. Materials",
+      "est": "cons",
+      "epsGr": 30,
+      "iu": 0.61,
+      "ajPeg": 0.69,
+      "yahoo": "AMAT"
+    },
+    {
+      "t": "AVGO",
+      "n": "Broadcom",
+      "est": "cons",
+      "epsGr": 25,
+      "iu": 0.34,
+      "ajPeg": 0.96,
+      "yahoo": "AVGO"
+    },
+    {
+      "t": "MSFT",
+      "n": "Microsoft",
+      "est": "cons",
+      "epsGr": 14,
+      "iu": -0.05,
+      "ajPeg": 1.28,
+      "yahoo": "MSFT"
+    },
+    {
+      "t": "AAPL",
+      "n": "Apple",
+      "est": "cons",
+      "epsGr": 10,
+      "iu": 0.08,
+      "ajPeg": 3.04,
+      "yahoo": "AAPL"
+    },
+    {
+      "t": "GOOGL",
+      "n": "Alphabet",
+      "est": "cons",
+      "epsGr": 18,
+      "iu": 0.26,
+      "ajPeg": 1.34,
+      "yahoo": "GOOGL"
+    },
+    {
+      "t": "XPEV",
+      "n": "XPeng",
+      "est": "aj",
+      "epsGr": null,
+      "iu": null,
+      "ajPeg": null,
+      "yahoo": "XPEV"
+    },
+    {
+      "t": "RKLB",
+      "n": "Rocket Lab",
+      "est": "aj",
+      "epsGr": null,
+      "iu": null,
+      "ajPeg": null,
+      "yahoo": "RKLB"
+    },
+    {
+      "t": "EOSE",
+      "n": "Eos Energy",
+      "est": "aj",
+      "epsGr": null,
+      "iu": null,
+      "ajPeg": null,
+      "yahoo": "EOSE"
+    },
+    {
+      "t": "COHR",
+      "n": "Coherent",
+      "est": "aj",
+      "epsGr": 65,
+      "iu": 0.84,
+      "ajPeg": 0.5,
+      "yahoo": "COHR"
+    },
+    {
+      "t": "SSNLF",
+      "n": "Samsung",
+      "est": "cons",
+      "epsGr": 90,
+      "iu": 0.35,
+      "ajPeg": 0.17,
+      "yahoo": "005930.KS",
+      "cur": "₩",
+      "curK": true
+    },
+    {
+      "t": "SKHYN",
+      "n": "SK Hynix",
+      "est": "cons",
+      "epsGr": 100,
+      "iu": 0.28,
+      "ajPeg": 0.47,
+      "yahoo": "000660.KS",
+      "cur": "₩",
+      "curK": true
+    },
+    {
+      "t": "AIXA",
+      "n": "Aixtron",
+      "est": "cons",
+      "epsGr": 55,
+      "iu": 0.82,
+      "ajPeg": 0.49,
+      "yahoo": "AIXA.DE",
+      "cur": "€"
+    },
+    {
+      "t": "IFX",
+      "n": "Infineon",
+      "est": "cons",
+      "epsGr": 45,
+      "iu": 0.81,
+      "ajPeg": 0.5,
+      "yahoo": "IFX.DE",
+      "cur": "€"
+    },
+    {
+      "t": "XIACF",
+      "n": "Xiaomi",
+      "est": "cons",
+      "epsGr": 30,
+      "iu": 0.02,
+      "ajPeg": 3.86,
+      "yahoo": "1810.HK",
+      "cur": "HK$"
+    }
   ],
   "corridors": {
-    "MU":    {"eps":90,"peL":8,"peM":10.5,"peH":13,"tgt":1307,"bL":811,"bM":988,"bH":1165},
-    "SNDK":  {"eps":52,"peL":22,"peM":28,"peH":34,"tgt":2219,"bL":1174,"bM":1702,"bH":2231},
-    "LITE":  {"eps":23.29,"peL":30,"peM":42,"peH":54,"tgt":1695,"bL":733,"bM":895,"bH":1057},
-    "ORCL":  {"eps":8.3,"peL":14,"peM":17,"peH":22,"tgt":199,"bL":96,"bM":148,"bH":199},
-    "META":  {"eps":30.5,"peL":16,"peM":19,"peH":22,"tgt":718,"bL":545,"bM":598,"bH":652},
-    "NVDA":  {"eps":16.16,"peL":18,"peM":24,"peH":28,"tgt":369,"bL":205,"bM":221,"bH":238},
-    "UBER":  {"eps":3.69,"peL":18,"peM":21,"peH":24,"tgt":78,"bL":69,"bM":73.4,"bH":77.9},
-    "TSLA":  {"eps":4.8,"peL":50,"peM":65,"peH":80,"tgt":852,"bL":332,"bM":407,"bH":483},
-    "AMZN":  {"eps":7.8,"peL":28,"peM":34,"peH":40,"tgt":322,"bL":238,"bM":256,"bH":275},
-    "TSM":   {"eps":22.5,"peL":16,"peM":20,"peH":25,"tgt":551,"bL":399,"bM":434,"bH":470},
-    "PLTR":  {"eps":2.46,"peL":50,"peM":70,"peH":90,"tgt":221,"bL":115,"bM":145,"bH":175},
-    "AMD":   {"eps":11.82,"peL":30,"peM":40,"peH":52,"tgt":902,"bL":479,"bM":561,"bH":643},
-    "ASML":  {"eps":53,"peL":28,"peM":34,"peH":40,"tgt":2079,"bL":1722,"bM":1888,"bH":2053},
-    "INTC":  {"eps":3.6,"peL":18,"peM":23,"peH":28,"tgt":176,"bL":82,"bM":112,"bH":142},
-    "MRVL":  {"eps":6.2,"peL":32,"peM":40,"peH":48,"tgt":386,"bL":166,"bM":240,"bH":315},
-    "AMAT":  {"eps":12.5,"peL":18,"peM":28,"peH":35,"tgt":741,"bL":450,"bM":555,"bH":659},
-    "AVGO":  {"eps":16,"peL":18,"peM":23,"peH":28,"tgt":493,"bL":358,"bM":408,"bH":459},
-    "MSFT":  {"eps":16.2,"peL":28,"peM":31,"peH":35,"tgt":488,"bL":338,"bM":409,"bH":479},
-    "AAPL":  {"eps":8.8,"peL":28,"peM":32,"peH":36,"tgt":344,"bL":292,"bM":313,"bH":333},
-    "GOOGL": {"eps":11.5,"peL":18,"peM":22,"peH":26,"tgt":433,"bL":337,"bM":361,"bH":384},
-    "COHR":  {"eps":16.38,"peL":18,"peM":24,"peH":30,"tgt":515,"bL":244,"bM":341,"bH":439},
-    "SSNLF": {"eps":5.5,"peL":6,"peM":9,"peH":12,"tgt":null,"bL":35.3,"bM":48.7,"bH":61.8},
-    "SKHYN": {"eps":45,"peL":5,"peM":8,"peH":11,"tgt":null,"bL":162,"bM":252,"bH":342},
-    "AIXA":  {"eps":2.8,"peL":18,"peM":28,"peH":38,"tgt":null,"bL":58,"bM":90,"bH":122},
-    "IFX":   {"eps":3.2,"peL":14,"peM":20,"peH":26,"tgt":null,"bL":40.2,"bM":54.6,"bH":69},
-    "XIACF": {"eps":0.9,"peL":18,"peM":26,"peH":34,"tgt":null,"bL":5.7,"bM":6.7,"bH":7.7}
+    "MU": {
+      "eps": 90,
+      "peL": 9.022,
+      "peM": 10.978,
+      "peH": 12.933,
+      "tgt": 1307,
+      "bL": 812,
+      "bM": 988,
+      "bH": 1164
+    },
+    "SNDK": {
+      "eps": 52,
+      "peL": 22.154,
+      "peM": 32.346,
+      "peH": 42.538,
+      "tgt": 2219,
+      "bL": 1152,
+      "bM": 1682,
+      "bH": 2212
+    },
+    "LITE": {
+      "eps": 23.29,
+      "peL": 31.687,
+      "peM": 38.557,
+      "peH": 45.384,
+      "tgt": 1695,
+      "bL": 738,
+      "bM": 898,
+      "bH": 1057
+    },
+    "ORCL": {
+      "eps": 8.3,
+      "peL": 12.048,
+      "peM": 17.831,
+      "peH": 23.614,
+      "tgt": 199,
+      "bL": 100,
+      "bM": 148,
+      "bH": 196
+    },
+    "META": {
+      "eps": 30.5,
+      "peL": 17.836,
+      "peM": 19.607,
+      "peH": 21.377,
+      "tgt": 718,
+      "bL": 544,
+      "bM": 598,
+      "bH": 652
+    },
+    "NVDA": {
+      "eps": 16.16,
+      "peL": 12.748,
+      "peM": 13.676,
+      "peH": 14.666,
+      "tgt": 369,
+      "bL": 206,
+      "bM": 221,
+      "bH": 237
+    },
+    "UBER": {
+      "eps": 3.69,
+      "peL": 18.672,
+      "peM": 19.919,
+      "peH": 21.138,
+      "tgt": 78,
+      "bL": 68.9,
+      "bM": 73.5,
+      "bH": 78
+    },
+    "TSLA": {
+      "eps": 4.8,
+      "peL": 68.125,
+      "peM": 83.75,
+      "peH": 99.167,
+      "tgt": 852,
+      "bL": 327,
+      "bM": 402,
+      "bH": 476
+    },
+    "AMZN": {
+      "eps": 7.8,
+      "peL": 30.513,
+      "peM": 32.949,
+      "peH": 35.256,
+      "tgt": 322,
+      "bL": 238,
+      "bM": 257,
+      "bH": 275
+    },
+    "TSM": {
+      "eps": 22.5,
+      "peL": 17.733,
+      "peM": 19.333,
+      "peH": 20.889,
+      "tgt": 551,
+      "bL": 399,
+      "bM": 435,
+      "bH": 470
+    },
+    "PLTR": {
+      "eps": 2.46,
+      "peL": 46.748,
+      "peM": 58.943,
+      "peH": 71.138,
+      "tgt": 221,
+      "bL": 115,
+      "bM": 145,
+      "bH": 175
+    },
+    "AMD": {
+      "eps": 11.82,
+      "peL": 40.44,
+      "peM": 47.462,
+      "peH": 54.399,
+      "tgt": 902,
+      "bL": 478,
+      "bM": 561,
+      "bH": 643
+    },
+    "ASML": {
+      "eps": 53,
+      "peL": 27.774,
+      "peM": 30.491,
+      "peH": 33.189,
+      "tgt": 2079,
+      "bL": 1472,
+      "bM": 1616,
+      "bH": 1759
+    },
+    "INTC": {
+      "eps": 3.6,
+      "peL": 22.222,
+      "peM": 30.556,
+      "peH": 39.167,
+      "tgt": 176,
+      "bL": 80,
+      "bM": 110,
+      "bH": 141
+    },
+    "MRVL": {
+      "eps": 6.2,
+      "peL": 26.613,
+      "peM": 38.71,
+      "peH": 50.806,
+      "tgt": 386,
+      "bL": 165,
+      "bM": 240,
+      "bH": 315
+    },
+    "AMAT": {
+      "eps": 12.5,
+      "peL": 35.92,
+      "peM": 44.4,
+      "peH": 52.88,
+      "tgt": 741,
+      "bL": 449,
+      "bM": 555,
+      "bH": 661
+    },
+    "AVGO": {
+      "eps": 16,
+      "peL": 22.563,
+      "peM": 25.563,
+      "peH": 28.5,
+      "tgt": 493,
+      "bL": 361,
+      "bM": 409,
+      "bH": 456
+    },
+    "MSFT": {
+      "eps": 16.2,
+      "peL": 20.802,
+      "peM": 25.247,
+      "peH": 29.63,
+      "tgt": 488,
+      "bL": 337,
+      "bM": 409,
+      "bH": 480
+    },
+    "AAPL": {
+      "eps": 8.8,
+      "peL": 33.295,
+      "peM": 35.568,
+      "peH": 37.841,
+      "tgt": 344,
+      "bL": 293,
+      "bM": 313,
+      "bH": 333
+    },
+    "GOOGL": {
+      "eps": 11.5,
+      "peL": 29.217,
+      "peM": 31.304,
+      "peH": 33.304,
+      "tgt": 433,
+      "bL": 336,
+      "bM": 360,
+      "bH": 383
+    },
+    "COHR": {
+      "eps": 16.38,
+      "peL": 14.835,
+      "peM": 20.818,
+      "peH": 26.862,
+      "tgt": 515,
+      "bL": 243,
+      "bM": 341,
+      "bH": 440
+    },
+    "SSNLF": {
+      "eps": 30,
+      "peL": 6.733,
+      "peM": 9.267,
+      "peH": 11.8,
+      "tgt": null,
+      "bL": 202,
+      "bM": 278,
+      "bH": 354
+    },
+    "SKHYN": {
+      "eps": 241,
+      "peL": 5.124,
+      "peM": 8.017,
+      "peH": 10.909,
+      "tgt": null,
+      "bL": 1235,
+      "bM": 1932,
+      "bH": 2629
+    },
+    "AIXA": {
+      "eps": 2.8,
+      "peL": 10.25,
+      "peM": 15.893,
+      "peH": 21.536,
+      "tgt": null,
+      "bL": 28.7,
+      "bM": 44.5,
+      "bH": 60.3
+    },
+    "IFX": {
+      "eps": 3.2,
+      "peL": 16.156,
+      "peM": 22.125,
+      "peH": 28.125,
+      "tgt": null,
+      "bL": 51.7,
+      "bM": 70.8,
+      "bH": 90
+    },
+    "XIACF": {
+      "eps": 0.9,
+      "peL": 23.889,
+      "peM": 28.444,
+      "peH": 32.889,
+      "tgt": null,
+      "bL": 21.5,
+      "bM": 25.6,
+      "bH": 29.6
+    }
   },
   "corrMeta": {
-    "NVDA":{"memo":"High Conviction Long","src":"Portal Aug 27","ajVsCons":"+23%","consEps":13.13,"fcastErr":"0.5%"},
-    "MU":{"memo":"Added Meaningfully","src":"X Aug 28","ajVsCons":"+8%","consEps":83,"fcastErr":"—"},
-    "COHR":{"memo":"Initiate Long","src":"Portal Aug 25","ajVsCons":"+17%","consEps":13.95,"fcastErr":"—"},
-    "MRVL":{"memo":"Hold · Accumulate $166","src":"Portal Aug 28","ajVsCons":"+15%","consEps":5.4,"fcastErr":"0%"},
-    "ASML":{"memo":"Upgraded UE→UI · avg $459","src":"Cockpit Sep 1","ajVsCons":"—","fcastErr":"—"},
-    "AMD":{"memo":"3rd add $453 · avg $464","src":"X Sep 2","ajVsCons":"—","fcastErr":"—"},
-    "AMAT":{"memo":"Added $451 · avg $459","src":"X Sep 1","ajVsCons":"+5%","fcastErr":"—"},
-    "TSM":{"memo":"BUY","src":"Corridor","ajVsCons":"+5%","fcastErr":"—"},
-    "META":{"memo":"Reentered $570 → added $567","src":"X Sep 1","ajVsCons":"+5%","fcastErr":"—"},
-    "INTC":{"memo":"BUY","src":"Cockpit","ajVsCons":"+5%","fcastErr":"—"},
-    "PLTR":{"memo":"TRIM in $140s","src":"Portal","ajVsCons":"—","fcastErr":"—"},
-    "UBER":{"memo":"Upgraded DE→UE","src":"Cockpit Aug 31","ajVsCons":"—","fcastErr":"—"},
-    "MSFT":{"memo":"Downside+Expensive","src":"Cockpit","ajVsCons":"+3%","fcastErr":"—"},
-    "AAPL":{"memo":"Most Expensive Growth","src":"Corridor","ajVsCons":"+3%","fcastErr":"—"},
-    "GOOGL":{"memo":"HOLD","src":"Corridor","ajVsCons":"+3%","fcastErr":"—"},
-    "AVGO":{"memo":"EXITED at $428","src":"X","ajVsCons":"—","fcastErr":"—"},
-    "TSLA":{"memo":"BUY · Corridor unreliable","src":"Corridor","ajVsCons":"+10%","fcastErr":"—"},
-    "AMZN":{"memo":"BUY","src":"Corridor","ajVsCons":"+5%","fcastErr":"—"},
-    "XPEV":{"memo":"Constructive · 4x GP","src":"Portal Aug 24","ajVsCons":"-91%","fcastErr":"—"}
+    "NVDA": {
+      "memo": "High Conviction Long",
+      "src": "Portal Aug 27",
+      "ajVsCons": "+23%",
+      "consEps": 13.13,
+      "fcastErr": "0.5%"
+    },
+    "MU": {
+      "memo": "Added Meaningfully",
+      "src": "X Aug 28",
+      "ajVsCons": "+8%",
+      "consEps": 83,
+      "fcastErr": "—"
+    },
+    "COHR": {
+      "memo": "Initiate Long",
+      "src": "Portal Aug 25",
+      "ajVsCons": "+17%",
+      "consEps": 13.95,
+      "fcastErr": "—"
+    },
+    "MRVL": {
+      "memo": "Hold · Accumulate $166",
+      "src": "Portal Aug 28",
+      "ajVsCons": "+15%",
+      "consEps": 5.4,
+      "fcastErr": "0%"
+    },
+    "ASML": {
+      "memo": "Upgraded UE→UI · avg $459",
+      "src": "Cockpit Sep 1",
+      "ajVsCons": "—",
+      "fcastErr": "—"
+    },
+    "AMD": {
+      "memo": "3rd add $453 · avg $464",
+      "src": "X Sep 2",
+      "ajVsCons": "—",
+      "fcastErr": "—"
+    },
+    "AMAT": {
+      "memo": "Added $451 · avg $459",
+      "src": "X Sep 1",
+      "ajVsCons": "+5%",
+      "fcastErr": "—"
+    },
+    "TSM": {
+      "memo": "BUY",
+      "src": "Corridor",
+      "ajVsCons": "+5%",
+      "fcastErr": "—"
+    },
+    "META": {
+      "memo": "Reentered $570 → added $567",
+      "src": "X Sep 1",
+      "ajVsCons": "+5%",
+      "fcastErr": "—"
+    },
+    "INTC": {
+      "memo": "BUY",
+      "src": "Cockpit",
+      "ajVsCons": "+5%",
+      "fcastErr": "—"
+    },
+    "PLTR": {
+      "memo": "TRIM in $140s",
+      "src": "Portal",
+      "ajVsCons": "—",
+      "fcastErr": "—"
+    },
+    "UBER": {
+      "memo": "Upgraded DE→UE",
+      "src": "Cockpit Aug 31",
+      "ajVsCons": "—",
+      "fcastErr": "—"
+    },
+    "MSFT": {
+      "memo": "Downside+Expensive",
+      "src": "Cockpit",
+      "ajVsCons": "+3%",
+      "fcastErr": "—"
+    },
+    "AAPL": {
+      "memo": "Most Expensive Growth",
+      "src": "Corridor",
+      "ajVsCons": "+3%",
+      "fcastErr": "—"
+    },
+    "GOOGL": {
+      "memo": "HOLD",
+      "src": "Corridor",
+      "ajVsCons": "+3%",
+      "fcastErr": "—"
+    },
+    "AVGO": {
+      "memo": "EXITED at $428",
+      "src": "X",
+      "ajVsCons": "—",
+      "fcastErr": "—"
+    },
+    "TSLA": {
+      "memo": "BUY · Corridor unreliable",
+      "src": "Corridor",
+      "ajVsCons": "+10%",
+      "fcastErr": "—"
+    },
+    "AMZN": {
+      "memo": "BUY",
+      "src": "Corridor",
+      "ajVsCons": "+5%",
+      "fcastErr": "—"
+    },
+    "XPEV": {
+      "memo": "Constructive · 4x GP",
+      "src": "Portal Aug 24",
+      "ajVsCons": "-91%",
+      "fcastErr": "—"
+    }
   },
   "macro": {
     "sp500": 7712,
@@ -91,12 +664,8 @@
     "loginUrl": "https://www.ajinvestmentresearch.com/wp-login.php"
   },
   "fx": {
-    "_comment": "Conversion factors: native currency → USD P-array units. Computed as P_usd / P_native at a reference date.",
-    "ASML": 1.17,
-    "IFX": 0.752,
-    "SSNLF": 0.173,
-    "SKHYN": 0.128,
-    "AIXA": 2.016,
-    "XIACF": 0.263
+    "_comment": "Display scale applied to raw Yahoo price so it matches the units AJ quotes in. Not an FX conversion — the yahoo ticker is chosen to already return AJ's currency. Only the KRW pair needs scaling (AJ quotes thousands).",
+    "SSNLF": 0.001,
+    "SKHYN": 0.001
   }
 }

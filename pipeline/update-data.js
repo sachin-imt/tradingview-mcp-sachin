@@ -140,7 +140,8 @@ function main() {
     const corrPos = computeCorrPos(price, corridor);
     if (corrPos !== null) {
       const label = corrPos < 0.45 ? 'Attractive' : corrPos < 0.75 ? 'Fair Value' : 'Stretched';
-      console.log(`  ${stock.t.padEnd(6)} $${price.toLocaleString().padEnd(10)} ${quad.padEnd(3)} Corridor: ${(corrPos * 100).toFixed(0).padStart(3)}% ${label}`);
+      const sym = (stock.cur || '$') + price.toLocaleString() + (stock.curK ? 'k' : '');
+      console.log(`  ${stock.t.padEnd(6)} ${sym.padEnd(11)} ${quad.padEnd(3)} Corridor: ${(corrPos * 100).toFixed(0).padStart(3)}% ${label}`);
     }
   }
 

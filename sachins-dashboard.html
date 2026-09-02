@@ -464,7 +464,7 @@ canvas#ckChart{display:block;width:100%;height:auto}
       <div class="snap-wrap"><table class="snap-t" id="snapTable"><thead><tr id="snapHead"></tr></thead><tbody id="snapBody"></tbody></table></div>
     </div>
 
-    <p class="note" style="margin-top:8px">AJ Investment Research Cockpit & Corridor replica. Corridors = AJ NTM EPS &times; historical P/E range. PEG = Fwd P/E &divide; EPS growth rate. Green = AJ est; blue = consensus. Not investment advice.</p>
+    <p class="note" style="margin-top:8px">AJ Investment Research Cockpit &amp; Corridor replica. Corridors = AJ NTM EPS &times; observable P/E multiple, reconciled against AJ's Cockpit &rarr; Details view so the &plusmn;1.5&sigma;/&plusmn;1&sigma;/median bands match his published numbers. <strong>Each name is quoted in its own listing currency</strong>, as AJ does: &euro; for ASML/Infineon/Aixtron, HK$ for Xiaomi, &#8361;&thinsp;thousands for Samsung/SK Hynix, $ otherwise. PEG = Fwd P/E &divide; EPS growth rate. Green = AJ est; blue = consensus. Not investment advice.</p>
   </div>
 
   <!-- ═══ TAB 5: MACRO & WEEKLY ═══ -->
@@ -664,6 +664,15 @@ function switchCkView(v,btn){
 
 // ═══ DATA HELPERS ═══
 function pr(t,i){return P[t]?P[t][i]:null;}
+// Currency-aware money formatter. AJ quotes each name in its own listing currency
+// (€ for ASML/IFX/Aixtron, HK$ for Xiaomi, ₩ thousands for Samsung/SK Hynix).
+function curOf(t){var s=STOCKS.find(function(x){return x.t===t;});return s||{};}
+function money(t,v,dp){
+  if(v==null||isNaN(v))return '—';
+  var s=curOf(t), pre=s.cur||'$', suf=s.curK?'k':'';
+  var n=(dp!=null)?v.toFixed(dp):(v>=1000?Math.round(v).toLocaleString():(v>=100?v.toFixed(0):v.toFixed(2)));
+  return pre+n+suf;
+}
 function fmtD(d){return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
 function fmtS(d){return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});}
 
@@ -795,8 +804,8 @@ function drawCorridors(){
     var upStr=up>=0?'▲ '+Math.round(up)+'%':'▼ '+Math.round(Math.abs(up))+'%';
     var estCls=s.est==='aj'?'aj':'cons';
     var estLbl=s.est==='aj'?'AJ Est':'Cons Est';
-    var cur2=s.p>=1000?'$'+s.p.toLocaleString(undefined,{maximumFractionDigits:0}):'$'+s.p.toFixed(0);
-    var tgtP=s.tgt>=1000?'$'+s.tgt.toLocaleString(undefined,{maximumFractionDigits:0}):'$'+s.tgt.toFixed(0);
+    var cur2=money(s.t,s.p);
+    var tgtP=money(s.t,s.tgt);
     h+='<div class="cc"><div><span class="cc-name">'+s.n+'</span><div class="cc-tick">'+s.t+'</div></div><div><span class="cc-rank '+rankCls+'">'+rank+'</span></div><div class="cc-tgt"><div class="cc-tgt-d">27 August 2027</div><div><span class="cc-tgt-p">'+tgtP+'</span><span class="cc-tgt-u '+upCls+'">'+upStr+'</span></div><div class="cc-cur">Current: <b>'+cur2+'</b><span class="cc-est '+estCls+'">'+estLbl+'</span></div></div><div class="cc-spark"><canvas data-ticker="'+s.t+'" width="320" height="70"></canvas></div></div>';
   });
   grid.innerHTML=h;
@@ -895,7 +904,7 @@ function drawSparkline(canvas,ticker){
   var s2=STOCKS.find(function(s){return s.t===ticker;});
   ctx.fillStyle='rgba(238,90,58,0.3)';ctx.font='italic bold 11px IBM Plex Sans';ctx.textAlign='left';ctx.fillText(s2?s2.n:ticker,10,ch-8);
   // Tooltip with all 5 current band values for hover
-  var fmt=function(v){return v>=1000?'$'+Math.round(v).toLocaleString():'$'+v.toFixed(2);};
+  var fmt=function(v){return money(ticker,v);};
   var lastP=prices[prices.length-1].p;
   var title=(s2?s2.n:ticker)+' — corridor at '+DATES[lastPi];
   ['p15','p10','med','m10','m15'].forEach(function(bk){if(lastVals[bk]!=null){title+='\n'+labelMap[bk].t+': '+fmt(lastVals[bk]);}});
@@ -925,7 +934,7 @@ function drawCorrBars(){
   items.sort(function(a,b){return a.pos-b.pos;});
   var h='';
   items.forEach(function(c){
-    h+='<div class="corr-card2"><div class="ch"><span class="ctk">'+c.s.t+'</span><span class="cn">'+c.s.n+'</span>'+c.estBadge+'<span class="ce '+c.entryClass+'">'+c.entryLabel+' · '+c.posP+'%</span>'+(c.s.t!=='XPEV'?'<span style="font-family:var(--fm);font-size:9px;color:var(--grn);margin-left:auto">↑'+c.upside+'%</span>':'')+'</div><div class="cb-w" style="margin-top:14px"><div class="cb-z cb-zg" style="left:0;width:'+c.midPos*100+'%"></div><div class="cb-z cb-zr" style="left:'+c.midPos*100+'%;width:'+(1-c.midPos)*100+'%"></div><div class="cb-mk cb-mk-m" style="left:'+c.midPos*100+'%"></div><div class="cb-mk cb-mk-p" style="left:'+c.pos*100+'%"></div><div class="cb-pl" style="left:'+c.pos*100+'%">$'+c.p.toLocaleString()+'</div><div style="position:absolute;bottom:-12px;left:0;font-family:var(--fm);font-size:7px;color:var(--text-m)">$'+Math.round(c.low).toLocaleString()+'</div><div style="position:absolute;bottom:-12px;left:'+c.midPos*100+'%;transform:translateX(-50%);font-family:var(--fm);font-size:7px;color:var(--amb)">$'+Math.round(c.mid).toLocaleString()+'</div><div style="position:absolute;bottom:-12px;right:0;font-family:var(--fm);font-size:7px;color:var(--text-m)">$'+Math.round(c.high).toLocaleString()+'</div></div><dl class="cb-meta"><div><dt>NTM EPS</dt><dd>$'+C[c.s.t].eps+'</dd></div><div><dt>Fwd P/E</dt><dd>'+c.fpe+'x</dd></div><div><dt>P/E Range</dt><dd>'+C[c.s.t].peL+'–'+C[c.s.t].peH+'x</dd></div>'+(c.meta.ajVsCons?'<div><dt>AJ vs Cons</dt><dd>'+c.meta.ajVsCons+'</dd></div>':'')+(c.meta.memo?'<div><dt>Signal</dt><dd>'+c.meta.memo+'</dd></div>':'')+'</dl></div>';
+    h+='<div class="corr-card2"><div class="ch"><span class="ctk">'+c.s.t+'</span><span class="cn">'+c.s.n+'</span>'+c.estBadge+'<span class="ce '+c.entryClass+'">'+c.entryLabel+' · '+c.posP+'%</span>'+(c.s.t!=='XPEV'?'<span style="font-family:var(--fm);font-size:9px;color:var(--grn);margin-left:auto">↑'+c.upside+'%</span>':'')+'</div><div class="cb-w" style="margin-top:14px"><div class="cb-z cb-zg" style="left:0;width:'+c.midPos*100+'%"></div><div class="cb-z cb-zr" style="left:'+c.midPos*100+'%;width:'+(1-c.midPos)*100+'%"></div><div class="cb-mk cb-mk-m" style="left:'+c.midPos*100+'%"></div><div class="cb-mk cb-mk-p" style="left:'+c.pos*100+'%"></div><div class="cb-pl" style="left:'+c.pos*100+'%">'+money(c.s.t,c.p)+'</div><div style="position:absolute;bottom:-12px;left:0;font-family:var(--fm);font-size:7px;color:var(--text-m)">'+money(c.s.t,c.low)+'</div><div style="position:absolute;bottom:-12px;left:'+c.midPos*100+'%;transform:translateX(-50%);font-family:var(--fm);font-size:7px;color:var(--amb)">'+money(c.s.t,c.mid)+'</div><div style="position:absolute;bottom:-12px;right:0;font-family:var(--fm);font-size:7px;color:var(--text-m)">'+money(c.s.t,c.high)+'</div></div><dl class="cb-meta"><div><dt>NTM EPS</dt><dd>'+money(c.s.t,C[c.s.t].eps)+'</dd></div><div><dt>Fwd P/E</dt><dd>'+c.fpe+'x</dd></div><div><dt>P/E Range</dt><dd>'+C[c.s.t].peL+'–'+C[c.s.t].peH+'x</dd></div>'+(c.meta.ajVsCons?'<div><dt>AJ vs Cons</dt><dd>'+c.meta.ajVsCons+'</dd></div>':'')+(c.meta.memo?'<div><dt>Signal</dt><dd>'+c.meta.memo+'</dd></div>':'')+'</dl></div>';
   });
   el.innerHTML=h;
 }
@@ -1001,7 +1010,7 @@ document.getElementById('ckChart').addEventListener('mousemove',function(e){
     tt.style.display='block';tt.style.left=(hit.cx+12)+'px';tt.style.top=(hit.cy-8)+'px';
     var s=STOCKS.find(function(s){return s.t===hit.t;});
     var eb=s&&s.est==='aj'?'AJ Est':'Cons Est';
-    tt.innerHTML='<b>'+hit.t+' — '+hit.n+'</b><div class="muted">'+eb+'</div><div>$'+hit.p.toLocaleString(undefined,{maximumFractionDigits:0})+' · Fwd P/E '+hit.fpe.toFixed(1)+'x</div><div>PEG: '+hit.peg.toFixed(2)+' · Upside: '+(hit.upside>=0?'+':'')+Math.round(hit.upside*100)+'%</div>'+(hit.chg!==null?'<div>Day Chg: '+(hit.chg>=0?'+':'')+hit.chg.toFixed(1)+'%</div>':'');
+    tt.innerHTML='<b>'+hit.t+' — '+hit.n+'</b><div class="muted">'+eb+'</div><div>'+money(hit.t,hit.p)+' · Fwd P/E '+hit.fpe.toFixed(1)+'x</div><div>PEG: '+hit.peg.toFixed(2)+' · Upside: '+(hit.upside>=0?'+':'')+Math.round(hit.upside*100)+'%</div>'+(hit.chg!==null?'<div>Day Chg: '+(hit.chg>=0?'+':'')+hit.chg.toFixed(1)+'%</div>':'');
   }else tt.style.display='none';
 });
 
@@ -1013,7 +1022,18 @@ document.addEventListener('keydown',function(e){
 
 // Init
 document.getElementById('btnGhost').classList.add('on2');
-goTo(DATES.length-1);
+// Land on the most recent SUBSTANTIALLY COMPLETE session. The newest date is often
+// a partial day — non-US listings close hours before the US tape, so an in-progress
+// US session would otherwise render a near-empty cockpit.
+function lastFullIdx(){
+  var tickers=Object.keys(P);
+  for(var i=DATES.length-1;i>0;i--){
+    var filled=tickers.filter(function(t){return P[t] && P[t][i]!=null;}).length;
+    if(filled>=tickers.length/2)return i;
+  }
+  return DATES.length-1;
+}
+goTo(lastFullIdx());
 renderSnapshots();
 </script>
 
