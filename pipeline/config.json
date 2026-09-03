@@ -149,9 +149,9 @@
       "t": "AVGO",
       "n": "Broadcom",
       "est": "cons",
-      "epsGr": 25,
+      "epsGr": 55,
       "iu": 0.34,
-      "ajPeg": 0.96,
+      "ajPeg": 0.38,
       "yahoo": "AVGO"
     },
     {
@@ -432,10 +432,10 @@
       "bH": 661
     },
     "AVGO": {
-      "eps": 16,
-      "peL": 22.563,
-      "peM": 25.563,
-      "peH": 28.5,
+      "eps": 17.27,
+      "peL": 20.903,
+      "peM": 23.683,
+      "peH": 26.404,
       "tgt": 493,
       "bL": 361,
       "bM": 409,
@@ -628,8 +628,8 @@
       "fcastErr": "—"
     },
     "AVGO": {
-      "memo": "EXITED at $428",
-      "src": "X",
+      "memo": "Post-Q3 · PEG 0.38 · #1 90d entry",
+      "src": "X Sep 2",
       "ajVsCons": "—",
       "fcastErr": "—"
     },
@@ -649,6 +649,12 @@
       "memo": "Constructive · 4x GP",
       "src": "Portal Aug 24",
       "ajVsCons": "-91%",
+      "fcastErr": "—"
+    },
+    "ORCL": {
+      "memo": "ER Sep 10 · AJ expects 4–5% beat",
+      "src": "X Sep 2",
+      "ajVsCons": "—",
       "fcastErr": "—"
     }
   },

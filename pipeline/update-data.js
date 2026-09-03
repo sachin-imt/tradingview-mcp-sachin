@@ -55,18 +55,22 @@ function computeBands(config, epsData, ajDetails) {
       continue;
     }
     if (!epsSeries) continue;
-    const fx = config.fx?.[ticker] ?? 1;
+    // No fx here. `fx` is a PRICE display scale, applied once in fetch-prices.js to
+    // bring the raw Yahoo quote into the units AJ publishes in. eps and the multiples
+    // are both already expressed in those same units (both derive from AJ's Details
+    // view), so eps x multiple lands in AJ's units directly. Applying fx again would
+    // rescale the bands a second time and detach them from the price.
     const out = { m15: [], m10: [], med: [], p10: [], p15: [] };
     for (let i = 0; i < dates.length; i++) {
       const e = epsSeries[i];
       if (e == null) {
         Object.keys(out).forEach(k => out[k].push(null));
       } else {
-        out.m15.push(e * mult.m15 * fx);
-        out.m10.push(e * mult.m10 * fx);
-        out.med.push(e * mult.med * fx);
-        out.p10.push(e * mult.p10 * fx);
-        out.p15.push(e * mult.p15 * fx);
+        out.m15.push(e * mult.m15);
+        out.m10.push(e * mult.m10);
+        out.med.push(e * mult.med);
+        out.p10.push(e * mult.p10);
+        out.p15.push(e * mult.p15);
       }
     }
     bands[ticker] = out;
@@ -187,30 +191,38 @@ function main() {
   }
   const oldDateSet = new Set(epsData.dates);
   const newDates = dates.filter(d => !oldDateSet.has(d));
-  if (newDates.length > 0 || epsData.dates.length !== dates.length) {
+  {
     const oldEps = epsData.eps;
-    const oldDates = epsData.dates;
-    const dateToIdx = new Map(oldDates.map((d, i) => [d, i]));
+    const dateToIdx = new Map(epsData.dates.map((d, i) => [d, i]));
     const newEps = {};
+    const revised = [];
+    const lastIdxOut = dates.length - 1;
     for (const [ticker, corridor] of Object.entries(config.corridors)) {
       const ajEps = ajDetails?.stocks?.[ticker]?.eps;
       const currentEps = ajEps != null ? ajEps : corridor.eps;
       if (currentEps == null) continue;
-      const series = dates.map(d => {
+      const series = dates.map((d, i) => {
+        // The newest date always reflects the current estimate, so a revision in
+        // config (or a fresh AJ Details scrape) takes effect immediately and the
+        // band slopes from that point. Earlier dates keep what they had.
+        if (i === lastIdxOut) return currentEps;
         const idx = dateToIdx.get(d);
         if (idx != null && oldEps[ticker]?.[idx] != null) return oldEps[ticker][idx];
-        return currentEps; // carry forward from AJ Details (preferred) or config
+        return currentEps;
       });
+      const prev = oldEps[ticker]?.[dateToIdx.get(dates[lastIdxOut])];
+      if (prev != null && prev !== currentEps) revised.push(`${ticker} ${prev}→${currentEps}`);
       newEps[ticker] = series;
     }
     epsData = {
       dates,
       eps: newEps,
       lastUpdated: new Date().toISOString(),
-      _comment: 'NTM EPS estimates per stock per date, in native currency. Maintained by update-data.js: new dates use current config.corridors[t].eps, older dates preserved.'
+      _comment: 'NTM EPS estimates per stock per date, in native currency. Maintained by update-data.js: the newest date always takes the current estimate (AJ Details scrape if present, else config.corridors[t].eps); earlier dates are preserved so revisions slope the bands forward rather than rewriting history.'
     };
     writeFileSync(epsPath, JSON.stringify(epsData, null, 2));
-    console.log(`Synced ${epsPath}: ${Object.keys(newEps).length} tickers × ${dates.length} dates (${newDates.length} new)`);
+    console.log(`Synced ${epsPath}: ${Object.keys(newEps).length} tickers × ${dates.length} dates (${newDates.length} new)`
+      + (revised.length ? `; EPS revised: ${revised.join(', ')}` : ''));
   }
 
   // Compute bands time series from eps × P/E multiples × fx (AJ Details preferred)
