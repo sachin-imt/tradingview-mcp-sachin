@@ -1270,6 +1270,6 @@
       0.9
     ]
   },
-  "lastUpdated": "2026-09-04T23:29:59.490Z",
+  "lastUpdated": "2026-09-05T23:25:57.059Z",
   "_comment": "NTM EPS estimates per stock per date, in native currency. Maintained by update-data.js: the newest date always takes the current estimate (AJ Details scrape if present, else config.corridors[t].eps); earlier dates are preserved so revisions slope the bands forward rather than rewriting history."
 }
