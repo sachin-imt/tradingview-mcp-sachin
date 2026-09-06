@@ -16,7 +16,7 @@
       "epsGr": 85,
       "iu": 0.47,
       "ajPeg": 0.21,
-      "yahoo": "WDC"
+      "yahoo": "SNDK"
     },
     {
       "t": "LITE",
@@ -150,7 +150,7 @@
       "n": "Broadcom",
       "est": "cons",
       "epsGr": 55,
-      "iu": 0.34,
+      "iu": 0.74,
       "ajPeg": 0.38,
       "yahoo": "AVGO"
     },
@@ -273,263 +273,263 @@
   "corridors": {
     "MU": {
       "eps": 90,
-      "peL": 9.022,
-      "peM": 10.978,
-      "peH": 12.933,
+      "peL": 9.044,
+      "peM": 10.922,
+      "peH": 12.811,
       "tgt": 1307,
-      "bL": 812,
-      "bM": 988,
-      "bH": 1164
+      "bL": 814,
+      "bM": 983,
+      "bH": 1153
     },
     "SNDK": {
       "eps": 52,
-      "peL": 22.154,
-      "peM": 32.346,
-      "peH": 42.538,
+      "peL": 22.058,
+      "peM": 32.25,
+      "peH": 42.442,
       "tgt": 2219,
-      "bL": 1152,
-      "bM": 1682,
-      "bH": 2212
+      "bL": 1147,
+      "bM": 1677,
+      "bH": 2207
     },
     "LITE": {
       "eps": 23.29,
-      "peL": 31.687,
-      "peM": 38.557,
-      "peH": 45.384,
+      "peL": 33.061,
+      "peM": 38.901,
+      "peH": 44.783,
       "tgt": 1695,
-      "bL": 738,
-      "bM": 898,
-      "bH": 1057
+      "bL": 770,
+      "bM": 906,
+      "bH": 1043
     },
     "ORCL": {
       "eps": 8.3,
-      "peL": 12.048,
+      "peL": 13.494,
       "peM": 17.831,
-      "peH": 23.614,
+      "peH": 22.048,
       "tgt": 199,
-      "bL": 100,
+      "bL": 112,
       "bM": 148,
-      "bH": 196
+      "bH": 183
     },
     "META": {
       "eps": 30.5,
-      "peL": 17.836,
+      "peL": 17.902,
       "peM": 19.607,
-      "peH": 21.377,
+      "peH": 21.344,
       "tgt": 718,
-      "bL": 544,
+      "bL": 546,
       "bM": 598,
-      "bH": 652
+      "bH": 651
     },
     "NVDA": {
       "eps": 16.16,
-      "peL": 12.748,
-      "peM": 13.676,
-      "peH": 14.666,
+      "peL": 13.057,
+      "peM": 13.8,
+      "peH": 14.604,
       "tgt": 369,
-      "bL": 206,
-      "bM": 221,
-      "bH": 237
+      "bL": 211,
+      "bM": 223,
+      "bH": 236
     },
     "UBER": {
       "eps": 3.69,
-      "peL": 18.672,
-      "peM": 19.919,
-      "peH": 21.138,
+      "peL": 18.97,
+      "peM": 20.19,
+      "peH": 21.409,
       "tgt": 78,
-      "bL": 68.9,
-      "bM": 73.5,
-      "bH": 78
+      "bL": 70,
+      "bM": 74.5,
+      "bH": 79
     },
     "TSLA": {
       "eps": 4.8,
-      "peL": 68.125,
-      "peM": 83.75,
-      "peH": 99.167,
+      "peL": 63.958,
+      "peM": 78.542,
+      "peH": 93.125,
       "tgt": 852,
-      "bL": 327,
-      "bM": 402,
-      "bH": 476
+      "bL": 307,
+      "bM": 377,
+      "bH": 447
     },
     "AMZN": {
       "eps": 7.8,
-      "peL": 30.513,
+      "peL": 30.641,
       "peM": 32.949,
       "peH": 35.256,
       "tgt": 322,
-      "bL": 238,
+      "bL": 239,
       "bM": 257,
       "bH": 275
     },
     "TSM": {
       "eps": 22.5,
       "peL": 17.733,
-      "peM": 19.333,
-      "peH": 20.889,
+      "peM": 19.244,
+      "peH": 20.756,
       "tgt": 551,
       "bL": 399,
-      "bM": 435,
-      "bH": 470
+      "bM": 433,
+      "bH": 467
     },
     "PLTR": {
       "eps": 2.46,
       "peL": 46.748,
-      "peM": 58.943,
-      "peH": 71.138,
+      "peM": 59.756,
+      "peH": 72.358,
       "tgt": 221,
       "bL": 115,
-      "bM": 145,
-      "bH": 175
+      "bM": 147,
+      "bH": 178
     },
     "AMD": {
       "eps": 11.82,
-      "peL": 40.44,
-      "peM": 47.462,
-      "peH": 54.399,
+      "peL": 39.425,
+      "peM": 46.701,
+      "peH": 53.892,
       "tgt": 902,
-      "bL": 478,
-      "bM": 561,
-      "bH": 643
+      "bL": 466,
+      "bM": 552,
+      "bH": 637
     },
     "ASML": {
       "eps": 53,
-      "peL": 27.774,
-      "peM": 30.491,
-      "peH": 33.189,
+      "peL": 27.547,
+      "peM": 30.509,
+      "peH": 33.491,
       "tgt": 2079,
-      "bL": 1472,
-      "bM": 1616,
-      "bH": 1759
+      "bL": 1460,
+      "bM": 1617,
+      "bH": 1775
     },
     "INTC": {
       "eps": 3.6,
-      "peL": 22.222,
-      "peM": 30.556,
-      "peH": 39.167,
+      "peL": 20.833,
+      "peM": 29.722,
+      "peH": 38.611,
       "tgt": 176,
-      "bL": 80,
-      "bM": 110,
-      "bH": 141
+      "bL": 75,
+      "bM": 107,
+      "bH": 139
     },
     "MRVL": {
       "eps": 6.2,
-      "peL": 26.613,
-      "peM": 38.71,
-      "peH": 50.806,
+      "peL": 26.29,
+      "peM": 37.581,
+      "peH": 48.871,
       "tgt": 386,
-      "bL": 165,
-      "bM": 240,
-      "bH": 315
+      "bL": 163,
+      "bM": 233,
+      "bH": 303
     },
     "AMAT": {
       "eps": 12.5,
-      "peL": 35.92,
-      "peM": 44.4,
-      "peH": 52.88,
+      "peL": 35.04,
+      "peM": 44.32,
+      "peH": 53.68,
       "tgt": 741,
-      "bL": 449,
-      "bM": 555,
-      "bH": 661
+      "bL": 438,
+      "bM": 554,
+      "bH": 671
     },
     "AVGO": {
-      "eps": 17.27,
-      "peL": 20.903,
-      "peM": 23.683,
-      "peH": 26.404,
-      "tgt": 493,
-      "bL": 361,
-      "bM": 409,
-      "bH": 456
+      "eps": 17.25,
+      "peL": 21.391,
+      "peM": 23.362,
+      "peH": 25.333,
+      "tgt": 628,
+      "bL": 369,
+      "bM": 403,
+      "bH": 437
     },
     "MSFT": {
       "eps": 16.2,
-      "peL": 20.802,
-      "peM": 25.247,
-      "peH": 29.63,
+      "peL": 20.617,
+      "peM": 25.309,
+      "peH": 29.938,
       "tgt": 488,
-      "bL": 337,
-      "bM": 409,
-      "bH": 480
+      "bL": 334,
+      "bM": 410,
+      "bH": 485
     },
     "AAPL": {
       "eps": 8.8,
       "peL": 33.295,
       "peM": 35.568,
-      "peH": 37.841,
+      "peH": 37.955,
       "tgt": 344,
       "bL": 293,
       "bM": 313,
-      "bH": 333
+      "bH": 334
     },
     "GOOGL": {
       "eps": 11.5,
-      "peL": 29.217,
-      "peM": 31.304,
-      "peH": 33.304,
+      "peL": 29.13,
+      "peM": 31.13,
+      "peH": 33.217,
       "tgt": 433,
-      "bL": 336,
-      "bM": 360,
-      "bH": 383
+      "bL": 335,
+      "bM": 358,
+      "bH": 382
     },
     "COHR": {
       "eps": 16.38,
-      "peL": 14.835,
-      "peM": 20.818,
-      "peH": 26.862,
+      "peL": 15.079,
+      "peM": 20.757,
+      "peH": 26.435,
       "tgt": 515,
-      "bL": 243,
-      "bM": 341,
-      "bH": 440
+      "bL": 247,
+      "bM": 340,
+      "bH": 433
     },
     "SSNLF": {
       "eps": 30,
-      "peL": 6.733,
-      "peM": 9.267,
-      "peH": 11.8,
+      "peL": 6.767,
+      "peM": 9.1,
+      "peH": 11.433,
       "tgt": null,
-      "bL": 202,
-      "bM": 278,
-      "bH": 354
+      "bL": 203,
+      "bM": 273,
+      "bH": 343
     },
     "SKHYN": {
       "eps": 241,
-      "peL": 5.124,
-      "peM": 8.017,
-      "peH": 10.909,
+      "peL": 4.9,
+      "peM": 7.805,
+      "peH": 10.705,
       "tgt": null,
-      "bL": 1235,
-      "bM": 1932,
-      "bH": 2629
+      "bL": 1181,
+      "bM": 1881,
+      "bH": 2580
     },
     "AIXA": {
       "eps": 2.8,
-      "peL": 10.25,
-      "peM": 15.893,
-      "peH": 21.536,
+      "peL": 9.964,
+      "peM": 15.393,
+      "peH": 20.821,
       "tgt": null,
-      "bL": 28.7,
-      "bM": 44.5,
-      "bH": 60.3
+      "bL": 27.9,
+      "bM": 43.1,
+      "bH": 58.3
     },
     "IFX": {
       "eps": 3.2,
-      "peL": 16.156,
-      "peM": 22.125,
-      "peH": 28.125,
+      "peL": 15.313,
+      "peM": 21.031,
+      "peH": 26.75,
       "tgt": null,
-      "bL": 51.7,
-      "bM": 70.8,
-      "bH": 90
+      "bL": 49,
+      "bM": 67.3,
+      "bH": 85.6
     },
     "XIACF": {
       "eps": 0.9,
-      "peL": 23.889,
-      "peM": 28.444,
-      "peH": 32.889,
+      "peL": 24.444,
+      "peM": 28.889,
+      "peH": 33.444,
       "tgt": null,
-      "bL": 21.5,
-      "bM": 25.6,
-      "bH": 29.6
+      "bL": 22,
+      "bM": 26,
+      "bH": 30.1
     }
   },
   "corrMeta": {
@@ -541,8 +541,8 @@
       "fcastErr": "0.5%"
     },
     "MU": {
-      "memo": "Added Meaningfully",
-      "src": "X Aug 28",
+      "memo": "Top performer +9% · cheapest PEG",
+      "src": "Weekly Sep 6",
       "ajVsCons": "+8%",
       "consEps": 83,
       "fcastErr": "—"
@@ -562,8 +562,8 @@
       "fcastErr": "0%"
     },
     "ASML": {
-      "memo": "Upgraded UE→UI · avg $459",
-      "src": "Cockpit Sep 1",
+      "memo": "Back to Upside+Expensive",
+      "src": "Cockpit Sep 4",
       "ajVsCons": "—",
       "fcastErr": "—"
     },
@@ -598,8 +598,8 @@
       "fcastErr": "—"
     },
     "PLTR": {
-      "memo": "TRIM in $140s",
-      "src": "Portal",
+      "memo": "Least attractive entry (1Y + 90D)",
+      "src": "Weekly Sep 6",
       "ajVsCons": "—",
       "fcastErr": "—"
     },
@@ -628,14 +628,15 @@
       "fcastErr": "—"
     },
     "AVGO": {
-      "memo": "Post-Q3 · PEG 0.38 · #1 90d entry",
-      "src": "X Sep 2",
-      "ajVsCons": "—",
-      "fcastErr": "—"
+      "memo": "Post-Q3 memo · 12mo $628 (+74%)",
+      "src": "Portal Sep 3",
+      "ajVsCons": "-6% FY27",
+      "consEps": 19.57,
+      "fcastErr": "0.1%"
     },
     "TSLA": {
-      "memo": "BUY · Corridor unreliable",
-      "src": "Corridor",
+      "memo": "Top upside but corridor unreliable",
+      "src": "Weekly Sep 6",
       "ajVsCons": "+10%",
       "fcastErr": "—"
     },
@@ -659,10 +660,10 @@
     }
   },
   "macro": {
-    "sp500": 7712,
-    "fwdPE": 19.5,
-    "outlook": "Bullish — AI capex super-cycle · Aug CPI (Sep 11) may surprise favorably",
-    "bearTrigger": "BB spreads > 200bps (currently 153bps) or hot Aug CPI on Sep 11"
+    "sp500": 7719,
+    "fwdPE": 19.3,
+    "outlook": "Bullish — S&P fwd P/E 19.3x, below -1.0 SD vs 3yr",
+    "bearTrigger": "Hot Aug CPI (Sep 11) or BB spreads > 200bps"
   },
   "aj": {
     "cockpitUrl": "https://www.ajinvestmentresearch.com/cockpit/",
