@@ -105,7 +105,17 @@ function main() {
     } else {
       html = html.replace(/(const CORR_META=\{[\s\S]*?\};)/, `$1\n\nconst BANDS={\n${bLines}\n};`);
     }
-    console.log(`Injected bands time series: ${Object.keys(bandsData.bands).length} tickers × ${bandsData.dates.length} dates × 5 σ-bands`);
+
+    // Parallel 12-month corridor series
+    const b1yLines = Object.entries(bandsData.bands1y || {})
+      .map(([k, v]) => `  ${k}:${JSON.stringify(v)}`)
+      .join(',\n');
+    if (/const BANDS1Y=\{[\s\S]*?\};/.test(html)) {
+      html = html.replace(/const BANDS1Y=\{[\s\S]*?\};/, `const BANDS1Y={\n${b1yLines}\n};`);
+    } else {
+      html = html.replace(/(const BANDS=\{[\s\S]*?\};)/, `$1\n\nconst BANDS1Y={\n${b1yLines}\n};`);
+    }
+    console.log(`Injected bands: ${Object.keys(bandsData.bands).length} tickers 90-day + ${Object.keys(bandsData.bands1y || {}).length} tickers 12-month × ${bandsData.dates.length} dates`);
   }
 
   // Strip artifact frame-runtime wrapper if present (from Claude artifact export)

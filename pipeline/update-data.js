@@ -32,6 +32,30 @@ function deriveMultiples(peL, peM, peH) {
 // Compute daily 5-band time series in USD-equivalent for all stocks.
 // Prefer AJ Details data (exact 5 multiples + EPS) when available; fall back to
 // config-interpolated multiples otherwise.
+// AJ publishes two corridors per name: one built on the median forward multiple
+// observed over the last 90 days, one over the last 12 months. They routinely
+// disagree (Micron is -30% on the 12-month view and +28% on the 90-day), so both
+// are carried through the pipeline as parallel series.
+function computeBands1y(config, epsData) {
+  const dates = epsData.dates;
+  const bands = {};
+  for (const [ticker, corridor] of Object.entries(config.corridors)) {
+    if (corridor.peL1y == null || corridor.peM1y == null || corridor.peH1y == null) continue;
+    const epsSeries = epsData.eps[ticker];
+    if (!epsSeries) continue;
+    const mult = deriveMultiples(corridor.peL1y, corridor.peM1y, corridor.peH1y);
+    const out = { m15: [], m10: [], med: [], p10: [], p15: [] };
+    for (let i = 0; i < dates.length; i++) {
+      const e = epsSeries[i];
+      if (e == null) { Object.keys(out).forEach(k => out[k].push(null)); continue; }
+      out.m15.push(e * mult.m15); out.m10.push(e * mult.m10); out.med.push(e * mult.med);
+      out.p10.push(e * mult.p10); out.p15.push(e * mult.p15);
+    }
+    bands[ticker] = out;
+  }
+  return bands;
+}
+
 function computeBands(config, epsData, ajDetails) {
   const dates = epsData.dates;
   const bands = {};
@@ -261,10 +285,11 @@ function main() {
       + (revised.length ? `; EPS revised: ${revised.join(', ')}` : ''));
   }
 
-  // Compute bands time series from eps × P/E multiples × fx (AJ Details preferred)
+  // Compute both corridor series: 90-day (default) and 12-month
   const bandsData = computeBands(config, epsData, ajDetails);
+  bandsData.bands1y = computeBands1y(config, epsData);
   writeFileSync(bandsPath, JSON.stringify(bandsData, null, 2));
-  console.log(`Wrote ${bandsPath}: ${Object.keys(bandsData.bands).length} tickers × ${bandsData.dates.length} dates × 5 σ-bands (${bandsData.source})`);
+  console.log(`Wrote ${bandsPath}: ${Object.keys(bandsData.bands).length} tickers 90-day + ${Object.keys(bandsData.bands1y).length} tickers 12-month × ${bandsData.dates.length} dates × 5 σ-bands`);
 }
 
 main();

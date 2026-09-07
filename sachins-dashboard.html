@@ -205,9 +205,9 @@ canvas#ckChart{display:block;width:100%;height:auto}
 .qb-chip{font-family:var(--fm);font-size:8px;padding:1px 5px;border-radius:3px;background:var(--bg3);border:1px solid var(--bdr);color:var(--text)}
 
 /* Corridor card grid */
-.corr-hdr{background:var(--bg2);border:1px solid var(--bdr);border-radius:6px 6px 0 0;padding:7px 10px;display:grid;grid-template-columns:170px 44px 1fr 320px;gap:6px;align-items:center;font-family:var(--fm);font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-m)}
+.corr-hdr{background:var(--bg2);border:1px solid var(--bdr);border-radius:6px 6px 0 0;padding:6px 10px;display:grid;grid-template-columns:132px 40px 150px 1fr 40px 150px 1fr;gap:6px;align-items:center;font-family:var(--fm);font-size:7.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-m)}
 .corr-grid2{display:flex;flex-direction:column;gap:1px}
-.cc{background:var(--bg2);border:1px solid var(--bdr);padding:8px 10px;display:grid;grid-template-columns:170px 44px 1fr 320px;gap:6px;align-items:center;transition:background .15s}
+.cc{background:var(--bg2);border:1px solid var(--bdr);padding:8px 10px;display:grid;grid-template-columns:132px 40px 150px 1fr 40px 150px 1fr;gap:6px;align-items:center;transition:background .15s}
 .cc:hover{background:var(--bg3)}
 .cc:last-child{border-radius:0 0 6px 6px}
 .cc-name{font-family:var(--fu);font-weight:700;font-size:13px;color:var(--org);line-height:1.2}
@@ -223,7 +223,7 @@ canvas#ckChart{display:block;width:100%;height:auto}
 .cc-est{display:inline-block;font-size:7px;padding:1px 3px;border-radius:2px;margin-left:3px;text-transform:uppercase;letter-spacing:.04em}
 .cc-est.aj{background:var(--grn-d);color:var(--grn)}
 .cc-est.cons{background:var(--blue-d);color:var(--blue)}
-.cc-spark canvas{display:block;width:100%;height:120px;border-radius:4px}
+.cc-spark canvas{display:block;width:100%;height:96px;border-radius:4px}
 .corr-legend{background:linear-gradient(180deg,#1e2745 0%,#242e50 100%);border:1px solid #2a3444;border-radius:6px;padding:10px 14px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;color:#e6ebf5;font-family:var(--fu);font-size:11px;line-height:1.4}
 .corr-legend .cl-title{font-family:var(--fm);font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#a8b3d1;margin-right:4px;width:100%;margin-bottom:2px}
 .corr-legend .cl-key{display:flex;align-items:center;gap:6px}
@@ -233,6 +233,10 @@ canvas#ckChart{display:block;width:100%;height:auto}
 .corr-legend .cl-lbl{font-size:11px}
 .corr-legend .cl-lbl b{font-weight:700}
 
+.corr-look{display:grid;grid-template-columns:132px 40px 150px 1fr 40px 150px 1fr;gap:6px;padding:0 10px 4px;font-family:var(--fm);font-size:8px;letter-spacing:.06em;text-transform:uppercase}
+.corr-look .cl-a{grid-column:2 / 5;text-align:center;color:var(--amb);background:var(--amb-d);border-radius:4px;padding:3px 0;font-weight:600}
+.corr-look .cl-b{grid-column:5 / 8;text-align:center;color:var(--cyn);background:rgba(6,182,212,.12);border-radius:4px;padding:3px 0;font-weight:600}
+.cc-rank.na{background:var(--bg3);color:var(--text-m)}
 .ck-view{display:none}.ck-view.show{display:block}
 
 /* Cockpit daily snapshots (from signal tracker Tab 4) */
@@ -460,9 +464,10 @@ canvas#ckChart{display:block;width:100%;height:auto}
         <div class="cl-key"><span class="cl-swatch cl-dash" style="background:transparent;border-top:2px solid #ee5a3a"></span><span class="cl-lbl"><b>Red</b> outer bands = ±1.5σ (rarely-seen extremes)</span></div>
         <div class="cl-key"><span class="cl-swatch cl-dash" style="background:transparent;border-top:2px solid #7ab88f"></span><span class="cl-lbl"><b>Green</b> inner bands = ±1σ (normal range)</span></div>
         <div class="cl-key"><span class="cl-swatch cl-dashline"></span><span class="cl-lbl">Dashed white = median (fair value)</span></div>
-        <div class="cl-key"><span class="cl-lbl" style="color:var(--text-m)">Rule: buy near red-low, trim near red-high. Bands = NTM EPS × historical P/E range × FX.</span></div>
+        <div class="cl-key"><span class="cl-lbl" style="color:var(--text-m)">Rule: buy near red-low, trim near red-high. Bands = NTM EPS × AJ's observable P/E range, in each name's listing currency.</span></div>
       </div>
-      <div class="corr-hdr"><span>Company</span><span>Rank</span><span>1-Year Target Price</span><span>Share Price Corridor</span></div>
+      <div class="corr-look"><span></span><span class="cl-a">Last 12-months median forward multiple</span><span class="cl-b">Last 90-days median forward multiple</span></div>
+      <div class="corr-hdr"><span>Company</span><span>Rank</span><span>1-Year Target</span><span>Share Price Corridor</span><span>Rank</span><span>1-Year Target</span><span>Share Price Corridor</span></div>
       <div class="corr-grid2" id="corrGrid"></div>
     </div>
 
@@ -691,8 +696,9 @@ function curOf(t){var s=STOCKS.find(function(x){return x.t===t;});return s||{};}
 function money(t,v,dp){
   if(v==null||isNaN(v))return '—';
   var s=curOf(t), pre=s.cur||'$', suf=s.curK?'k':'';
-  var n=(dp!=null)?v.toFixed(dp):(v>=1000?Math.round(v).toLocaleString():(v>=100?v.toFixed(0):v.toFixed(2)));
-  return pre+n+suf;
+  var neg=v<0, a=Math.abs(v);
+  var n=(dp!=null)?a.toFixed(dp):(a>=1000?Math.round(a).toLocaleString():(a>=100?a.toFixed(0):a.toFixed(2)));
+  return (neg?'−':'')+pre+n+suf;
 }
 function fmtD(d){return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
 function fmtS(d){return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});}
@@ -804,41 +810,64 @@ function updateSidebar(cur){
 }
 
 // ═══ CORRIDORS GRID ═══
+// Mirrors AJ's Dashboard: each name gets two blocks — the corridor built on the
+// last 12-months median forward multiple, and the one on the last 90 days. The
+// two often disagree sharply, which is the point of showing them together.
 function drawCorridors(){
   var grid=document.getElementById('corrGrid');
   var all=[];
   STOCKS.forEach(function(s){
     var c=C[s.t];if(!c)return;
     var p=pr(s.t,curIdx);if(!p)return;
-    var cL=c.bL||(c.eps*c.peL),cM=c.bM||(c.eps*c.peM),cH=c.bH||(c.eps*c.peH);
-    var tgt=(s.iu!=null)?p*(1+s.iu):(c.tgt||cH);
-    var upside=(s.iu!=null)?s.iu:((tgt-p)/p);
-    all.push(Object.assign({},s,{p:p,cL:cL,cM:cM,cH:cH,tgt:tgt,upside:upside,fpe:p/c.eps}));
+    all.push(Object.assign({},s,{p:p,c:c,fpe:p/c.eps}));
   });
-  all.sort(function(a,b){return b.upside-a.upside;});
+  // Sort by AJ's own 12-month ranking so the grid reads like his page.
+  all.sort(function(a,b){
+    var ra=a.c.rank1y!=null?a.c.rank1y:999, rb=b.c.rank1y!=null?b.c.rank1y:999;
+    return ra-rb;
+  });
+  // One block = rank pill + target/upside + sparkline, for one lookback.
+  function block(s,view){
+    var c=s.c, is1y=view==='1y';
+    var rank=is1y?c.rank1y:c.rank90;
+    var tgt=is1y?c.tgt1y:c.tgt;
+    var rankCls=rank==null?'na':rank<=8?'top':rank<=18?'mid':'low';
+    var rankTxt=rank==null?'—':rank;
+    var tgtHtml, upHtml;
+    if(tgt==null){
+      tgtHtml='<span class="cc-tgt-p" style="color:var(--text-m)">—</span>'; upHtml='';
+    }else{
+      var up=(tgt-s.p)/s.p*100;
+      var upCls=up>=0?'pos':'neg';
+      var upStr=(up>=0?'▲ ':'▼ ')+Math.round(Math.abs(up))+'%';
+      tgtHtml='<span class="cc-tgt-p">'+money(s.t,tgt)+'</span>';
+      upHtml='<span class="cc-tgt-u '+upCls+'">'+upStr+'</span>';
+    }
+    return '<div><span class="cc-rank '+rankCls+'">'+rankTxt+'</span></div>'+
+      '<div class="cc-tgt"><div class="cc-tgt-d">7 September 2027</div><div>'+tgtHtml+upHtml+'</div></div>'+
+      '<div class="cc-spark"><canvas data-ticker="'+s.t+'" data-view="'+view+'" width="320" height="96"></canvas></div>';
+  }
   var h='';
-  all.forEach(function(s,i){
-    var rank=i+1;
-    var rankCls=rank<=8?'top':rank<=18?'mid':'low';
-    var up=s.upside*100;
-    var upCls=up>=0?'pos':'neg';
-    var upStr=up>=0?'▲ '+Math.round(up)+'%':'▼ '+Math.round(Math.abs(up))+'%';
+  all.forEach(function(s){
     var estCls=s.est==='aj'?'aj':'cons';
     var estLbl=s.est==='aj'?'AJ Est':'Cons Est';
-    var cur2=money(s.t,s.p);
-    var tgtP=money(s.t,s.tgt);
-    h+='<div class="cc"><div><span class="cc-name">'+s.n+'</span><div class="cc-tick">'+s.t+'</div></div><div><span class="cc-rank '+rankCls+'">'+rank+'</span></div><div class="cc-tgt"><div class="cc-tgt-d">27 August 2027</div><div><span class="cc-tgt-p">'+tgtP+'</span><span class="cc-tgt-u '+upCls+'">'+upStr+'</span></div><div class="cc-cur">Current: <b>'+cur2+'</b><span class="cc-est '+estCls+'">'+estLbl+'</span></div></div><div class="cc-spark"><canvas data-ticker="'+s.t+'" width="320" height="70"></canvas></div></div>';
+    h+='<div class="cc"><div><span class="cc-name">'+s.n+'</span><div class="cc-tick">'+s.t+'</div>'+
+       '<div class="cc-cur">'+money(s.t,s.p)+' <span class="cc-est '+estCls+'">'+estLbl+'</span></div></div>'+
+       block(s,'1y')+block(s,'90')+'</div>';
   });
   grid.innerHTML=h;
   requestAnimationFrame(function(){
-    grid.querySelectorAll('canvas[data-ticker]').forEach(function(cvs){drawSparkline(cvs,cvs.dataset.ticker);});
+    grid.querySelectorAll('canvas[data-ticker]').forEach(function(cvs){
+      drawSparkline(cvs,cvs.dataset.ticker,cvs.dataset.view);
+    });
   });
 }
 
-function drawSparkline(canvas,ticker){
+function drawSparkline(canvas,ticker,view){
+  view=view||'90';
   var ctx=canvas.getContext('2d');
   var dpr=window.devicePixelRatio||1;
-  var cw=320,ch=120;
+  var cw=320,ch=96;
   canvas.width=cw*dpr;canvas.height=ch*dpr;
   canvas.style.width=cw+'px';canvas.style.height=ch+'px';
   ctx.scale(dpr,dpr);
@@ -849,9 +878,12 @@ function drawSparkline(canvas,ticker){
   if(!prices.length)return;
   // Prefer BANDS time series (sloped bands from eps × pe multiples × fx per date)
   // Fall back to flat bands from C if BANDS not injected
-  var hasBANDS=typeof BANDS!=='undefined'&&BANDS[ticker];
-  var bandSeries=hasBANDS?BANDS[ticker]:null;
-  var flat_m15=c.bL||(c.eps*c.peL), flat_med=c.bM||(c.eps*c.peM), flat_p15=c.bH||(c.eps*c.peH);
+  var is1y=view==='1y';
+  var src=is1y?(typeof BANDS1Y!=='undefined'?BANDS1Y:null):(typeof BANDS!=='undefined'?BANDS:null);
+  var hasBANDS=!!(src&&src[ticker]);
+  var bandSeries=hasBANDS?src[ticker]:null;
+  var flat_m15=is1y?c.bL1y:(c.bL||(c.eps*c.peL)), flat_med=is1y?c.bM1y:(c.bM||(c.eps*c.peM)), flat_p15=is1y?c.bH1y:(c.bH||(c.eps*c.peH));
+  if(flat_m15==null||flat_med==null||flat_p15==null){if(!hasBANDS)return;}
   var flat_m10=flat_m15+(flat_med-flat_m15)*(1/3);
   var flat_p10=flat_med+(flat_p15-flat_med)*(2/3);
   // Extract all band values within the visible window
@@ -862,7 +894,10 @@ function drawSparkline(canvas,ticker){
     bandValsInRange=[flat_m15,flat_p15];
   }
   var allVals=prices.map(function(p){return p.p;}).concat(bandValsInRange);
-  var mn=Math.min.apply(null,allVals)*0.95,mx=Math.max.apply(null,allVals)*1.05;
+  // AJ's method can push a lower band below zero on names that re-rated hard
+  // (SanDisk's 12-month -1.5σ computes to -51). Floor the axis at zero so one
+  // degenerate band cannot compress the rest of the chart into a sliver.
+  var mn=Math.max(0,Math.min.apply(null,allVals)*0.95),mx=Math.max.apply(null,allVals)*1.05;
   var pad2={l:6,r:6,t:8,b:8};
   var pw=cw-pad2.l-pad2.r,ph=ch-pad2.t-pad2.b;
   var yOf=function(v){return pad2.t+ph*(1-(v-mn)/(mx-mn));};
@@ -927,7 +962,7 @@ function drawSparkline(canvas,ticker){
   // Tooltip with all 5 current band values for hover
   var fmt=function(v){return money(ticker,v);};
   var lastP=prices[prices.length-1].p;
-  var title=(s2?s2.n:ticker)+' — corridor at '+DATES[lastPi];
+  var title=(s2?s2.n:ticker)+' — '+(is1y?'12-month':'90-day')+' corridor at '+DATES[lastPi];
   ['p15','p10','med','m10','m15'].forEach(function(bk){if(lastVals[bk]!=null){title+='\n'+labelMap[bk].t+': '+fmt(lastVals[bk]);}});
   title+='\nPrice: '+fmt(lastP);
   canvas.title=title;
