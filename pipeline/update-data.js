@@ -149,15 +149,51 @@ function main() {
     }
   }
 
-  // Append today's snapshot (avoid duplicates)
+  // Append today's snapshot — or overwrite it if we already wrote one for this
+  // date. The daily cron often runs before every market has settled, so a first
+  // pass can record OOS for names whose price simply had not landed yet. Letting
+  // a later run rewrite the same date lets those self-correct instead of being
+  // frozen in permanently.
   const todayLabel = new Date(today + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  if (!snapData.dates.includes(todayLabel)) {
+  const existingIdx = snapData.dates.indexOf(todayLabel);
+  if (existingIdx === -1) {
     snapData.dates.push(todayLabel);
     for (const [ticker, quad] of Object.entries(snapshot)) {
       if (!snapData.snapshots[ticker]) snapData.snapshots[ticker] = [];
       snapData.snapshots[ticker].push(quad);
     }
+  } else {
+    const fixed = [];
+    for (const [ticker, quad] of Object.entries(snapshot)) {
+      if (!snapData.snapshots[ticker]) continue;
+      const prev = snapData.snapshots[ticker][existingIdx];
+      if (prev !== quad) fixed.push(`${ticker} ${prev}→${quad}`);
+      snapData.snapshots[ticker][existingIdx] = quad;
+    }
+    if (fixed.length) console.log(`Corrected ${todayLabel} snapshot: ${fixed.join(', ')}`);
   }
+
+  // Heal earlier days that recorded OOS only because the price had not arrived
+  // yet. A name AJ genuinely does not cover has iu/ajPeg null and stays OOS
+  // regardless of price, so this cannot mask a real out-of-scope call.
+  const dateToPriceIdx = new Map(dates.map((d, i) => [
+    new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), i
+  ]));
+  const healed = [];
+  for (const stock of config.stocks) {
+    const series = snapData.snapshots[stock.t];
+    if (!series) continue;
+    snapData.dates.forEach((label, si) => {
+      if (series[si] !== 'OOS') return;
+      const pi = dateToPriceIdx.get(label);
+      if (pi == null) return;
+      const price = prices[stock.t]?.[pi];
+      if (price == null) return;
+      const q = computeQuadrant(stock, price, config.corridors[stock.t]);
+      if (q !== 'OOS') { series[si] = q; healed.push(`${stock.t} ${label}→${q}`); }
+    });
+  }
+  if (healed.length) console.log(`Healed stale OOS: ${healed.join(', ')}`);
 
   // Trim to last 20 snapshots
   if (snapData.dates.length > 20) {

@@ -1,6 +1,5 @@
 {
   "dates": [
-    "2026-07-06",
     "2026-07-07",
     "2026-07-08",
     "2026-07-09",
@@ -44,7 +43,8 @@
     "2026-09-01",
     "2026-09-02",
     "2026-09-03",
-    "2026-09-04"
+    "2026-09-04",
+    "2026-09-07"
   ],
   "eps": {
     "MU": [
@@ -842,8 +842,8 @@
       16,
       16,
       16,
-      16,
       17.27,
+      17.25,
       17.25
     ],
     "MSFT": [
@@ -1270,6 +1270,6 @@
       0.9
     ]
   },
-  "lastUpdated": "2026-09-06T23:18:58.591Z",
+  "lastUpdated": "2026-09-07T10:04:42.306Z",
   "_comment": "NTM EPS estimates per stock per date, in native currency. Maintained by update-data.js: the newest date always takes the current estimate (AJ Details scrape if present, else config.corridors[t].eps); earlier dates are preserved so revisions slope the bands forward rather than rewriting history."
 }
