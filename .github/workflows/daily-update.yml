@@ -2,9 +2,20 @@ name: Daily Dashboard Update
 
 on:
   schedule:
-    # Run at 6 PM ET (22:00 UTC) every day
+    # Capture: 22:00 UTC daily, just after the US close, so the dashboard is
+    # current overnight.
     - cron: '0 22 * * *'
+    # Brief: 07:07 UTC Tue-Sat = 17:07 Sydney on AEST, covering the US session
+    # that closed 11 hours earlier. Friday's US session is therefore briefed on
+    # Saturday afternoon Sydney time, which is correct by construction.
+    # Fixed UTC by the user's choice, so it lands an hour later over AEDT.
+    - cron: '7 7 * * 2-6'
   workflow_dispatch: # manual trigger
+    inputs:
+      send_brief:
+        description: 'Also send the brief email'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -64,6 +75,20 @@ jobs:
 
       - name: Daily corridor briefing
         run: node pipeline/briefing.js
+        continue-on-error: true
+
+      # Only on the 07:07 UTC trigger, or a manual run that asks for it. The
+      # 22:00 capture run must never mail — it would arrive at 8am Sydney and
+      # burn the session, leaving the 5pm brief with nothing new to say.
+      # send-brief.js refuses on its own if the session was already sent or the
+      # feed is stale, so a double trigger cannot double-send.
+      - name: Send brief
+        if: github.event.schedule == '7 7 * * 2-6' || inputs.send_brief
+        run: node pipeline/send-brief.js
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          BRIEF_TO: ${{ secrets.BRIEF_TO }}
         continue-on-error: true
 
       - name: Commit and push
