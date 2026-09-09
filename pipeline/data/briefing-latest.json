@@ -1,6 +1,6 @@
 {
   "date": "2026-09-08",
-  "generatedAt": "2026-09-09T11:27:09.434Z",
+  "generatedAt": "2026-09-09T11:32:56.963Z",
   "maxChanges": 15,
   "changeCount": 0,
   "truncated": false,
@@ -17,6 +17,15 @@
       "dBands": -0.21665136367652893,
       "pos": 0.5198600249973927,
       "zone": "Fair Value"
+    },
+    {
+      "t": "ASML",
+      "move": -2.3166023166023164,
+      "dTotal": -0.23913009176731503,
+      "dPrice": -0.11330888379418574,
+      "dBands": -0.1258212079731293,
+      "pos": 0.19919126665483228,
+      "zone": "Attractive"
     },
     {
       "t": "GOOGL",
@@ -40,5 +49,31 @@
   "deepValue": [],
   "extreme": [],
   "reportsSoon": [],
-  "all": []
+  "all": [
+    {
+      "t": "ASML",
+      "n": "ASML",
+      "tier": "other",
+      "threshold": 4,
+      "mcapM": 573130,
+      "price": 1518,
+      "move": 2.0298427207958087,
+      "zone": "Attractive",
+      "prevZone": "Attractive",
+      "pos": 0.19919126665483228,
+      "prevPos": 0.10834208422250409,
+      "dPosPrice": 0.09505356362734485,
+      "dPosBands": -0.004204381195016663,
+      "dPosTotal": 0.09084918243232819,
+      "lo": 1454.7138272,
+      "hi": 1772.4294272,
+      "med": 1613.5716272,
+      "epsSource": "aj",
+      "nextReport": "2026-10-14",
+      "breached": false,
+      "zoneChanged": false,
+      "isChange": false,
+      "counted": false
+    }
+  ]
 }
