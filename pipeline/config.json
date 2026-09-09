@@ -216,58 +216,6 @@
       "iu": 0.84,
       "ajPeg": 0.5,
       "yahoo": "COHR"
-    },
-    {
-      "t": "SSNLF",
-      "n": "Samsung",
-      "est": "cons",
-      "epsGr": 90,
-      "iu": 0.24,
-      "ajPeg": 0.17,
-      "yahoo": "005930.KS",
-      "cur": "₩",
-      "curK": true
-    },
-    {
-      "t": "SKHYN",
-      "n": "SK Hynix",
-      "est": "cons",
-      "epsGr": 100,
-      "iu": 0.1,
-      "ajPeg": 0.47,
-      "yahoo": "000660.KS",
-      "cur": "₩",
-      "curK": true
-    },
-    {
-      "t": "AIXA",
-      "n": "Aixtron",
-      "est": "cons",
-      "epsGr": 55,
-      "iu": 0.7,
-      "ajPeg": 0.49,
-      "yahoo": "AIXA.DE",
-      "cur": "€"
-    },
-    {
-      "t": "IFX",
-      "n": "Infineon",
-      "est": "cons",
-      "epsGr": 45,
-      "iu": 0.64,
-      "ajPeg": 0.5,
-      "yahoo": "IFX.DE",
-      "cur": "€"
-    },
-    {
-      "t": "XIACF",
-      "n": "Xiaomi",
-      "est": "cons",
-      "epsGr": 30,
-      "iu": 0.02,
-      "ajPeg": 3.86,
-      "yahoo": "1810.HK",
-      "cur": "HK$"
     }
   ],
   "corridors": {
@@ -670,101 +618,6 @@
       "tgt1y": 461,
       "rank90": 14
     },
-    "SSNLF": {
-      "eps": 30,
-      "peL": 6.7,
-      "peM": 9.033,
-      "peH": 11.333,
-      "tgt": 335.1,
-      "bL": 201,
-      "bM": 271,
-      "bH": 340,
-      "bL1y": 146,
-      "bM1y": 235,
-      "bH1y": 325,
-      "peL1y": 4.867,
-      "peM1y": 7.833,
-      "peH1y": 10.833,
-      "rank1y": 22,
-      "tgt1y": 289.6,
-      "rank90": 23
-    },
-    "SKHYN": {
-      "eps": 241,
-      "peL": 4.726,
-      "peM": 7.631,
-      "peH": 10.535,
-      "tgt": 2005.8,
-      "bL": 1139,
-      "bM": 1839,
-      "bH": 2539,
-      "bL1y": 287,
-      "bM1y": 1165,
-      "bH1y": 2044,
-      "peL1y": 1.191,
-      "peM1y": 4.834,
-      "peH1y": 8.481,
-      "rank1y": 27,
-      "tgt1y": 1247.1,
-      "rank90": 29
-    },
-    "AIXA": {
-      "eps": 2.8,
-      "peL": 9.929,
-      "peM": 15.214,
-      "peH": 20.5,
-      "tgt": 64,
-      "bL": 27.8,
-      "bM": 42.6,
-      "bH": 57.4,
-      "bL1y": 23,
-      "bM1y": 40,
-      "bH1y": 57,
-      "peL1y": 8.214,
-      "peM1y": 14.286,
-      "peH1y": 20.357,
-      "rank1y": 19,
-      "tgt1y": 60,
-      "rank90": 22
-    },
-    "IFX": {
-      "eps": 3.2,
-      "peL": 15.188,
-      "peM": 20.875,
-      "peH": 26.531,
-      "tgt": 96,
-      "bL": 48.6,
-      "bM": 66.8,
-      "bH": 84.9,
-      "bL1y": 38.4,
-      "bM1y": 56.7,
-      "bH1y": 75.1,
-      "peL1y": 12,
-      "peM1y": 17.719,
-      "peH1y": 23.469,
-      "rank1y": 18,
-      "tgt1y": 81,
-      "rank90": 18
-    },
-    "XIACF": {
-      "eps": 0.9,
-      "peL": 24.667,
-      "peM": 29.222,
-      "peH": 33.667,
-      "tgt": 29,
-      "bL": 22.2,
-      "bM": 26.3,
-      "bH": 30.3,
-      "bL1y": 22.8,
-      "bM1y": 26.4,
-      "bH1y": 30.1,
-      "peL1y": 25.333,
-      "peM1y": 29.333,
-      "peH1y": 33.444,
-      "rank1y": 10,
-      "tgt1y": 29,
-      "rank90": 19
-    },
     "XPEV": {
       "eps": null,
       "bL": 11.3,
@@ -919,12 +772,6 @@
       "src": "X Sep 2",
       "ajVsCons": "—",
       "fcastErr": "—"
-    },
-    "IFX": {
-      "memo": "SOLD Sep 7 · not a buyer at €58.58",
-      "src": "X Sep 8",
-      "ajVsCons": "—",
-      "fcastErr": "—"
     }
   },
   "macro": {
@@ -939,9 +786,7 @@
     "loginUrl": "https://www.ajinvestmentresearch.com/wp-login.php"
   },
   "fx": {
-    "_comment": "Display scale applied to raw Yahoo price so it matches the units AJ quotes in. Not an FX conversion — the yahoo ticker is chosen to already return AJ's currency. Only the KRW pair needs scaling (AJ quotes thousands).",
-    "SSNLF": 0.001,
-    "SKHYN": 0.001
+    "_comment": "Display scale applied to raw Yahoo price so it matches the units AJ quotes in. Not an FX conversion — the yahoo ticker is chosen to already return AJ's currency. Only the KRW pair needs scaling (AJ quotes thousands)."
   },
   "_corridorNote": "Two lookbacks, both from AJ. 90-day: bL/bM/bH + peL/peM/peH + tgt + rank90. 12-month: bL1y/bM1y/bH1y + peL1y/peM1y/peH1y + tgt1y + rank1y. Bands from Cockpit->Details (slider 90 and 360); targets and ranks from the Dashboard page, Sep 7 2026."
 }

@@ -1,0 +1,969 @@
+{
+  "fetchedAt": "2026-09-09T09:17:05.398Z",
+  "source": "finnhub-free",
+  "note": "Observational only. apply-estimates.js decides when a name switches off AJ.",
+  "coverage": "24/24",
+  "estimates": {
+    "MU": {
+      "ticker": "MU",
+      "ajEps": 90,
+      "lastReport": "2026-06-30",
+      "lastActual": 25.11,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 25.11,
+          "est": 21.4019
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 12.2,
+          "est": 9.5849
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 4.78,
+          "est": 4.072
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 3.03,
+          "est": 2.9461
+        }
+      ],
+      "symbol": "MU",
+      "consensusNtm": 142.4167,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q4",
+        "2027Q1",
+        "2027Q2"
+      ],
+      "nextReport": "2026-09-30",
+      "status": "ok",
+      "vsAj": 58.2
+    },
+    "SNDK": {
+      "ticker": "SNDK",
+      "ajEps": 52,
+      "lastReport": "2026-06-30",
+      "lastActual": 39.25,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 39.25,
+          "est": 35.1395
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 23.41,
+          "est": 14.8274
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 6.2,
+          "est": 3.5172
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 1.22,
+          "est": 0.9543
+        }
+      ],
+      "symbol": "SNDK",
+      "consensusNtm": 210.1767,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2027Q1",
+        "2027Q2",
+        "2027Q3"
+      ],
+      "nextReport": "2026-11-04",
+      "status": "ok",
+      "vsAj": 304.2
+    },
+    "LITE": {
+      "ticker": "LITE",
+      "ajEps": 23.29,
+      "lastReport": "2026-06-30",
+      "lastActual": 3.23,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 3.23,
+          "est": 3.0312
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 2.37,
+          "est": 2.3335
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 1.67,
+          "est": 1.4224
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 1.1,
+          "est": 1.0486
+        }
+      ],
+      "symbol": "LITE",
+      "consensusNtm": 20.2417,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2027Q1",
+        "2027Q2",
+        "2027Q3"
+      ],
+      "nextReport": "2026-11-02",
+      "status": "ok",
+      "vsAj": -13.1
+    },
+    "ORCL": {
+      "ticker": "ORCL",
+      "ajEps": 8.3,
+      "lastReport": "2026-06-30",
+      "lastActual": 2.03,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 2.03,
+          "est": 2.0018
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 1.79,
+          "est": 1.7365
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 2.26,
+          "est": 1.6711
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 1.47,
+          "est": 1.5099
+        }
+      ],
+      "symbol": "ORCL",
+      "consensusNtm": 8.2242,
+      "quarters": 4,
+      "approx": false,
+      "periods": [
+        "2027Q1",
+        "2027Q2",
+        "2027Q3",
+        "2027Q4"
+      ],
+      "nextReport": "2026-09-10",
+      "status": "ok",
+      "vsAj": -0.9
+    },
+    "META": {
+      "ticker": "META",
+      "ajEps": 30.5,
+      "lastReport": "2026-06-30",
+      "lastActual": 6.18,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 6.18,
+          "est": 7.3594
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 7.31,
+          "est": 6.923
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 8.88,
+          "est": 8.3992
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 7.25,
+          "est": 6.8245
+        }
+      ],
+      "symbol": "META",
+      "consensusNtm": 30.5629,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-10-27",
+      "status": "ok",
+      "vsAj": 0.2
+    },
+    "NVDA": {
+      "ticker": "NVDA",
+      "ajEps": 16.16,
+      "lastReport": "2026-09-30",
+      "lastActual": 2.22,
+      "history": [
+        {
+          "period": "2026-09-30",
+          "actual": 2.22,
+          "est": 2.1384
+        },
+        {
+          "period": "2026-06-30",
+          "actual": 1.87,
+          "est": 1.7922
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 1.62,
+          "est": 1.5634
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 1.3,
+          "est": 1.2746
+        }
+      ],
+      "symbol": "NVDA",
+      "consensusNtm": 11.0877,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2027Q3",
+        "2027Q4",
+        "2028Q1"
+      ],
+      "nextReport": "2026-11-17",
+      "status": "ok",
+      "vsAj": -31.4
+    },
+    "UBER": {
+      "ticker": "UBER",
+      "ajEps": 3.69,
+      "lastReport": "2026-06-30",
+      "lastActual": 1.17,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 1.17,
+          "est": 0.8177
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 0.13,
+          "est": 0.6958
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 0.14,
+          "est": 0.8146
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 3.11,
+          "est": 0.6986
+        }
+      ],
+      "symbol": "UBER",
+      "consensusNtm": 4.2044,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-11-02",
+      "status": "ok",
+      "vsAj": 13.9
+    },
+    "TSLA": {
+      "ticker": "TSLA",
+      "ajEps": 4.8,
+      "lastReport": "2026-06-30",
+      "lastActual": 0.33,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 0.33,
+          "est": 0.5191
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 0.41,
+          "est": 0.3773
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 0.5,
+          "est": 0.4541
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 0.5,
+          "est": 0.5586
+        }
+      ],
+      "symbol": "TSLA",
+      "consensusNtm": 1.8273,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-10-20",
+      "status": "ok",
+      "vsAj": -61.9
+    },
+    "AMZN": {
+      "ticker": "AMZN",
+      "ajEps": 7.8,
+      "lastReport": "2026-06-30",
+      "lastActual": 1.97,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 1.97,
+          "est": 1.8563
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 1.61,
+          "est": 1.6679
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 1.61,
+          "est": 1.6703
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 1.95,
+          "est": 1.605
+        }
+      ],
+      "symbol": "AMZN",
+      "consensusNtm": 9.2172,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-10-28",
+      "status": "ok",
+      "vsAj": 18.2
+    },
+    "TSM": {
+      "ticker": "TSM",
+      "ajEps": 22.5,
+      "lastReport": "2026-06-30",
+      "lastActual": 27.25,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 27.25,
+          "est": 24.5662
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 22.077,
+          "est": 21.1379
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 19.51,
+          "est": 18.5437
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 17.44,
+          "est": 16.1535
+        }
+      ],
+      "symbol": "TSM",
+      "consensusNtm": 123.8845,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-10-14",
+      "status": "ok",
+      "vsAj": 450.6
+    },
+    "PLTR": {
+      "ticker": "PLTR",
+      "ajEps": 2.46,
+      "lastReport": "2026-06-30",
+      "lastActual": 0.41,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 0.41,
+          "est": 0.3544
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 0.33,
+          "est": 0.2849
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 0.25,
+          "est": 0.2348
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 0.21,
+          "est": 0.1718
+        }
+      ],
+      "symbol": "PLTR",
+      "consensusNtm": 1.8679,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-11-02",
+      "status": "ok",
+      "vsAj": -24.1
+    },
+    "AMD": {
+      "ticker": "AMD",
+      "ajEps": 11.82,
+      "lastReport": "2026-06-30",
+      "lastActual": 1.66,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 1.66,
+          "est": 1.6313
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 1.37,
+          "est": 1.3074
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 1.53,
+          "est": 1.3324
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 1.2,
+          "est": 1.175
+        }
+      ],
+      "symbol": "AMD",
+      "consensusNtm": 10.2088,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-11-02",
+      "status": "ok",
+      "vsAj": -13.6
+    },
+    "ASML": {
+      "ticker": "ASML",
+      "ajEps": 53,
+      "lastReport": "2026-06-30",
+      "lastActual": 7.58,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 7.58,
+          "est": 6.9263
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 7.15,
+          "est": 6.6744
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 7.34,
+          "est": 7.7108
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 5.48,
+          "est": 5.56
+        }
+      ],
+      "symbol": "ASML",
+      "consensusNtm": 48.942,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-10-14",
+      "status": "ok",
+      "vsAj": -7.7
+    },
+    "INTC": {
+      "ticker": "INTC",
+      "ajEps": 3.6,
+      "lastReport": "2026-06-30",
+      "lastActual": 0.42,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 0.42,
+          "est": 0.2177
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 0.29,
+          "est": 0.014
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 0.15,
+          "est": 0.0829
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 0.23,
+          "est": 0.01
+        }
+      ],
+      "symbol": "INTC",
+      "consensusNtm": 1.6236,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-10-21",
+      "status": "ok",
+      "vsAj": -54.9
+    },
+    "MRVL": {
+      "ticker": "MRVL",
+      "ajEps": 6.2,
+      "lastReport": "2026-09-30",
+      "lastActual": 0.94,
+      "history": [
+        {
+          "period": "2026-09-30",
+          "actual": 0.94,
+          "est": 0.9428
+        },
+        {
+          "period": "2026-06-30",
+          "actual": 0.8,
+          "est": 0.8076
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 0.8,
+          "est": 0.8033
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 0.76,
+          "est": 0.7495
+        }
+      ],
+      "symbol": "MRVL",
+      "consensusNtm": 4.9235,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2027Q3",
+        "2027Q4",
+        "2028Q1"
+      ],
+      "nextReport": "2026-11-30",
+      "status": "ok",
+      "vsAj": -20.6
+    },
+    "AMAT": {
+      "ticker": "AMAT",
+      "ajEps": 12.5,
+      "lastReport": "2026-09-30",
+      "lastActual": 3.5,
+      "history": [
+        {
+          "period": "2026-09-30",
+          "actual": 3.5,
+          "est": 3.4626
+        },
+        {
+          "period": "2026-06-30",
+          "actual": 2.86,
+          "est": 2.7176
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 2.38,
+          "est": 2.2482
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 2.17,
+          "est": 2.1352
+        }
+      ],
+      "symbol": "AMAT",
+      "consensusNtm": 17.4879,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q4",
+        "2027Q1",
+        "2027Q2"
+      ],
+      "nextReport": "2026-11-12",
+      "status": "ok",
+      "vsAj": 39.9
+    },
+    "AVGO": {
+      "ticker": "AVGO",
+      "ajEps": 17.25,
+      "lastReport": "2026-09-30",
+      "lastActual": 3.32,
+      "history": [
+        {
+          "period": "2026-09-30",
+          "actual": 3.32,
+          "est": 3.3013
+        },
+        {
+          "period": "2026-06-30",
+          "actual": 2.44,
+          "est": 2.4458
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 2.05,
+          "est": 2.068
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 1.95,
+          "est": 1.8996
+        }
+      ],
+      "symbol": "AVGO",
+      "consensusNtm": 16.99,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q4",
+        "2027Q1",
+        "2027Q2"
+      ],
+      "nextReport": "2026-12-09",
+      "status": "ok",
+      "vsAj": -1.5
+    },
+    "MSFT": {
+      "ticker": "MSFT",
+      "ajEps": 16.2,
+      "lastReport": "2026-06-30",
+      "lastActual": 4.74,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 4.74,
+          "est": 4.3274
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 4.27,
+          "est": 4.1432
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 4.14,
+          "est": 4.0345
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 4.13,
+          "est": 3.7391
+        }
+      ],
+      "symbol": "MSFT",
+      "consensusNtm": 19.6873,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2027Q1",
+        "2027Q2",
+        "2027Q3"
+      ],
+      "nextReport": "2026-10-27",
+      "status": "ok",
+      "vsAj": 21.5
+    },
+    "AAPL": {
+      "ticker": "AAPL",
+      "ajEps": 8.8,
+      "lastReport": "2026-06-30",
+      "lastActual": 1.91,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 1.91,
+          "est": 1.9271
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 2.01,
+          "est": 1.9884
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 2.84,
+          "est": 2.7257
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 1.85,
+          "est": 1.8075
+        }
+      ],
+      "symbol": "AAPL",
+      "consensusNtm": 9.6399,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q4",
+        "2027Q1",
+        "2027Q2"
+      ],
+      "nextReport": "2026-10-28",
+      "status": "ok",
+      "vsAj": 9.5
+    },
+    "GOOGL": {
+      "ticker": "GOOGL",
+      "ajEps": 11.5,
+      "lastReport": "2026-06-30",
+      "lastActual": 2.85,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 2.85,
+          "est": 2.9798
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 2.62,
+          "est": 2.7051
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 2.82,
+          "est": 2.7063
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 3.1,
+          "est": 2.3954
+        }
+      ],
+      "symbol": "GOOGL",
+      "consensusNtm": 13.3088,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-10-27",
+      "status": "ok",
+      "vsAj": 15.7
+    },
+    "XPEV": {
+      "ticker": "XPEV",
+      "ajEps": null,
+      "lastReport": "2026-06-30",
+      "lastActual": -1.4,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": -1.4,
+          "est": -0.5663
+        },
+        {
+          "period": "2026-03-31",
+          "actual": -1.86,
+          "est": -0.9806
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 0.4,
+          "est": -0.3319
+        },
+        {
+          "period": "2025-09-30",
+          "actual": -0.4,
+          "est": -0.4114
+        }
+      ],
+      "symbol": "XPEV",
+      "consensusNtm": -0.7603,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-11-17",
+      "status": "ok",
+      "vsAj": null
+    },
+    "RKLB": {
+      "ticker": "RKLB",
+      "ajEps": null,
+      "lastReport": "2026-06-30",
+      "lastActual": -0.08,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": -0.08,
+          "est": -0.0765
+        },
+        {
+          "period": "2026-03-31",
+          "actual": -0.07,
+          "est": -0.0815
+        },
+        {
+          "period": "2025-12-31",
+          "actual": -0.09,
+          "est": -0.0942
+        },
+        {
+          "period": "2025-09-30",
+          "actual": -0.03,
+          "est": -0.1064
+        }
+      ],
+      "symbol": "RKLB",
+      "consensusNtm": -0.2112,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-11-09",
+      "status": "ok",
+      "vsAj": null
+    },
+    "EOSE": {
+      "ticker": "EOSE",
+      "ajEps": null,
+      "lastReport": "2026-06-30",
+      "lastActual": -1.09,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": -1.09,
+          "est": -0.1843
+        },
+        {
+          "period": "2026-03-31",
+          "actual": -0.18,
+          "est": -0.2217
+        },
+        {
+          "period": "2025-12-31",
+          "actual": -0.88,
+          "est": -0.1827
+        },
+        {
+          "period": "2025-09-30",
+          "actual": -4.91,
+          "est": -0.2296
+        }
+      ],
+      "symbol": "EOSE",
+      "consensusNtm": -0.4868,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2026Q3",
+        "2026Q4",
+        "2027Q1"
+      ],
+      "nextReport": "2026-11-03",
+      "status": "ok",
+      "vsAj": null
+    },
+    "COHR": {
+      "ticker": "COHR",
+      "ajEps": 16.38,
+      "lastReport": "2026-06-30",
+      "lastActual": 1.74,
+      "history": [
+        {
+          "period": "2026-06-30",
+          "actual": 1.74,
+          "est": 1.6471
+        },
+        {
+          "period": "2026-03-31",
+          "actual": 1.41,
+          "est": 1.4251
+        },
+        {
+          "period": "2025-12-31",
+          "actual": 1.29,
+          "est": 1.2318
+        },
+        {
+          "period": "2025-09-30",
+          "actual": 1.16,
+          "est": 1.0623
+        }
+      ],
+      "symbol": "COHR",
+      "consensusNtm": 8.9933,
+      "quarters": 3,
+      "approx": true,
+      "periods": [
+        "2027Q1",
+        "2027Q2",
+        "2027Q3"
+      ],
+      "nextReport": "2026-11-03",
+      "status": "ok",
+      "vsAj": -45.1
+    }
+  }
+}
