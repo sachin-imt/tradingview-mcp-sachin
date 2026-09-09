@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T09:48:14.008Z",
+  "fetchedAt": "2026-09-09T10:59:57.386Z",
   "source": "finnhub-free",
   "note": "Observational only. apply-estimates.js decides when a name switches off AJ.",
   "coverage": "21/22",
@@ -36,6 +36,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.097,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2026-09-30",
+          "eps": 32.2138
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2026-12-15",
+          "eps": 35.8413
+        },
+        {
+          "fy": 2027,
+          "q": 2,
+          "reportDate": "2027-03-16",
+          "eps": 38.7574
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q4",
@@ -79,6 +99,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.095,
+      "forward": [
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2026-11-04",
+          "eps": 47.0782
+        },
+        {
+          "fy": 2027,
+          "q": 2,
+          "reportDate": "2027-01-27",
+          "eps": 54.1044
+        },
+        {
+          "fy": 2027,
+          "q": 3,
+          "reportDate": "2027-04-28",
+          "eps": 56.4499
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2027Q1",
@@ -122,6 +162,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.167,
+      "forward": [
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2026-11-02",
+          "eps": 4.2715
+        },
+        {
+          "fy": 2027,
+          "q": 2,
+          "reportDate": "2027-02-01",
+          "eps": 5.0899
+        },
+        {
+          "fy": 2027,
+          "q": 3,
+          "reportDate": "2027-05-03",
+          "eps": 5.8199
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2027Q1",
@@ -165,6 +225,32 @@
       "quarters": 4,
       "derived": 0,
       "step": 1.108,
+      "forward": [
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2026-09-10",
+          "eps": 1.7766
+        },
+        {
+          "fy": 2027,
+          "q": 2,
+          "reportDate": "2026-12-08",
+          "eps": 1.9334
+        },
+        {
+          "fy": 2027,
+          "q": 3,
+          "reportDate": "2027-03-08",
+          "eps": 2.0994
+        },
+        {
+          "fy": 2027,
+          "q": 4,
+          "reportDate": "2027-06-08",
+          "eps": 2.4148
+        }
+      ],
       "approx": false,
       "periods": [
         "FY2027Q1",
@@ -208,6 +294,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.086,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 3,
+          "reportDate": "2026-10-27",
+          "eps": 6.6602
+        },
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2027-01-26",
+          "eps": 8.4023
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-04-27",
+          "eps": 7.8597
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q3",
@@ -251,6 +357,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.117,
+      "forward": [
+        {
+          "fy": 2027,
+          "q": 3,
+          "reportDate": "2026-11-17",
+          "eps": 2.4659
+        },
+        {
+          "fy": 2027,
+          "q": 4,
+          "reportDate": "2027-02-23",
+          "eps": 2.7718
+        },
+        {
+          "fy": 2028,
+          "q": 1,
+          "reportDate": "2027-05-18",
+          "eps": 3.0781
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2027Q3",
@@ -294,6 +420,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.028,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 3,
+          "reportDate": "2026-11-02",
+          "eps": 0.9976
+        },
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2027-02-02",
+          "eps": 1.1017
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-05-04",
+          "eps": 1.054
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q3",
@@ -337,6 +483,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.005,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 3,
+          "reportDate": "2026-10-20",
+          "eps": 0.4451
+        },
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2027-01-26",
+          "eps": 0.4755
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-04-20",
+          "eps": 0.4499
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q3",
@@ -380,6 +546,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.104,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 3,
+          "reportDate": "2026-10-28",
+          "eps": 1.9928
+        },
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2027-02-03",
+          "eps": 2.4901
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-04-27",
+          "eps": 2.43
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q3",
@@ -423,6 +609,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.055,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 3,
+          "reportDate": "2026-10-14",
+          "eps": 28.9619
+        },
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2027-01-13",
+          "eps": 31.7014
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-04-14",
+          "eps": 32.2501
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q3",
@@ -466,6 +672,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.077,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 3,
+          "reportDate": "2026-11-02",
+          "eps": 0.4277
+        },
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2027-02-01",
+          "eps": 0.477
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-05-03",
+          "eps": 0.4962
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q3",
@@ -509,6 +735,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.247,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 3,
+          "reportDate": "2026-11-02",
+          "eps": 1.9543
+        },
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2027-02-01",
+          "eps": 2.6655
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-05-03",
+          "eps": 3.0368
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q3",
@@ -552,6 +798,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.091,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 3,
+          "reportDate": "2026-10-14",
+          "eps": 10.6218
+        },
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2027-01-27",
+          "eps": 13.4361
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-04-13",
+          "eps": 12.6486
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q3",
@@ -595,6 +861,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.008,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 3,
+          "reportDate": "2026-10-21",
+          "eps": 0.3918
+        },
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2027-01-20",
+          "eps": 0.4275
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-04-21",
+          "eps": 0.3984
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q3",
@@ -638,6 +924,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.108,
+      "forward": [
+        {
+          "fy": 2027,
+          "q": 3,
+          "reportDate": "2026-11-30",
+          "eps": 1.092
+        },
+        {
+          "fy": 2027,
+          "q": 4,
+          "reportDate": "2027-03-04",
+          "eps": 1.2612
+        },
+        {
+          "fy": 2028,
+          "q": 1,
+          "reportDate": "2027-05-25",
+          "eps": 1.3394
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2027Q3",
@@ -681,6 +987,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.059,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2026-11-12",
+          "eps": 4.1388
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-02-10",
+          "eps": 4.3381
+        },
+        {
+          "fy": 2027,
+          "q": 2,
+          "reportDate": "2027-05-12",
+          "eps": 4.639
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q4",
@@ -724,6 +1050,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.076,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2026-12-09",
+          "eps": 3.953
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-03-02",
+          "eps": 4.2101
+        },
+        {
+          "fy": 2027,
+          "q": 2,
+          "reportDate": "2027-06-01",
+          "eps": 4.5794
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q4",
@@ -767,6 +1113,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.017,
+      "forward": [
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2026-10-27",
+          "eps": 4.8236
+        },
+        {
+          "fy": 2027,
+          "q": 2,
+          "reportDate": "2027-01-26",
+          "eps": 4.9486
+        },
+        {
+          "fy": 2027,
+          "q": 3,
+          "reportDate": "2027-04-27",
+          "eps": 4.9933
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2027Q1",
@@ -810,6 +1176,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.056,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2026-10-28",
+          "eps": 2.0202
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-01-27",
+          "eps": 2.9585
+        },
+        {
+          "fy": 2027,
+          "q": 2,
+          "reportDate": "2027-04-28",
+          "eps": 2.2512
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q4",
@@ -853,6 +1239,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.052,
+      "forward": [
+        {
+          "fy": 2026,
+          "q": 3,
+          "reportDate": "2026-10-27",
+          "eps": 3.1057
+        },
+        {
+          "fy": 2026,
+          "q": 4,
+          "reportDate": "2027-02-02",
+          "eps": 3.4401
+        },
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2027-04-27",
+          "eps": 3.4358
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2026Q3",
@@ -926,6 +1332,26 @@
       "quarters": 3,
       "derived": 1,
       "step": 1.122,
+      "forward": [
+        {
+          "fy": 2027,
+          "q": 1,
+          "reportDate": "2026-11-03",
+          "eps": 1.9976
+        },
+        {
+          "fy": 2027,
+          "q": 2,
+          "reportDate": "2027-02-02",
+          "eps": 2.2318
+        },
+        {
+          "fy": 2027,
+          "q": 3,
+          "reportDate": "2027-05-04",
+          "eps": 2.5156
+        }
+      ],
       "approx": true,
       "periods": [
         "FY2027Q1",

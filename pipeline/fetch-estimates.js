@@ -170,6 +170,13 @@ async function main() {
       rec.quarters = ntm.quarters;
       rec.derived = ntm.derived;
       rec.step = ntm.step;
+      // Raw forward quarters, kept so build-eps-series.js can slide a 12-month
+      // window across them. NTM is not one number that steps at each report —
+      // earnings accrue daily, so the corridor should rise a little every day.
+      rec.forward = (cal.data.earningsCalendar || [])
+        .filter(e => e.epsEstimate != null)
+        .sort((a, b) => a.date < b.date ? -1 : 1)
+        .map(e => ({ fy: e.year, q: e.quarter, reportDate: e.date, eps: e.epsEstimate }));
       rec.approx = ntm.approx;
       rec.periods = ntm.periods;
       rec.nextReport = ntm.nextReport;

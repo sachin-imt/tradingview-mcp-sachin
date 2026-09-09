@@ -266,7 +266,17 @@ function main() {
   }
   const oldDateSet = new Set(epsData.dates);
   const newDates = dates.filter(d => !oldDateSet.has(d));
-  {
+  // build-eps-series.js produces a daily accrual curve: earnings accrue
+  // continuously, so NTM rises a little each day and the corridor slopes. The
+  // carry-forward logic below would flatten that back into one value per
+  // ticker, so leave an accrual series alone and let its own builder own it.
+  const accrual = epsData.method === 'accrual';
+  if (accrual) {
+    const stale = dates.filter(d => !oldDateSet.has(d)).length;
+    console.log(`eps.json is an accrual series (built ${epsData.builtAt?.slice(0, 10) ?? '?'}) — left as is.` +
+      (stale ? `  ${stale} price date(s) not yet covered: re-run build-eps-series.js.` : ''));
+  }
+  if (!accrual) {
     const oldEps = epsData.eps;
     const dateToIdx = new Map(epsData.dates.map((d, i) => [d, i]));
     const newEps = {};
