@@ -152,8 +152,23 @@ function main() {
   const snapshot = {};
   const summary = { UI: 0, UE: 0, DI: 0, DE: 0, OOS: 0 };
 
+  // Yahoo settles the daily bar for the European and Asian listings on a different
+  // clock than the US ones, so on any given fetch a handful of names legitimately
+  // have no close yet for the session we just picked. Carry the most recent close
+  // forward rather than dropping the name to OOS — a stale-by-a-day price still
+  // puts it in the right quadrant, whereas OOS wrongly reads as "AJ dropped it".
+  const CARRY_MAX = 5;
+  const priceAt = ticker => {
+    const series = prices[ticker];
+    if (!series) return null;
+    for (let i = lastIdx; i >= 0 && i > lastIdx - CARRY_MAX; i--) {
+      if (series[i] != null) return series[i];
+    }
+    return null;
+  };
+
   for (const stock of config.stocks) {
-    const price = prices[stock.t]?.[lastIdx];
+    const price = priceAt(stock.t);
     if (price == null) {
       snapshot[stock.t] = 'OOS';
       summary.OOS++;

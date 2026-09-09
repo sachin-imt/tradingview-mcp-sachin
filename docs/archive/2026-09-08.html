@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AJ Snapshot — Sep 8, 2026</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#e8ecf6; --ink2:#a8b2ca; --ink3:#6f7a95;
+  --bg:#0f1424; --panel:#1a2038; --panel2:#232b47; --line:#2e3757;
+  --hot:#e8622c; --cool:#2bb5a0; --blue:#5b9bd5; --grey:#8b95a5;
+  --band15:#f0a02c; --band10:#a9a4d8; --med:#ffffff; --accent:#ff3d6e;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Archivo,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1500px;margin:0 auto;padding:0 20px 80px}
+
+header.top{padding:34px 0 22px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.eyebrow{font:600 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+h1{margin:0 0 8px;font-size:34px;font-weight:700;letter-spacing:-.02em;text-wrap:balance}
+.sub{color:var(--ink2);max-width:76ch;margin:0 0 16px}
+.stamp{display:inline-flex;gap:8px;align-items:center;font:500 12px/1 var(--mono);color:var(--ink3);border:1px solid var(--line);border-radius:999px;padding:7px 13px}
+.stamp b{color:var(--ink)}
+.back{display:inline-block;margin-top:14px;color:var(--blue);text-decoration:none;font-size:13px}
+.back:hover{text-decoration:underline}
+
+nav.jump{position:sticky;top:0;z-index:20;background:rgba(15,20,36,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;gap:4px;flex-wrap:wrap;padding:10px 0;margin-bottom:30px}
+nav.jump a{font:500 12px/1 var(--mono);color:var(--ink2);text-decoration:none;padding:7px 11px;border-radius:6px}
+nav.jump a:hover{background:var(--panel2);color:var(--ink)}
+
+section{margin:0 0 46px;scroll-margin-top:60px}
+h2{font-size:13px;font-weight:600;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+h3{font-size:21px;font-weight:600;margin:0 0 6px;letter-spacing:-.01em}
+.desc{color:var(--ink2);font-size:13.5px;margin:0 0 18px;max-width:88ch}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+.note{font-size:12px;color:var(--ink3);margin:12px 0 0;line-height:1.6}
+.warn{border-left:3px solid var(--band15);background:rgba(240,160,44,.07);padding:12px 14px;border-radius:0 8px 8px 0;font-size:13px;color:var(--ink2);margin:0 0 18px}
+.warn b{color:var(--ink)}
+
+/* lookback toggle */
+.lb{display:inline-flex;background:var(--panel2);border-radius:8px;padding:3px;gap:3px;margin-bottom:18px}
+.lb button{font:600 12px/1 var(--mono);background:none;border:0;color:var(--ink3);padding:8px 15px;border-radius:6px;cursor:pointer}
+.lb button[aria-selected=true]{background:var(--bg);color:var(--ink)}
+
+/* scatter */
+.scat{display:grid;grid-template-columns:1fr 262px;gap:18px}
+@media(max-width:900px){.scat{grid-template-columns:1fr}}
+.plotbox{position:relative;background:var(--panel2);border-radius:10px;padding:14px}
+svg.plot{width:100%;height:auto;display:block}
+.qp{display:flex;flex-direction:column;gap:12px}
+.q{border:1px solid var(--line);border-radius:9px;padding:11px 12px}
+.q .qh{display:flex;justify-content:space-between;align-items:center;font:600 12px/1 var(--mono);margin-bottom:9px}
+.q .qn{background:var(--panel2);border-radius:5px;padding:3px 7px;font-size:11px;color:var(--ink2)}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-size:11px;background:var(--panel2);border-radius:5px;padding:4px 7px;color:var(--ink2);white-space:nowrap}
+.q-ui .qh{color:var(--hot)} .q-ue .qh{color:var(--cool)}
+.q-di .qh{color:var(--blue)} .q-de .qh{color:var(--grey)} .q-os .qh{color:var(--ink3)}
+
+/* details table */
+.scroller{overflow-x:auto;border-radius:10px;border:1px solid var(--line)}
+table{border-collapse:collapse;font-variant-numeric:tabular-nums;width:100%}
+th,td{padding:7px 9px;text-align:right;white-space:nowrap;font-size:12.5px;font-family:var(--mono)}
+thead th{position:sticky;top:0;background:var(--panel2);font-size:11px;color:var(--ink2);text-align:right;font-weight:600;border-bottom:1px solid var(--line)}
+th.co,td.co{text-align:left;position:sticky;left:0;background:var(--panel);font-family:Archivo,sans-serif;font-size:13px;font-weight:500;z-index:1}
+thead th.co{background:var(--panel2);z-index:2}
+tbody tr:nth-child(even) td{background:rgba(255,255,255,.017)}
+tbody tr:nth-child(even) td.co{background:#1c2239}
+tbody tr:hover td{background:rgba(91,155,213,.08)}
+tbody tr:hover td.co{background:#232c48}
+td.b15p{color:var(--band15)} td.b10p{color:var(--band10)}
+td.med{color:var(--med);font-weight:600} td.px{color:var(--ink);font-weight:600}
+td.b10n{color:var(--band10)} td.b15n{color:var(--band15)}
+td.up{color:var(--cool)} td.dn{color:var(--hot)}
+.cur{color:var(--ink3);font-weight:400}
+.cf{display:inline-block;font-size:10px;font-family:var(--mono);padding:3px 6px;border-radius:4px;min-width:52px;text-align:center}
+.cf-vh{background:#dff3e6;color:#123322} .cf-h{background:#7fc4c0;color:#0d2a2a}
+.cf-m{background:#3f7fa5;color:#eaf4fb} .cf-l{background:#1d3350;color:#c8d6ea}
+
+/* dashboard cards */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(410px,1fr));gap:14px}
+.dc{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:15px}
+.dc h4{margin:0 0 3px;font-size:16px;font-weight:600}
+.dc .tk{font:500 11px/1 var(--mono);color:var(--ink3)}
+.dc .pxl{font:500 12px/1 var(--mono);color:var(--ink2);margin:9px 0 12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lb2{border:1px solid var(--line);border-radius:8px;padding:10px}
+.lb2 .tag{font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.lb2.a .tag{color:var(--band15)} .lb2.b .tag{color:var(--blue)}
+.lb2 .tgt{font:600 17px/1 var(--mono);margin-bottom:3px}
+.lb2 .ups{font:500 12px/1 var(--mono);margin-bottom:8px}
+.lb2 .rk{display:inline-block;font:600 10px/1 var(--mono);background:var(--panel2);border-radius:4px;padding:4px 6px;margin-bottom:8px;color:var(--ink2)}
+.lb2 .vd{font-size:11.5px;color:var(--ink2);line-height:1.45}
+
+/* coverage */
+.cov{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:7px}
+.cv{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:13px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.cv span{font:500 11px/1 var(--mono);color:var(--ink3)}
+.cv.miss{border-color:var(--band15);border-style:dashed}
+
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:0 0 14px;font-size:11.5px;color:var(--ink2);font-family:var(--mono)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+</style></head>
+<body><div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Archived Snapshot</div>
+  <h1>AJ Snapshot — September 8, 2026</h1>
+  <p class="sub">A faithful capture of the four AJ Investment Research subscriber surfaces as they stood on Sep 8, 2026: the Cockpit Overview and Details at both lookbacks, the per-company Dashboard, and the full coverage list. Every number here was read directly off AJ's rendered views.</p>
+  <div class="stamp">Cockpit last updated <b>Sep 08, 2026 09:00 AM ET</b></div>
+  <div><a class="back" href="../index.html">&larr; Back to Sachin's Dashboard</a></div>
+</header>
+
+<nav class="jump">
+  <a href="#overview">Cockpit · Overview</a>
+  <a href="#details">Cockpit · Details</a>
+  <a href="#dash">Dashboard</a>
+  <a href="#coverage">Companies Coverage</a>
+  <a href="#recon">Reconciliation</a>
+</nav>
+
+<!-- ============ OVERVIEW ============ -->
+<section id="overview">
+  <h2>Cockpit</h2>
+  <h3>Active Company Coverage Overview</h3>
+  <p class="desc">Share Price Corridor Method — implied share price upside/downside (x) against implied cost of earnings growth, the PEG ratio (y, inverted so cheap growth sits at the top). AJ publishes this on two lookback windows, and they disagree materially: three memory-adjacent names that screen Upside&nbsp;+&nbsp;Inexpensive on 90&nbsp;days flip to Downside&nbsp;+&nbsp;Inexpensive on 12&nbsp;months.</p>
+
+  <div class="lb" role="tablist">
+    <button id="t90" role="tab" aria-selected="true" onclick="setLb(90)">90 days</button>
+    <button id="t360" role="tab" aria-selected="false" onclick="setLb(360)">360 days</button>
+  </div>
+  <div class="warn" id="lbwin"><b>Window:</b> Jun 10, 2026 → Sep 08, 2026</div>
+
+  <div class="scat">
+    <div class="plotbox"><svg class="plot" id="plot" viewBox="0 0 820 520" role="img" aria-label="Cockpit scatter"></svg></div>
+    <div class="qp" id="quads"></div>
+  </div>
+  <p class="note">Dot positions are digitised from AJ's rendered chart and carry roughly &plusmn;3pp of read error on the upside axis; quadrant membership and the counts beside each heading are exact. PEG values are AJ's published NTM+1 ÷ NTM figures and do not vary by lookback. The exact corridor arithmetic is in the Details table below.</p>
+</section>
+
+<!-- ============ DETAILS ============ -->
+<section id="details">
+  <h2>Cockpit</h2>
+  <h3>Details — Corridor Bands &amp; Forecast Confidence</h3>
+  <p class="desc">The definitive corridor table. Bands are the implied share price at each standard deviation of the observable forward multiple over the lookback window, evaluated at <em>today's</em> NTM earnings — which is why these medians sit far below the Overview's implied upside, where the corridor is projected forward a year along its earnings slope.</p>
+
+  <div class="legend">
+    <span><i style="background:var(--band15)"></i>&plusmn;1.5&sigma;</span>
+    <span><i style="background:var(--band10)"></i>&plusmn;1.0&sigma;</span>
+    <span><i style="background:var(--med)"></i>Median</span>
+    <span><i style="background:var(--cool)"></i>Median above price (upside)</span>
+    <span><i style="background:var(--hot)"></i>Median below price (downside)</span>
+  </div>
+
+  <div class="scroller"><table id="dtab"></table></div>
+  <p class="note" id="dnote"></p>
+</section>
+
+<!-- ============ DASHBOARD ============ -->
+<section id="dash">
+  <h2>Dashboard</h2>
+  <h3>Per-Company Corridor Cards</h3>
+  <div class="warn"><b>This surface is stale.</b> AJ's Dashboard page reports <b>Last update: April 26, 2026</b> — four and a half months before this snapshot. Prices, targets and ranks below are April's, not September's. Where it conflicts with the Cockpit, the Cockpit wins. It is archived here because the ranks and the written verdicts appear nowhere else.</div>
+  <p class="desc">Thirteen of the thirty covered names get a Dashboard card. Each carries a 12-month and a 90-day corridor, a price target with implied upside, a rank against the rest of the Dashboard cohort, and a one-line verdict.</p>
+  <div class="dgrid" id="dashg"></div>
+</section>
+
+<!-- ============ COVERAGE ============ -->
+<section id="coverage">
+  <h2>Companies</h2>
+  <h3>Full Coverage List</h3>
+  <p class="desc">Thirty names carry a Share Price Corridor Analysis Tool. Twenty-nine of them appear in the Cockpit — Eos Energy is covered but not plotted.</p>
+  <div class="cov" id="covg"></div>
+  <p class="note">Dashed amber border marks a name in AJ's coverage that our own pipeline does not yet track.</p>
+</section>
+
+<!-- ============ RECON ============ -->
+<section id="recon">
+  <h2>Reconciliation</h2>
+  <h3>Our Model vs This Snapshot</h3>
+  <div class="panel">
+    <p class="desc" style="margin-bottom:14px">Checks run against <code style="font-family:var(--mono);font-size:12px">pipeline/config.json</code> at the time this archive was written.</p>
+    <div class="scroller"><table id="rtab"></table></div>
+  </div>
+</section>
+
+<script>
+/* ---------- DATA: read off AJ's Sep 8, 2026 views ---------- */
+// [name, ticker, currency, thousands?, PEG, conf-short, conf-long]
+const META=[
+ ["Xpeng","XPEV","$",0,null,"H","M"],["Broadcom","AVGO","$",0,0.38,"H","H"],
+ ["Alphabet","GOOG","$",0,1.34,"H","H"],["ASML","ASML","€",0,1.02,"H","H"],
+ ["Rivian","RIVN","$",0,null,"H","M"],["A.Materials","AMAT","$",0,0.69,"H","H"],
+ ["AMD","AMD","$",0,0.62,"H","H"],["Amazon","AMZN","$",0,1.06,"H","H"],
+ ["Apple","AAPL","$",0,3.04,"H","H"],["Uber","UBER","$",0,2.78,"H","M"],
+ ["TSMC","TSM","$",0,0.74,"H","H"],["Nvidia","NVDA","$",0,0.27,"VH","VH"],
+ ["Meta","META","$",0,0.67,"H","H"],["Lumentum","LITE","$",0,0.47,"H","H"],
+ ["Coherent","COHR","$",0,0.50,"H","H"],["Tesla","TSLA","$",0,1.71,"H","M"],
+ ["Rocket Lab","RKLB","$",0,null,"H","M"],["Infineon","IFX","€",0,0.50,"H","H"],
+ ["Xiaomi","1810.HK","HK$",0,3.86,"M","M"],["Micron","MU","$",0,0.16,"H","H"],
+ ["Intel","INTC","$",0,0.54,"M","L"],["Samsung","005930.KS","₩",1,0.17,"M","H"],
+ ["Aixtron","AIXA","€",0,0.49,"VH","M"],["Marvell","MRVL","$",0,0.62,"VH","H"],
+ ["Oracle","ORCL","$",0,0.43,"H","H"],["Microsoft","MSFT","$",0,1.28,"H","H"],
+ ["Palantir","PLTR","$",0,1.37,"H","M"],["Sandisk","SNDK","$",0,0.21,"H","H"],
+ ["SK Hynix","000660.KS","₩",1,0.47,"M","H"]
+];
+// bands keyed by name: [price, +1.5σ, +1.0σ, median, −1.0σ, −1.5σ]
+const B90={
+ "Xpeng":[10.9,14.7,14.1,13.0,11.9,11.3], "Broadcom":[362,437,425,402,380,368],
+ "Alphabet":[333,380,372,356,341,333],    "ASML":[1529,1774,1721,1615,1509,1456],
+ "Rivian":[15.8,18.3,17.7,16.6,15.5,14.9],"A.Materials":[466,676,637,557,478,438],
+ "AMD":[487,631,602,544,486,457],         "Amazon":[256,275,269,256,244,238],
+ "Apple":[318,335,328,314,300,293],       "Uber":[76.6,79.3,77.8,74.8,71.8,70.3],
+ "TSMC":[436,466,454,432,409,398],        "Nvidia":[232,236,232,224,216,212],
+ "Meta":[615,652,634,598,563,545],        "Lumentum":[885,1042,997,908,819,775],
+ "Coherent":[283,431,400,339,278,248],    "Tesla":[356,439,416,370,325,302],
+ "Rocket Lab":[65,107,99,81,64,55],       "Infineon":[58.3,84.9,78.8,66.8,54.7,48.6],
+ "Xiaomi":[26.9,30.3,29.0,26.3,23.6,22.2],"Micron":[1033,1155,1098,984,870,813],
+ "Intel":[100,140,129,107,86,75],         "Samsung":[270,340,317,271,224,201],
+ "Aixtron":[37.6,57.4,52.5,42.6,32.8,27.8],"Marvell":[226,298,276,230,184,162],
+ "Oracle":[167,179,168,148,127,117],      "Microsoft":[495,486,461,410,358,333],
+ "Palantir":[173,178,167,146,125,114],    "Sandisk":[1760,2205,2027,1671,1315,1137],
+ "SK Hynix":[1793,2539,2306,1839,1373,1139]
+};
+const B360={
+ "Tesla":[356,545,519,467,415,389],       "Xpeng":[10.9,28.6,25.8,20.2,14.6,11.8],
+ "Broadcom":[362,561,526,455,383,348],    "Amazon":[256,306,295,274,253,243],
+ "Meta":[615,785,749,678,607,572],        "Alphabet":[333,399,383,352,321,305],
+ "Nvidia":[232,296,281,253,224,210],      "Xiaomi":[26.9,30.1,28.9,26.4,24.0,22.8],
+ "TSMC":[436,457,442,412,383,368],        "Apple":[318,322,312,293,274,264],
+ "Rivian":[15.8,24.1,22.3,18.6,14.9,13.1],"Rocket Lab":[65,121,110,87,64,53],
+ "ASML":[1529,1641,1570,1430,1289,1219],  "Uber":[77,100,93,79,65,57],
+ "Microsoft":[495,582,545,471,398,361],   "Coherent":[283,428,389,312,235,196],
+ "A.Materials":[466,583,537,447,356,310], "Infineon":[58.3,75.1,69.0,56.7,44.5,38.4],
+ "Aixtron":[37.6,57.0,51.3,40.0,28.6,23.0],"AMD":[487,585,532,426,320,267],
+ "Oracle":[167,294,260,192,125,91],       "Samsung":[270,325,295,235,175,146],
+ "Lumentum":[885,1279,1146,878,610,477],  "Palantir":[173,290,256,189,121,87],
+ "Intel":[100,121,107,78,50,35],          "Marvell":[226,241,210,146,83,51],
+ "SK Hynix":[1793,2044,1751,1165,580,287],"Micron":[1033,942,811,549,287,155],
+ "Sandisk":[1760,1775,1473,869,265,-37]
+};
+// column order as AJ renders it (sorted by implied upside, descending)
+const ORD90=["Xpeng","Broadcom","Alphabet","ASML","Rivian","A.Materials","AMD","Amazon","Apple","Uber","TSMC","Nvidia","Meta","Lumentum","Coherent","Tesla","Rocket Lab","Infineon","Xiaomi","Micron","Intel","Samsung","Aixtron","Marvell","Oracle","Microsoft","Palantir","Sandisk","SK Hynix"];
+const ORD360=["Tesla","Xpeng","Broadcom","Amazon","Meta","Alphabet","Nvidia","Xiaomi","TSMC","Apple","Rivian","Rocket Lab","ASML","Uber","Microsoft","Coherent","A.Materials","Infineon","Aixtron","AMD","Oracle","Samsung","Lumentum","Palantir","Intel","Marvell","SK Hynix","Micron","Sandisk"];
+
+// quadrant membership (exact, from AJ's side panel)
+const Q90={ui:["Lumentum","Coherent","AMD","Broadcom","Aixtron","Intel","Infineon","Marvell","Nvidia","Applied Materials","TSMC","Micron","Oracle","Samsung","Sandisk","Meta","SK Hynix"],
+ ue:["Tesla","ASML","Palantir","Alphabet","Amazon","Apple","Xiaomi","Uber"],di:[],de:["Microsoft"],os:["Rocket Lab","Xpeng","Rivian"]};
+const Q360={ui:["Broadcom","Nvidia","Lumentum","Coherent","Oracle","Aixtron","AMD","Infineon","Meta","Applied Materials","Intel","TSMC","Samsung","Marvell"],
+ ue:["Tesla","Palantir","Amazon","Alphabet","ASML","Microsoft","Xiaomi","Uber","Apple"],di:["Micron","SK Hynix","Sandisk"],de:[],os:["Xpeng","Rocket Lab","Rivian"]};
+
+// scatter points: name -> implied upside (digitised from AJ's chart)
+const X90={"Broadcom":.73,"Nvidia":.60,"Lumentum":.79,"Coherent":.84,"AMD":.79,"Aixtron":.70,"Infineon":.64,"Intel":.68,"Marvell":.60,"A.Materials":.60,"TSMC":.26,"Micron":.23,"Oracle":.25,"Samsung":.24,"Sandisk":.22,"Meta":.17,"SK Hynix":.10,"Tesla":1.21,"ASML":.36,"Palantir":.29,"Alphabet":.28,"Amazon":.26,"Apple":.09,"Xiaomi":.02,"Uber":.04,"Microsoft":-.01};
+const X360={"Broadcom":.96,"Nvidia":.81,"Lumentum":.78,"Coherent":.61,"Oracle":.64,"Aixtron":.34,"AMD":.40,"Infineon":.28,"Meta":.40,"A.Materials":.28,"Intel":.22,"TSMC":.28,"Samsung":.08,"Marvell":.03,"Tesla":1.79,"Palantir":.66,"Amazon":.35,"Alphabet":.27,"ASML":.20,"Microsoft":.14,"Xiaomi":.02,"Uber":.09,"Apple":.01,"Micron":-.29,"SK Hynix":-.30,"Sandisk":-.37};
+
+// Dashboard (stale: April 26, 2026). [name,ticker,price, t12,u12,r12,v12, t90,u90,r90,v90]
+const DASH=[
+["Alphabet","GOOG",342,338,-.01,"#11","Entry point remains unattractive relative to other opportunities.",376,.10,"#8","Entry point screens unattractive."],
+["Amazon","AMZN",264,306,.16,"#6","1-Year sentiment signals neutral buy point after surge.",266,.01,"#12","90-Days (short term) sentiment signals unattractive buy point."],
+["AMD","AMD",348,355,.02,"#12","Last 1-year sentiment implies very unattractive buy point.",361,.04,"#13","More recent sentiment (90-Days) implies highly unattractive buy point."],
+["Apple","AAPL",271,303,.12,"#5","Last 1-year sentiment implies neutral buy point.",304,.12,"#3","More recent sentiment (90-Days) implies neutral buy point."],
+["Broadcom","AVGO",423,566,.34,"#8","Last 1-year sentiment implies neutral buy point.",513,.21,"#11","More recent sentiment (90-Days) implies very unattractive buy point."],
+["Meta","META",675,840,.24,"#4","Buy point screens neutral on last 1-Year sentiment.",790,.17,"#4","Buy point screens neutral on last 90-Days sentiment."],
+["Micron","MU",497,456,-.08,"#n.m.","Sudden structural industry shift limits 1-Year sentiment trend and, we believe, should be ignored.",644,.30,"#10","Last 90-Days sentiment signals neutral buy point. However, sentiment may still not account adequately for sudden shift in memory industry dynamics (corridor may be too conservative)."],
+["Microsoft","MSFT",425,661,.56,"#2","Screens highly attractive on 1-Year sentiment. Reflects severe overhang (investors worry about sustainability of software business).",494,.16,"#5","Screens neutral on 90-Days sentiment. Large difference between 1-Year and 90-Days reflects severe overhang resulting collapse of multiple."],
+["Nvidia","NVDA",208,322,.55,"#3","Screens moderately attractive on 1-Year sentiment.",280,.34,"#6","Screens neutral on 90-Days sentiment."],
+["Oracle","ORCL",173,308,.78,"#9","Buy point screens neutral on 1-Year sentiment.",221,.28,"#9","Buy point screens neutral on 90-Days sentiment."],
+["Palantir","PLTR",143,468,2.27,"#1","Buy point screens highly attractive on 1-Year sentiment.",288,1.01,"#2","Buy point screens neutral on 90-Days sentiment."],
+["Tesla","TSLA",376,915,1.43,"#7","Buy point screens neutral on 1-Year sentiment. Imminent SpaceX IPO creates investor attention diversion risks.",923,1.45,"#1","Buy point screens neutral on 90-Days sentiment. Imminent SpaceX IPO creates investor attention diversion risks."],
+["TSMC","TSM",402,434,.08,"#10","Buy point screens unattractive on 1-Year sentiment.",478,.19,"#7","Buy point screens unattractive on 90-Days sentiment."]
+];
+
+const COV=[["Aixtron","AIXA"],["Alphabet","GOOG"],["Amazon","AMZN"],["AMD","AMD"],["Apple","AAPL"],["Applied Materials","AMAT"],["ASML","ASML"],["Broadcom","AVGO"],["Coherent","COHR"],["Eos Energy","EOSE"],["Infineon","IFX.DE"],["Intel","INTC"],["Lumentum","LITE"],["Marvell Technology","MRVL"],["Meta","META"],["Micron","MU"],["Microsoft","MSFT"],["Nvidia","NVDA"],["Oracle","ORCL"],["Palantir","PLTR"],["Rivian","RIVN"],["Rocket Lab","RKLB"],["Samsung","005930.KS"],["Sandisk","SNDK"],["SK Hynix","000660.KS"],["Tesla","TSLA"],["TSMC","TSM"],["Uber","UBER"],["Xiaomi","1810.HK"],["Xpeng","XPEV"]];
+const NOT_TRACKED=["RIVN"];
+
+/* ---------- helpers ---------- */
+const M=Object.fromEntries(META.map(m=>[m[0],{tk:m[1],cur:m[2],k:m[3],peg:m[4],cs:m[5],cl:m[6]}]));
+const CFL={VH:["cf-vh","V.High"],H:["cf-h","High"],M:["cf-m","Medium"],L:["cf-l","Low"]};
+const fmt=(n,name)=>{
+  if(n===null||n===undefined)return "—";
+  const a=Math.abs(n);
+  const s=a>=1000?a.toLocaleString('en-US',{maximumFractionDigits:0})
+        :(a>=100||Number.isInteger(n))?a.toFixed(0):a.toFixed(1);
+  return (n<0?"−":"")+s;
+};
+const pct=v=>(v>=0?"+":"−")+Math.abs(v*100).toFixed(0)+"%";
+
+/* ---------- scatter ---------- */
+function drawPlot(lb){
+  const X=lb===90?X90:X360, Q=lb===90?Q90:Q360;
+  const xs=Object.values(X), xmin=Math.min(...xs,0)-.06, xmax=Math.max(...xs)+.10;
+  const W=820,H=520,L=54,R=18,T=18,Bo=52;
+  const px=v=>L+(v-xmin)/(xmax-xmin)*(W-L-R);
+  const pegs=Object.values(M).map(m=>m.peg).filter(v=>v!=null);
+  const ymax=Math.max(...pegs)+.25;
+  const py=v=>T+(v/ymax)*(H-T-Bo);
+  const inQ=n=>Q.ui.includes(n)||Q.ui.includes(n==="A.Materials"?"Applied Materials":n)?"hot"
+    :Q.ue.includes(n)?"cool":Q.di.includes(n)?"blue":Q.de.includes(n)?"grey":null;
+  let s="";
+  // quadrant shading + zero line
+  s+=`<rect x="${px(0)}" y="${T}" width="${W-R-px(0)}" height="${py(1)-T}" fill="#e8622c" opacity=".05"/>`;
+  s+=`<line x1="${px(0)}" y1="${T}" x2="${px(0)}" y2="${H-Bo}" stroke="#6f7a95" stroke-dasharray="4 4" stroke-width="1"/>`;
+  s+=`<line x1="${L}" y1="${py(1)}" x2="${W-R}" y2="${py(1)}" stroke="#6f7a95" stroke-dasharray="4 4" stroke-width="1"/>`;
+  // axes ticks
+  const step=xmax-xmin>1.6?.4:.2;
+  for(let v=Math.ceil(xmin/step)*step; v<=xmax; v+=step){
+    s+=`<line x1="${px(v)}" y1="${H-Bo}" x2="${px(v)}" y2="${H-Bo+5}" stroke="#2e3757"/>`;
+    s+=`<text x="${px(v)}" y="${H-Bo+19}" fill="#6f7a95" font-size="11" font-family="IBM Plex Mono,monospace" text-anchor="middle">${(v>=0?"+":"−")+Math.abs(Math.round(v*100))}%</text>`;
+  }
+  for(let v=0;v<=ymax;v+=.5){
+    s+=`<line x1="${L}" y1="${py(v)}" x2="${W-R}" y2="${py(v)}" stroke="#2e3757" opacity=".5"/>`;
+    s+=`<text x="${L-9}" y="${py(v)+4}" fill="#6f7a95" font-size="11" font-family="IBM Plex Mono,monospace" text-anchor="end">${v.toFixed(1)}</text>`;
+  }
+  s+=`<text x="${L-9}" y="${T-4}" fill="#6f7a95" font-size="10" font-family="IBM Plex Mono,monospace" text-anchor="end">PEG</text>`;
+  s+=`<text x="${(L+W-R)/2}" y="${H-8}" fill="#a8b2ca" font-size="12" text-anchor="middle">Implied Upside / Downside</text>`;
+  s+=`<text x="${px(0)+8}" y="${T+13}" fill="#6f7a95" font-size="10.5" font-family="IBM Plex Mono,monospace">▲ Inexpensive</text>`;
+  s+=`<text x="${px(0)+8}" y="${H-Bo-6}" fill="#6f7a95" font-size="10.5" font-family="IBM Plex Mono,monospace">▼ Expensive</text>`;
+  // points
+  const COLS={hot:"#e8622c",cool:"#2bb5a0",blue:"#5b9bd5",grey:"#8b95a5"};
+  const placed=[];
+  Object.keys(X).forEach(n=>{
+    const m=M[n]; if(!m||m.peg==null)return;
+    const c=COLS[inQ(n)]||"#8b95a5", x=px(X[n]), y=py(m.peg);
+    s+=`<circle cx="${x}" cy="${y}" r="6.5" fill="${c}" stroke="#1a2038" stroke-width="2"><title>${n} · upside ${pct(X[n])} · PEG ${m.peg}</title></circle>`;
+    // nudge label off collisions
+    let ly=y-11, tries=0;
+    while(placed.some(p=>Math.abs(p.x-x)<44&&Math.abs(p.y-ly)<11)&&tries<6){ly+=12;tries++}
+    placed.push({x,y:ly});
+    s+=`<text x="${x}" y="${ly}" fill="#c9d2e6" font-size="10.5" text-anchor="middle" font-family="IBM Plex Mono,monospace">${n}</text>`;
+  });
+  document.getElementById('plot').innerHTML=s;
+  // quadrant panel
+  const box=(cls,label,arr)=>`<div class="q q-${cls}"><div class="qh"><span>${label}</span><span class="qn">${arr.length}</span></div><div class="chips">${arr.length?arr.map(a=>`<span class="chip">${a}</span>`).join(""):'<span class="chip">—</span>'}</div></div>`;
+  document.getElementById('quads').innerHTML=
+    box("ui","Upside – Inexpensive",Q.ui)+box("ue","Upside – Expensive",Q.ue)+
+    box("di","Downside – Inexpensive",Q.di)+box("de","Downside – Expensive",Q.de)+
+    box("os","Out of scope",Q.os);
+}
+
+/* ---------- details table ---------- */
+function drawDetails(lb){
+  const B=lb===90?B90:B360, ORD=lb===90?ORD90:ORD360;
+  let h=`<thead><tr><th class="co">Company</th><th>Conf. ST</th><th>Conf. LT</th><th>Cur.</th>
+    <th>Current<br>Price</th><th>+1.5&sigma;</th><th>+1.0&sigma;</th><th>Median</th><th>−1.0&sigma;</th><th>−1.5&sigma;</th>
+    <th>Median vs<br>Price</th></tr></thead><tbody>`;
+  ORD.forEach(n=>{
+    const b=B[n], m=M[n]; if(!b)return;
+    const d=b[3]/b[0]-1;
+    const cs=CFL[m.cs], cl=CFL[m.cl];
+    h+=`<tr><td class="co">${n} <span class="cur">${m.tk}</span></td>
+      <td><span class="cf ${cs[0]}">${cs[1]}</span></td>
+      <td><span class="cf ${cl[0]}">${cl[1]}</span></td>
+      <td class="cur">${m.cur}${m.k?"k":""}</td>
+      <td class="px">${fmt(b[0])}</td><td class="b15p">${fmt(b[1])}</td><td class="b10p">${fmt(b[2])}</td>
+      <td class="med">${fmt(b[3])}</td><td class="b10n">${fmt(b[4])}</td><td class="b15n">${fmt(b[5])}</td>
+      <td class="${d>=0?'up':'dn'}">${pct(d)}</td></tr>`;
+  });
+  document.getElementById('dtab').innerHTML=h+"</tbody>";
+  document.getElementById('dnote').textContent=
+    lb===90 ? "Ordered as AJ renders the 90-day view. Note Sandisk and SK Hynix carry the widest bands in coverage — their observable multiple has been anything but stable — while Nvidia's ±1.5σ spans barely 11% of its price, the tightest in the set."
+            : "Ordered as AJ renders the 360-day view. Over a full year the memory complex inverts: Micron, SK Hynix and Sandisk all trade above their 12-month median, and Sandisk's −1.5σ band goes negative — an artefact of extrapolating a multiple range through a period when its earnings base was near zero.";
+}
+
+/* ---------- static sections ---------- */
+function drawDash(){
+  document.getElementById('dashg').innerHTML=DASH.map(d=>{
+    const[n,tk,p,t12,u12,r12,v12,t90,u90,r90,v90]=d;
+    const cell=(cls,tag,t,u,r,v)=>`<div class="lb2 ${cls}"><div class="tag">${tag}</div>
+      <div class="tgt">$${t.toLocaleString()}</div>
+      <div class="ups" style="color:${u>=0?'var(--cool)':'var(--hot)'}">${pct(u)} implied</div>
+      <div class="rk">Rank ${r}</div><div class="vd">${v}</div></div>`;
+    return `<div class="dc"><h4>${n} <span class="tk">(${tk})</span></h4>
+      <div class="pxl">Share price at last update · $${p.toLocaleString()}</div>
+      <div class="two">${cell("a","12-Month",t12,u12,r12,v12)}${cell("b","90-Day",t90,u90,r90,v90)}</div></div>`;
+  }).join("");
+}
+function drawCov(){
+  document.getElementById('covg').innerHTML=COV.map(([n,t])=>
+    `<div class="cv${NOT_TRACKED.includes(t)?' miss':''}">${n}<span>${t}</span></div>`).join("");
+}
+function drawRecon(){
+  const rows=[
+   ["Corridor bands (90-day)","29 / 29 within 0.6%","ok","Config was set from AJ's Sep 4 Details view; the Sep 8 read differs only by rounding and a few days of EPS slope."],
+   ["Corridor bands (12-month)","29 / 29 within 1.5%","ok","Largest drift is Sandisk's −1.5σ (−51 vs −37), where the band is near zero and any change looks large in relative terms."],
+   ["Coverage set","28 / 29 matched","warn","AJ plots Rivian; our pipeline does not track it. Our pipeline tracks Eos Energy, which AJ covers but does not plot."],
+   ["Cockpit quadrants (90-day)","17 / 8 / 0 / 1 + 3 OOS","ok","Unchanged since Sep 4."],
+   ["Cockpit quadrants (12-month)","14 / 9 / 3 / 0 + 3 OOS","new","Not previously captured. Micron, SK Hynix and Sandisk sit in Downside – Inexpensive on the year view while screening Upside – Inexpensive on 90 days."],
+   ["Yahoo ticker mapping","confirmed","ok","AJ's coverage page publishes IFX.DE, 005930.KS, 000660.KS, 1810.HK and SNDK — matching the repointed tickers in config."]
+  ];
+  const badge={ok:["var(--cool)","MATCH"],warn:["var(--band15)","GAP"],new:["var(--blue)","NEW"]};
+  document.getElementById('rtab').innerHTML=`<thead><tr><th class="co">Check</th><th style="text-align:left">Result</th><th style="text-align:left">Status</th><th style="text-align:left">Detail</th></tr></thead><tbody>`+
+   rows.map(([a,b,c,d])=>`<tr><td class="co">${a}</td><td style="text-align:left">${b}</td>
+     <td style="text-align:left;color:${badge[c][0]};font-weight:600">${badge[c][1]}</td>
+     <td style="text-align:left;white-space:normal;font-family:Archivo,sans-serif;font-size:12.5px;color:var(--ink2);min-width:340px">${d}</td></tr>`).join("")+`</tbody>`;
+}
+
+let LB=90;
+function setLb(v){
+  LB=v;
+  document.getElementById('t90').setAttribute('aria-selected',v===90);
+  document.getElementById('t360').setAttribute('aria-selected',v===360);
+  document.getElementById('lbwin').innerHTML=v===90
+    ? "<b>Window:</b> Jun 10, 2026 → Sep 08, 2026"
+    : "<b>Window:</b> Sep 13, 2025 → Sep 08, 2026";
+  drawPlot(v); drawDetails(v);
+}
+setLb(90); drawDash(); drawCov(); drawRecon();
+</script>
+</div></body></html>
