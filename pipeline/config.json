@@ -191,24 +191,6 @@
       "yahoo": "XPEV"
     },
     {
-      "t": "RKLB",
-      "n": "Rocket Lab",
-      "est": "aj",
-      "epsGr": null,
-      "iu": null,
-      "ajPeg": null,
-      "yahoo": "RKLB"
-    },
-    {
-      "t": "EOSE",
-      "n": "Eos Energy",
-      "est": "aj",
-      "epsGr": null,
-      "iu": null,
-      "ajPeg": null,
-      "yahoo": "EOSE"
-    },
-    {
       "t": "COHR",
       "n": "Coherent",
       "est": "aj",
@@ -236,7 +218,10 @@
       "peH1y": 10.467,
       "rank1y": 28,
       "tgt1y": 716,
-      "rank90": 20
+      "rank90": 20,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "SNDK": {
       "eps": 52,
@@ -255,7 +240,10 @@
       "peH1y": 34.135,
       "rank1y": 29,
       "tgt1y": 1099,
-      "rank90": 28
+      "rank90": 28,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "LITE": {
       "eps": 23.29,
@@ -274,7 +262,10 @@
       "peH1y": 54.916,
       "rank1y": 23,
       "tgt1y": 1542,
-      "rank90": 15
+      "rank90": 15,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "ORCL": {
       "eps": 8.3,
@@ -293,7 +284,10 @@
       "peH1y": 35.422,
       "rank1y": 20,
       "tgt1y": 272,
-      "rank90": 25
+      "rank90": 25,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "META": {
       "eps": 30.5,
@@ -312,7 +306,10 @@
       "peH1y": 25.738,
       "rank1y": 5,
       "tgt1y": 817,
-      "rank90": 13
+      "rank90": 13,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "NVDA": {
       "eps": 16.16,
@@ -331,7 +328,10 @@
       "peH1y": 18.317,
       "rank1y": 6,
       "tgt1y": 419,
-      "rank90": 12
+      "rank90": 12,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-09-30"
     },
     "UBER": {
       "eps": 3.69,
@@ -350,7 +350,10 @@
       "peH1y": 27.1,
       "rank1y": 14,
       "tgt1y": 84,
-      "rank90": 9
+      "rank90": 9,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "TSLA": {
       "eps": 4.8,
@@ -369,7 +372,10 @@
       "peH1y": 113.542,
       "rank1y": 2,
       "tgt1y": 984,
-      "rank90": 16
+      "rank90": 16,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "AMZN": {
       "eps": 7.8,
@@ -388,7 +394,10 @@
       "peH1y": 39.231,
       "rank1y": 4,
       "tgt1y": 344,
-      "rank90": 10
+      "rank90": 10,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "TSM": {
       "eps": 22.5,
@@ -407,7 +416,14 @@
       "peH1y": 20.311,
       "rank1y": 8,
       "tgt1y": 523,
-      "rank90": 8
+      "rank90": 8,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30",
+      "sunset": {
+        "at": "2026-10-14",
+        "reason": "consensus EPS is TWD against a USD ADR price; retire rather than convert"
+      }
     },
     "PLTR": {
       "eps": 2.46,
@@ -426,7 +442,10 @@
       "peH1y": 117.886,
       "rank1y": 24,
       "tgt1y": 289,
-      "rank90": 27
+      "rank90": 27,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "AMD": {
       "eps": 11.82,
@@ -445,7 +464,10 @@
       "peH1y": 49.492,
       "rank1y": 21,
       "tgt1y": 670,
-      "rank90": 5
+      "rank90": 5,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "ASML": {
       "eps": 53,
@@ -464,7 +486,10 @@
       "peH1y": 30.962,
       "rank1y": 13,
       "tgt1y": 1830,
-      "rank90": 4
+      "rank90": 4,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "INTC": {
       "eps": 3.6,
@@ -483,7 +508,10 @@
       "peH1y": 33.611,
       "rank1y": 25,
       "tgt1y": 122,
-      "rank90": 21
+      "rank90": 21,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "MRVL": {
       "eps": 6.2,
@@ -502,7 +530,10 @@
       "peH1y": 38.871,
       "rank1y": 26,
       "tgt1y": 233,
-      "rank90": 24
+      "rank90": 24,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-09-30"
     },
     "AMAT": {
       "eps": 12.5,
@@ -521,7 +552,10 @@
       "peH1y": 46.64,
       "rank1y": 17,
       "tgt1y": 593,
-      "rank90": 6
+      "rank90": 6,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-09-30"
     },
     "AVGO": {
       "eps": 17.25,
@@ -540,7 +574,10 @@
       "peH1y": 32.522,
       "rank1y": 3,
       "tgt1y": 714,
-      "rank90": 1
+      "rank90": 1,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-09-30"
     },
     "MSFT": {
       "eps": 16.2,
@@ -559,7 +596,10 @@
       "peH1y": 35.926,
       "rank1y": 15,
       "tgt1y": 573,
-      "rank90": 26
+      "rank90": 26,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "AAPL": {
       "eps": 8.8,
@@ -578,7 +618,10 @@
       "peH1y": 36.591,
       "rank1y": 11,
       "tgt1y": 322,
-      "rank90": 11
+      "rank90": 11,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "GOOGL": {
       "eps": 11.5,
@@ -597,7 +640,10 @@
       "peH1y": 34.696,
       "rank1y": 7,
       "tgt1y": 421,
-      "rank90": 3
+      "rank90": 3,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "COHR": {
       "eps": 16.38,
@@ -616,7 +662,10 @@
       "peH1y": 26.129,
       "rank1y": 16,
       "tgt1y": 461,
-      "rank90": 14
+      "rank90": 14,
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     },
     "XPEV": {
       "eps": null,
@@ -630,21 +679,10 @@
       "tgt1y": 25,
       "rank90": 2,
       "rank1y": 1,
-      "note": "valued on NTM gross profit, not EPS"
-    },
-    "RKLB": {
-      "eps": null,
-      "bL": 55,
-      "bM": 81,
-      "bH": 107,
-      "bL1y": 53,
-      "bM1y": 87,
-      "bH1y": 121,
-      "tgt": 115,
-      "tgt1y": 121,
-      "rank90": 17,
-      "rank1y": 12,
-      "note": "pre-profit; no EPS basis"
+      "note": "valued on NTM gross profit, not EPS",
+      "epsSource": "aj",
+      "epsAsOf": "2026-09-08",
+      "epsBaselinePeriod": "2026-06-30"
     }
   },
   "corrMeta": {
