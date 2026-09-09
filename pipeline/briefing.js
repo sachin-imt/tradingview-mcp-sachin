@@ -60,8 +60,22 @@ function posAt(t, i) {
   return { p, lo, hi, med: b.med?.[i], pos: (p - lo) / (hi - lo) };
 }
 
+// Walk the book largest first and stop once enough has been found. A brief with
+// forty lines gets skimmed; one with fifteen gets read. Market-cap order means
+// that when the cap does bite, what survives is the part of the book that
+// actually moves the portfolio — a 4% day in COHR never displaces one in NVDA.
+const MAX_CHANGES = Number((() => {
+  const i = process.argv.indexOf('--max-changes');
+  return i > -1 ? process.argv[i + 1] : cfg.alerts?.maxChanges ?? 15;
+})());
+
+const byCap = [...cfg.stocks].sort((a, b) => (b.mcapM ?? 0) - (a.mcapM ?? 0));
+
 const rows = [];
-for (const s of cfg.stocks) {
+let changeCount = 0;
+let truncatedAt = null;
+
+for (const s of byCap) {
   const now = posAt(s.t, idx);
   const prev = posAt(s.t, idx - 1);
   if (!now || !prev) continue;
@@ -78,8 +92,21 @@ for (const s of cfg.stocks) {
   const tier = cfg.alerts.tiers.find(t => t.name === s.tier) || cfg.alerts.tiers[cfg.alerts.tiers.length - 1];
   const threshold = cfg.alerts.overrides?.[s.t] ?? tier.movePct;
 
+  const zoneChanged = zoneOf(now.pos) !== zoneOf(prev.pos);
+  const breached = Math.abs(move) >= threshold;
+  const isChange = zoneChanged || breached;
+
+  // The termination rule. Names already past the cap are still evaluated and
+  // kept in `all` — the corridor state stays complete — but they no longer
+  // count as reportable changes.
+  let counted = false;
+  if (isChange) {
+    if (changeCount < MAX_CHANGES) { changeCount++; counted = true; }
+    else if (truncatedAt == null) truncatedAt = s.t;
+  }
+
   rows.push({
-    t: s.t, n: s.n, tier: s.tier, threshold,
+    t: s.t, n: s.n, tier: s.tier, threshold, mcapM: s.mcapM ?? null,
     price: now.p, move,
     zone: zoneOf(now.pos), prevZone: zoneOf(prev.pos),
     pos: now.pos, prevPos: prev.pos,
@@ -87,14 +114,15 @@ for (const s of cfg.stocks) {
     lo: now.lo, hi: now.hi, med: now.med,
     epsSource: cfg.corridors[s.t]?.epsSource ?? 'aj',
     nextReport: est[s.t]?.nextReport ?? null,
-    breached: Math.abs(move) >= threshold
+    breached, zoneChanged, isChange, counted
   });
 }
+const suppressed = rows.filter(r => r.isChange && !r.counted);
 
 const zoneRank = { Attractive: 0, 'Fair Value': 1, Stretched: 2 };
-const becameAttractive = rows.filter(r => zoneRank[r.zone] < zoneRank[r.prevZone]);
-const becameStretched  = rows.filter(r => zoneRank[r.zone] > zoneRank[r.prevZone]);
-const movers = rows.filter(r => r.breached).sort((a, b) => Math.abs(b.move) - Math.abs(a.move));
+const becameAttractive = rows.filter(r => r.counted && zoneRank[r.zone] < zoneRank[r.prevZone]);
+const becameStretched  = rows.filter(r => r.counted && zoneRank[r.zone] > zoneRank[r.prevZone]);
+const movers = rows.filter(r => r.counted && r.breached).sort((a, b) => Math.abs(b.move) - Math.abs(a.move));
 const deepValue = rows.filter(r => r.pos <= 0.02);
 const extreme   = rows.filter(r => r.pos >= 0.98);
 const soon = rows.filter(r => r.nextReport &&
@@ -175,8 +203,16 @@ if (soon.length) {
   console.log();
 }
 
+if (suppressed.length) {
+  console.log(`Cap reached: ${changeCount}/${MAX_CHANGES} changes reported, ${suppressed.length} smaller name(s) held back`);
+  console.log(`  not shown: ${suppressed.map(r => r.t).join(', ')}`);
+  console.log(`  raise with --max-changes N\n`);
+}
+
 const out = {
   date: D, generatedAt: new Date().toISOString(),
+  maxChanges: MAX_CHANGES, changeCount, truncated: suppressed.length > 0,
+  suppressed: suppressed.map(r => ({ t: r.t, move: r.move, mcapM: r.mcapM })),
   becameAttractive: becameAttractive.map(r => ({ ...r, cause: cause(r) })),
   becameStretched: becameStretched.map(r => ({ ...r, cause: cause(r) })),
   movers, creeping, deepValue: deepValue.map(r => r.t), extreme: extreme.map(r => r.t),
