@@ -61,21 +61,68 @@ async function fh(path, params) {
   try { return { data: JSON.parse(body) }; } catch { return { error: 'bad JSON' }; }
 }
 
-/** Sum the next four forward fiscal quarters into a rolling NTM figure. */
+/**
+ * Sum the next four forward fiscal quarters into a rolling NTM figure.
+ *
+ * The free tier publishes three forward quarters, not four, so the fourth has
+ * to be derived. Two candidate methods:
+ *
+ *   year-over-year — grow the same fiscal quarter from last year's actual.
+ *     Rejected: it disintegrates through a cycle. Micron's forward quarters
+ *     imply YoY growth of 10.6x, then 7.5x, then 3.2x, so the derived quarter
+ *     lands anywhere between 80 and 188 depending which ratio you pick.
+ *
+ *   sequential — extrapolate the quarter-on-quarter progression of the forward
+ *     estimates themselves. Chosen: analysts build those three as a coherent
+ *     series, so the step between them is far steadier than the YoY ratio
+ *     (Micron: +11%, +8%). We take the geometric mean of the observed steps and
+ *     clamp it, so one odd quarter cannot compound into a runaway figure.
+ *
+ * Flat 4/3 scaling — the previous approach — is strictly worse than either: it
+ * assumes the missing quarter equals the average of the known ones, which
+ * understates every compounding business, and the omitted quarter is normally
+ * the largest.
+ */
+const GEO_CLAMP = [0.6, 1.6];   // per-quarter step, guards against runaway compounding
+
 function buildNtm(forward) {
-  const q = forward.filter(e => e.epsEstimate != null).sort((a, b) => a.date < b.date ? -1 : 1);
+  const q = forward.filter(e => e.epsEstimate != null)
+                   .sort((a, b) => a.date < b.date ? -1 : 1);
   if (!q.length) return null;
-  const use = q.slice(0, 4);
-  const sum = use.reduce((s, e) => s + e.epsEstimate, 0);
-  // The free tier usually returns three forward quarters, not four. Scaling a
-  // three-quarter sum to a four-quarter year is an approximation, so it gets
-  // flagged and the dashboard can show it as such rather than implying precision.
-  const approx = use.length < 4;
+
+  const vals = q.map(e => e.epsEstimate);
+  const periods = q.map(e => `FY${e.year}Q${e.quarter}`);
+  let derived = 0;
+
+  // Sequential step, as the geometric mean of the observed quarter-on-quarter
+  // ratios. Only meaningful while the series stays positive — a sign flip makes
+  // a ratio meaningless, so we bail to the plain sum in that case.
+  const ratios = [];
+  for (let i = 1; i < vals.length; i++) {
+    if (vals[i - 1] > 0 && vals[i] > 0) ratios.push(vals[i] / vals[i - 1]);
+  }
+  let step = null;
+  if (ratios.length) {
+    const geo = Math.exp(ratios.reduce((s, r) => s + Math.log(r), 0) / ratios.length);
+    step = Math.min(GEO_CLAMP[1], Math.max(GEO_CLAMP[0], geo));
+  }
+
+  while (vals.length < 4 && step != null && vals[vals.length - 1] > 0) {
+    vals.push(vals[vals.length - 1] * step);
+    periods.push('derived');
+    derived++;
+  }
+
+  if (vals.length < 4) return null;   // cannot build a credible twelve months
+
+  const sum = vals.slice(0, 4).reduce((s, v) => s + v, 0);
   return {
-    eps: Math.round((approx ? sum * 4 / use.length : sum) * 10000) / 10000,
-    quarters: use.length,
-    approx,
-    periods: use.map(e => `${e.year}Q${e.quarter}`),
+    eps: Math.round(sum * 10000) / 10000,
+    quarters: q.length,
+    derived,
+    step: step ? Math.round(step * 1000) / 1000 : null,
+    approx: derived > 0,
+    periods: periods.slice(0, 4),
     nextReport: q[0]?.date || null
   };
 }
@@ -121,15 +168,18 @@ async function main() {
     if (ntm) {
       rec.consensusNtm = ntm.eps;
       rec.quarters = ntm.quarters;
+      rec.derived = ntm.derived;
+      rec.step = ntm.step;
       rec.approx = ntm.approx;
       rec.periods = ntm.periods;
       rec.nextReport = ntm.nextReport;
       rec.status = 'ok';
       const d = rec.ajEps ? ((ntm.eps - rec.ajEps) / rec.ajEps * 100) : null;
       rec.vsAj = d == null ? null : Math.round(d * 10) / 10;
-      console.log(`  ✓ ${s.t.padEnd(6)} NTM ${String(ntm.eps).padStart(8)}` +
-        `${ntm.approx ? '~' : ' '} (${ntm.quarters}q)  AJ ${String(rec.ajEps ?? '—').padStart(7)}` +
-        `  ${d == null ? '' : (d >= 0 ? '+' : '') + d.toFixed(0) + '%'}` +
+      console.log(`  ✓ ${s.t.padEnd(6)} NTM ${String(ntm.eps).padStart(9)}` +
+        `  ${ntm.derived ? `${ntm.quarters}q+${ntm.derived}d @${ntm.step}` : `${ntm.quarters}q exact`}`.padEnd(16) +
+        `  AJ ${String(rec.ajEps ?? '—').padStart(7)}` +
+        `  ${d == null ? '' : (d >= 0 ? '+' : '') + d.toFixed(0) + '%'}`.padEnd(8) +
         `  next ${rec.nextReport ?? '—'}`);
     } else {
       rec.status = 'no-forward';

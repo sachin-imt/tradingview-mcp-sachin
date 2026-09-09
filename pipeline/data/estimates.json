@@ -1,8 +1,8 @@
 {
-  "fetchedAt": "2026-09-09T09:36:02.148Z",
+  "fetchedAt": "2026-09-09T09:48:14.008Z",
   "source": "finnhub-free",
   "note": "Observational only. apply-estimates.js decides when a name switches off AJ.",
-  "coverage": "22/22",
+  "coverage": "21/22",
   "estimates": {
     "MU": {
       "ticker": "MU",
@@ -32,17 +32,20 @@
         }
       ],
       "symbol": "MU",
-      "consensusNtm": 142.4167,
+      "consensusNtm": 149.3244,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.097,
       "approx": true,
       "periods": [
-        "2026Q4",
-        "2027Q1",
-        "2027Q2"
+        "FY2026Q4",
+        "FY2027Q1",
+        "FY2027Q2",
+        "derived"
       ],
       "nextReport": "2026-09-30",
       "status": "ok",
-      "vsAj": 58.2
+      "vsAj": 65.9
     },
     "SNDK": {
       "ticker": "SNDK",
@@ -72,17 +75,20 @@
         }
       ],
       "symbol": "SNDK",
-      "consensusNtm": 210.1767,
+      "consensusNtm": 219.4462,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.095,
       "approx": true,
       "periods": [
-        "2027Q1",
-        "2027Q2",
-        "2027Q3"
+        "FY2027Q1",
+        "FY2027Q2",
+        "FY2027Q3",
+        "derived"
       ],
       "nextReport": "2026-11-04",
       "status": "ok",
-      "vsAj": 304.2
+      "vsAj": 322
     },
     "LITE": {
       "ticker": "LITE",
@@ -112,17 +118,20 @@
         }
       ],
       "symbol": "LITE",
-      "consensusNtm": 20.2417,
+      "consensusNtm": 21.9746,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.167,
       "approx": true,
       "periods": [
-        "2027Q1",
-        "2027Q2",
-        "2027Q3"
+        "FY2027Q1",
+        "FY2027Q2",
+        "FY2027Q3",
+        "derived"
       ],
       "nextReport": "2026-11-02",
       "status": "ok",
-      "vsAj": -13.1
+      "vsAj": -5.6
     },
     "ORCL": {
       "ticker": "ORCL",
@@ -154,12 +163,14 @@
       "symbol": "ORCL",
       "consensusNtm": 8.2242,
       "quarters": 4,
+      "derived": 0,
+      "step": 1.108,
       "approx": false,
       "periods": [
-        "2027Q1",
-        "2027Q2",
-        "2027Q3",
-        "2027Q4"
+        "FY2027Q1",
+        "FY2027Q2",
+        "FY2027Q3",
+        "FY2027Q4"
       ],
       "nextReport": "2026-09-10",
       "status": "ok",
@@ -193,17 +204,20 @@
         }
       ],
       "symbol": "META",
-      "consensusNtm": 30.5629,
+      "consensusNtm": 31.4604,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.086,
       "approx": true,
       "periods": [
-        "2026Q3",
-        "2026Q4",
-        "2027Q1"
+        "FY2026Q3",
+        "FY2026Q4",
+        "FY2027Q1",
+        "derived"
       ],
       "nextReport": "2026-10-27",
       "status": "ok",
-      "vsAj": 0.2
+      "vsAj": 3.1
     },
     "NVDA": {
       "ticker": "NVDA",
@@ -233,17 +247,20 @@
         }
       ],
       "symbol": "NVDA",
-      "consensusNtm": 11.0877,
+      "consensusNtm": 11.7548,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.117,
       "approx": true,
       "periods": [
-        "2027Q3",
-        "2027Q4",
-        "2028Q1"
+        "FY2027Q3",
+        "FY2027Q4",
+        "FY2028Q1",
+        "derived"
       ],
       "nextReport": "2026-11-17",
       "status": "ok",
-      "vsAj": -31.4
+      "vsAj": -27.3
     },
     "UBER": {
       "ticker": "UBER",
@@ -273,17 +290,20 @@
         }
       ],
       "symbol": "UBER",
-      "consensusNtm": 4.2044,
+      "consensusNtm": 4.2367,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.028,
       "approx": true,
       "periods": [
-        "2026Q3",
-        "2026Q4",
-        "2027Q1"
+        "FY2026Q3",
+        "FY2026Q4",
+        "FY2027Q1",
+        "derived"
       ],
       "nextReport": "2026-11-02",
       "status": "ok",
-      "vsAj": 13.9
+      "vsAj": 14.8
     },
     "TSLA": {
       "ticker": "TSLA",
@@ -313,17 +333,20 @@
         }
       ],
       "symbol": "TSLA",
-      "consensusNtm": 1.8273,
+      "consensusNtm": 1.8228,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.005,
       "approx": true,
       "periods": [
-        "2026Q3",
-        "2026Q4",
-        "2027Q1"
+        "FY2026Q3",
+        "FY2026Q4",
+        "FY2027Q1",
+        "derived"
       ],
       "nextReport": "2026-10-20",
       "status": "ok",
-      "vsAj": -61.9
+      "vsAj": -62
     },
     "AMZN": {
       "ticker": "AMZN",
@@ -353,17 +376,20 @@
         }
       ],
       "symbol": "AMZN",
-      "consensusNtm": 9.2172,
+      "consensusNtm": 9.5963,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.104,
       "approx": true,
       "periods": [
-        "2026Q3",
-        "2026Q4",
-        "2027Q1"
+        "FY2026Q3",
+        "FY2026Q4",
+        "FY2027Q1",
+        "derived"
       ],
       "nextReport": "2026-10-28",
       "status": "ok",
-      "vsAj": 18.2
+      "vsAj": 23
     },
     "TSM": {
       "ticker": "TSM",
@@ -393,17 +419,20 @@
         }
       ],
       "symbol": "TSM",
-      "consensusNtm": 123.8845,
+      "consensusNtm": 126.9451,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.055,
       "approx": true,
       "periods": [
-        "2026Q3",
-        "2026Q4",
-        "2027Q1"
+        "FY2026Q3",
+        "FY2026Q4",
+        "FY2027Q1",
+        "derived"
       ],
       "nextReport": "2026-10-14",
       "status": "ok",
-      "vsAj": 450.6
+      "vsAj": 464.2
     },
     "PLTR": {
       "ticker": "PLTR",
@@ -433,17 +462,20 @@
         }
       ],
       "symbol": "PLTR",
-      "consensusNtm": 1.8679,
+      "consensusNtm": 1.9354,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.077,
       "approx": true,
       "periods": [
-        "2026Q3",
-        "2026Q4",
-        "2027Q1"
+        "FY2026Q3",
+        "FY2026Q4",
+        "FY2027Q1",
+        "derived"
       ],
       "nextReport": "2026-11-02",
       "status": "ok",
-      "vsAj": -24.1
+      "vsAj": -21.3
     },
     "AMD": {
       "ticker": "AMD",
@@ -473,17 +505,20 @@
         }
       ],
       "symbol": "AMD",
-      "consensusNtm": 10.2088,
+      "consensusNtm": 11.4421,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.247,
       "approx": true,
       "periods": [
-        "2026Q3",
-        "2026Q4",
-        "2027Q1"
+        "FY2026Q3",
+        "FY2026Q4",
+        "FY2027Q1",
+        "derived"
       ],
       "nextReport": "2026-11-02",
       "status": "ok",
-      "vsAj": -13.6
+      "vsAj": -3.2
     },
     "ASML": {
       "ticker": "ASML",
@@ -513,17 +548,20 @@
         }
       ],
       "symbol": "ASML",
-      "consensusNtm": 48.942,
+      "consensusNtm": 50.5092,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.091,
       "approx": true,
       "periods": [
-        "2026Q3",
-        "2026Q4",
-        "2027Q1"
+        "FY2026Q3",
+        "FY2026Q4",
+        "FY2027Q1",
+        "derived"
       ],
       "nextReport": "2026-10-14",
       "status": "ok",
-      "vsAj": -7.7
+      "vsAj": -4.7
     },
     "INTC": {
       "ticker": "INTC",
@@ -553,17 +591,20 @@
         }
       ],
       "symbol": "INTC",
-      "consensusNtm": 1.6236,
+      "consensusNtm": 1.6194,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.008,
       "approx": true,
       "periods": [
-        "2026Q3",
-        "2026Q4",
-        "2027Q1"
+        "FY2026Q3",
+        "FY2026Q4",
+        "FY2027Q1",
+        "derived"
       ],
       "nextReport": "2026-10-21",
       "status": "ok",
-      "vsAj": -54.9
+      "vsAj": -55
     },
     "MRVL": {
       "ticker": "MRVL",
@@ -593,17 +634,20 @@
         }
       ],
       "symbol": "MRVL",
-      "consensusNtm": 4.9235,
+      "consensusNtm": 5.176,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.108,
       "approx": true,
       "periods": [
-        "2027Q3",
-        "2027Q4",
-        "2028Q1"
+        "FY2027Q3",
+        "FY2027Q4",
+        "FY2028Q1",
+        "derived"
       ],
       "nextReport": "2026-11-30",
       "status": "ok",
-      "vsAj": -20.6
+      "vsAj": -16.5
     },
     "AMAT": {
       "ticker": "AMAT",
@@ -633,17 +677,20 @@
         }
       ],
       "symbol": "AMAT",
-      "consensusNtm": 17.4879,
+      "consensusNtm": 18.0272,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.059,
       "approx": true,
       "periods": [
-        "2026Q4",
-        "2027Q1",
-        "2027Q2"
+        "FY2026Q4",
+        "FY2027Q1",
+        "FY2027Q2",
+        "derived"
       ],
       "nextReport": "2026-11-12",
       "status": "ok",
-      "vsAj": 39.9
+      "vsAj": 44.2
     },
     "AVGO": {
       "ticker": "AVGO",
@@ -673,17 +720,20 @@
         }
       ],
       "symbol": "AVGO",
-      "consensusNtm": 16.99,
+      "consensusNtm": 17.6714,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.076,
       "approx": true,
       "periods": [
-        "2026Q4",
-        "2027Q1",
-        "2027Q2"
+        "FY2026Q4",
+        "FY2027Q1",
+        "FY2027Q2",
+        "derived"
       ],
       "nextReport": "2026-12-09",
       "status": "ok",
-      "vsAj": -1.5
+      "vsAj": 2.4
     },
     "MSFT": {
       "ticker": "MSFT",
@@ -713,17 +763,20 @@
         }
       ],
       "symbol": "MSFT",
-      "consensusNtm": 19.6873,
+      "consensusNtm": 19.8459,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.017,
       "approx": true,
       "periods": [
-        "2027Q1",
-        "2027Q2",
-        "2027Q3"
+        "FY2027Q1",
+        "FY2027Q2",
+        "FY2027Q3",
+        "derived"
       ],
       "nextReport": "2026-10-27",
       "status": "ok",
-      "vsAj": 21.5
+      "vsAj": 22.5
     },
     "AAPL": {
       "ticker": "AAPL",
@@ -753,17 +806,20 @@
         }
       ],
       "symbol": "AAPL",
-      "consensusNtm": 9.6399,
+      "consensusNtm": 9.6063,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.056,
       "approx": true,
       "periods": [
-        "2026Q4",
-        "2027Q1",
-        "2027Q2"
+        "FY2026Q4",
+        "FY2027Q1",
+        "FY2027Q2",
+        "derived"
       ],
       "nextReport": "2026-10-28",
       "status": "ok",
-      "vsAj": 9.5
+      "vsAj": 9.2
     },
     "GOOGL": {
       "ticker": "GOOGL",
@@ -793,17 +849,20 @@
         }
       ],
       "symbol": "GOOGL",
-      "consensusNtm": 13.3088,
+      "consensusNtm": 13.5954,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.052,
       "approx": true,
       "periods": [
-        "2026Q3",
-        "2026Q4",
-        "2027Q1"
+        "FY2026Q3",
+        "FY2026Q4",
+        "FY2027Q1",
+        "derived"
       ],
       "nextReport": "2026-10-27",
       "status": "ok",
-      "vsAj": 15.7
+      "vsAj": 18.2
     },
     "XPEV": {
       "ticker": "XPEV",
@@ -833,17 +892,7 @@
         }
       ],
       "symbol": "XPEV",
-      "consensusNtm": -0.7603,
-      "quarters": 3,
-      "approx": true,
-      "periods": [
-        "2026Q3",
-        "2026Q4",
-        "2027Q1"
-      ],
-      "nextReport": "2026-11-17",
-      "status": "ok",
-      "vsAj": null
+      "status": "no-forward"
     },
     "COHR": {
       "ticker": "COHR",
@@ -873,17 +922,20 @@
         }
       ],
       "symbol": "COHR",
-      "consensusNtm": 8.9933,
+      "consensusNtm": 9.568,
       "quarters": 3,
+      "derived": 1,
+      "step": 1.122,
       "approx": true,
       "periods": [
-        "2027Q1",
-        "2027Q2",
-        "2027Q3"
+        "FY2027Q1",
+        "FY2027Q2",
+        "FY2027Q3",
+        "derived"
       ],
       "nextReport": "2026-11-03",
       "status": "ok",
-      "vsAj": -45.1
+      "vsAj": -41.6
     }
   }
 }
