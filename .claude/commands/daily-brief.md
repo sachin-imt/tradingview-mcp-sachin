@@ -62,10 +62,13 @@ sessions, roughly half from earnings accrual" beats "GOOGL looking attractive".
 
 ## Sending
 
-Send only to the address the user has confirmed, and only if they have given
-explicit standing authorisation for this recurring brief. If no address is on
-file, stop and ask — never guess, and never send to an address inferred from
-git config or a commit trail.
+**Confirmed recipient: sachin.imt@gmail.com**, via the connected Gmail. The user
+gave explicit standing authorisation on 2026-09-09 for this recurring brief to
+this address.
+
+That authorisation covers this daily brief and nothing else. Any other send —
+a different recipient, a one-off, anything with an attachment — needs asking
+again. Never send to an address inferred from git config or a commit trail.
 
 WhatsApp is not wired up: there is no connector for it in this environment, and
 it would need a Twilio WhatsApp Business account with an approved sender. Do not
