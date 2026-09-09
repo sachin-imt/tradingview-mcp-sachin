@@ -7,7 +7,9 @@
       "epsGr": 120,
       "iu": 0.23,
       "ajPeg": 0.16,
-      "yahoo": "MU"
+      "yahoo": "MU",
+      "mcapM": 1129687,
+      "tier": "mega"
     },
     {
       "t": "SNDK",
@@ -16,7 +18,9 @@
       "epsGr": 85,
       "iu": 0.22,
       "ajPeg": 0.21,
-      "yahoo": "SNDK"
+      "yahoo": "SNDK",
+      "mcapM": 254475,
+      "tier": "other"
     },
     {
       "t": "LITE",
@@ -25,7 +29,9 @@
       "epsGr": 267,
       "iu": 0.79,
       "ajPeg": 0.47,
-      "yahoo": "LITE"
+      "yahoo": "LITE",
+      "mcapM": 87775,
+      "tier": "other"
     },
     {
       "t": "ORCL",
@@ -34,7 +40,9 @@
       "epsGr": 35,
       "iu": 0.25,
       "ajPeg": 0.43,
-      "yahoo": "ORCL"
+      "yahoo": "ORCL",
+      "mcapM": 468134,
+      "tier": "other"
     },
     {
       "t": "META",
@@ -43,7 +51,9 @@
       "epsGr": 22,
       "iu": 0.17,
       "ajPeg": 0.67,
-      "yahoo": "META"
+      "yahoo": "META",
+      "mcapM": 1562844,
+      "tier": "mega"
     },
     {
       "t": "NVDA",
@@ -52,7 +62,9 @@
       "epsGr": 55,
       "iu": 0.6,
       "ajPeg": 0.27,
-      "yahoo": "NVDA"
+      "yahoo": "NVDA",
+      "mcapM": 5440093,
+      "tier": "mega"
     },
     {
       "t": "UBER",
@@ -61,7 +73,9 @@
       "epsGr": 15,
       "iu": 0.04,
       "ajPeg": 2.78,
-      "yahoo": "UBER"
+      "yahoo": "UBER",
+      "mcapM": 149372,
+      "tier": "other"
     },
     {
       "t": "TSLA",
@@ -70,7 +84,9 @@
       "epsGr": 45,
       "iu": 1.21,
       "ajPeg": 1.71,
-      "yahoo": "TSLA"
+      "yahoo": "TSLA",
+      "mcapM": 1454065,
+      "tier": "mega"
     },
     {
       "t": "AMZN",
@@ -79,7 +95,9 @@
       "epsGr": 28,
       "iu": 0.26,
       "ajPeg": 1.06,
-      "yahoo": "AMZN"
+      "yahoo": "AMZN",
+      "mcapM": 2771759,
+      "tier": "mega"
     },
     {
       "t": "TSM",
@@ -88,7 +106,9 @@
       "epsGr": 38,
       "iu": 0.26,
       "ajPeg": 0.74,
-      "yahoo": "TSM"
+      "yahoo": "TSM",
+      "mcapM": 1050000,
+      "tier": "mega"
     },
     {
       "t": "PLTR",
@@ -97,7 +117,9 @@
       "epsGr": 50,
       "iu": 0.29,
       "ajPeg": 1.37,
-      "yahoo": "PLTR"
+      "yahoo": "PLTR",
+      "mcapM": 409247,
+      "tier": "other"
     },
     {
       "t": "AMD",
@@ -106,7 +128,9 @@
       "epsGr": 105,
       "iu": 0.79,
       "ajPeg": 0.62,
-      "yahoo": "AMD"
+      "yahoo": "AMD",
+      "mcapM": 825608,
+      "tier": "other"
     },
     {
       "t": "ASML",
@@ -116,7 +140,9 @@
       "iu": 0.36,
       "ajPeg": 1.02,
       "yahoo": "ASML.AS",
-      "cur": "€"
+      "cur": "€",
+      "mcapM": 573130,
+      "tier": "other"
     },
     {
       "t": "INTC",
@@ -125,7 +151,9 @@
       "epsGr": 140,
       "iu": 0.68,
       "ajPeg": 0.54,
-      "yahoo": "INTC"
+      "yahoo": "INTC",
+      "mcapM": 552239,
+      "tier": "other"
     },
     {
       "t": "MRVL",
@@ -134,7 +162,9 @@
       "epsGr": 75,
       "iu": 0.6,
       "ajPeg": 0.62,
-      "yahoo": "MRVL"
+      "yahoo": "MRVL",
+      "mcapM": 197662,
+      "tier": "other"
     },
     {
       "t": "AMAT",
@@ -143,7 +173,9 @@
       "epsGr": 30,
       "iu": 0.6,
       "ajPeg": 0.69,
-      "yahoo": "AMAT"
+      "yahoo": "AMAT",
+      "mcapM": 375205,
+      "tier": "other"
     },
     {
       "t": "AVGO",
@@ -152,7 +184,9 @@
       "epsGr": 55,
       "iu": 0.73,
       "ajPeg": 0.38,
-      "yahoo": "AVGO"
+      "yahoo": "AVGO",
+      "mcapM": 1753454,
+      "tier": "mega"
     },
     {
       "t": "MSFT",
@@ -161,7 +195,9 @@
       "epsGr": 14,
       "iu": -0.01,
       "ajPeg": 1.28,
-      "yahoo": "MSFT"
+      "yahoo": "MSFT",
+      "mcapM": 3667848,
+      "tier": "mega"
     },
     {
       "t": "AAPL",
@@ -170,7 +206,9 @@
       "epsGr": 10,
       "iu": 0.09,
       "ajPeg": 3.04,
-      "yahoo": "AAPL"
+      "yahoo": "AAPL",
+      "mcapM": 4614972,
+      "tier": "mega"
     },
     {
       "t": "GOOGL",
@@ -179,7 +217,9 @@
       "epsGr": 18,
       "iu": 0.28,
       "ajPeg": 1.34,
-      "yahoo": "GOOGL"
+      "yahoo": "GOOGL",
+      "mcapM": 4138143,
+      "tier": "mega"
     },
     {
       "t": "XPEV",
@@ -188,7 +228,9 @@
       "epsGr": null,
       "iu": null,
       "ajPeg": null,
-      "yahoo": "XPEV"
+      "yahoo": "XPEV",
+      "mcapM": 12339,
+      "tier": "other"
     },
     {
       "t": "COHR",
@@ -197,7 +239,9 @@
       "epsGr": 65,
       "iu": 0.84,
       "ajPeg": 0.5,
-      "yahoo": "COHR"
+      "yahoo": "COHR",
+      "mcapM": 59118,
+      "tier": "other"
     }
   ],
   "corridors": {
@@ -826,5 +870,21 @@
   "fx": {
     "_comment": "Display scale applied to raw Yahoo price so it matches the units AJ quotes in. Not an FX conversion — the yahoo ticker is chosen to already return AJ's currency. Only the KRW pair needs scaling (AJ quotes thousands)."
   },
-  "_corridorNote": "Two lookbacks, both from AJ. 90-day: bL/bM/bH + peL/peM/peH + tgt + rank90. 12-month: bL1y/bM1y/bH1y + peL1y/peM1y/peH1y + tgt1y + rank1y. Bands from Cockpit->Details (slider 90 and 360); targets and ranks from the Dashboard page, Sep 7 2026."
+  "_corridorNote": "Two lookbacks, both from AJ. 90-day: bL/bM/bH + peL/peM/peH + tgt + rank90. 12-month: bL1y/bM1y/bH1y + peL1y/peM1y/peH1y + tgt1y + rank1y. Bands from Cockpit->Details (slider 90 and 360); targets and ranks from the Dashboard page, Sep 7 2026.",
+  "alerts": {
+    "_comment": "Daily move thresholds. Big caps move less in percentage terms, so a smaller move is more meaningful; thresholds are absolute percentages, deliberately not volatility-normalised.",
+    "tiers": [
+      {
+        "name": "mega",
+        "minCapM": 1000000,
+        "movePct": 2
+      },
+      {
+        "name": "other",
+        "minCapM": 0,
+        "movePct": 4
+      }
+    ],
+    "overrides": {}
+  }
 }

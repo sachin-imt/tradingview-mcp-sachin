@@ -37,17 +37,40 @@ jobs:
           AJ_PASSWORD: ${{ secrets.AJ_PASSWORD }}
         continue-on-error: true
 
+      - name: Fetch consensus estimates
+        run: node pipeline/fetch-estimates.js
+        env:
+          FINNHUB_KEY: ${{ secrets.FINNHUB_KEY }}
+        continue-on-error: true
+
+      # Rebuilds the daily NTM accrual curve so the corridor slopes. Must run
+      # after prices (it needs the date axis) and before update-data, which
+      # consumes eps.json to compute the bands.
+      - name: Build daily EPS accrual series
+        run: node pipeline/build-eps-series.js
+        continue-on-error: true
+
+      # Reports only. Never mutates config: a switch that moves a corridor more
+      # than the gate allows waits for a human.
+      - name: Check estimate cutovers (dry run)
+        run: node pipeline/apply-estimates.js
+        continue-on-error: true
+
       - name: Update computed data (bands, snapshots, eps sync)
         run: node pipeline/update-data.js
 
       - name: Build dashboard
         run: node pipeline/build.js
 
+      - name: Daily corridor briefing
+        run: node pipeline/briefing.js
+        continue-on-error: true
+
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add pipeline/data/ docs/index.html
+          git add pipeline/data/ docs/
           git diff --cached --quiet && echo "No changes" && exit 0
           git commit -m "Daily update: $(date -u +%Y-%m-%d) prices and dashboard"
           git push
