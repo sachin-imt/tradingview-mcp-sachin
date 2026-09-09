@@ -1,6 +1,6 @@
 {
   "date": "2026-09-08",
-  "generatedAt": "2026-09-09T12:06:52.489Z",
+  "generatedAt": "2026-09-09T12:12:53.398Z",
   "maxChanges": 15,
   "changeCount": 0,
   "truncated": false,
@@ -46,6 +46,16 @@
       "zone": "Stretched"
     }
   ],
+  "quadrantMoves": [
+    {
+      "t": "UBER",
+      "from": "DE",
+      "to": "UE",
+      "fromLabel": "pricey, no upside",
+      "toLabel": "upside, but pricey"
+    }
+  ],
+  "lookbackSessions": 20,
   "deepValue": [],
   "extreme": [],
   "reportsSoon": [],

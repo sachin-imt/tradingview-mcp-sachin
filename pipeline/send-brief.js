@@ -79,19 +79,22 @@ const pricier = (b.becameStretched || []).map(r => ({
   t: r.t, s: score(r.pos), was: score(r.prevPos), move: r.move,
   why: r.cause === 'earnings accrual' ? 'mostly because earnings rose'
      : r.cause === 'price' ? 'mostly on the share price' : 'price and earnings both' }));
+const WEEKS = Math.max(1, Math.round((b.lookbackSessions || 20) / 5));
 const drifting = (b.creeping || []).map(c => ({
   t: c.t, s: score(c.pos), was: score(c.pos - c.dTotal), move: c.move,
-  why: driver(c.dBands, c.dPrice) }));
+  why: driver(c.dBands, c.dPrice), ago: `${WEEKS} weeks ago` }));
 const movers = (b.movers || []).map(r => ({ t: r.t, s: score(r.pos), move: r.move }));
+const quads = b.quadrantMoves || [];
 const reports = (b.reportsSoon || []).map(r => ({ t: r.t, date: r.date }));
 
-const nothing = !cheaper.length && !pricier.length && !drifting.length && !movers.length;
+const nothing = !cheaper.length && !pricier.length && !drifting.length && !movers.length && !quads.length;
 
 const prettyDate = new Date(b.date + 'T12:00:00Z')
   .toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' });
 
 // ── subject ─────────────────────────────────────────────────────────────────
 const bits = [];
+if (quads.length) bits.push(`${quads.length} changed quadrant`);
 if (cheaper.length) bits.push(`${cheaper.length} cheaper`);
 if (pricier.length) bits.push(`${pricier.length} pricier`);
 if (!cheaper.length && !pricier.length && drifting.length) bits.push(`${drifting.length} drifting cheaper`);
@@ -111,17 +114,23 @@ const textRows = (title, rows, withWas) => {
   if (!rows.length) return;
   T.push(title.toUpperCase());
   for (const r of rows) {
-    T.push(`  ${nameOf(r.t)} (${r.t})  —  score ${r.s}, ${band(r.s)}`);
-    T.push(`     ${withWas ? `was ${r.was}. ` : ''}Share price ${movePct(r.move)}${r.why ? `, ${r.why}` : ''}.`);
+    T.push(`  ${nameOf(r.t)} (${r.t})  —  ${r.s}/100, ${band(r.s)}`);
+    T.push(`     ${withWas ? `Was ${r.was} ${r.ago || 'yesterday'}. ` : ''}Share price ${movePct(r.move)}${r.why ? `, ${r.why}` : ''}.`);
   }
   T.push('');
 };
 textRows('Moved to the cheap end', cheaper, true);
 textRows('Moved to the expensive end', pricier, true);
 textRows('Quietly got cheaper over the last month', drifting, true);
+if (quads.length) {
+  T.push('CHANGED QUADRANT');
+  for (const q of quads) T.push(`  ${nameOf(q.t)} (${q.t})  ${q.from} -> ${q.to}   (${q.fromLabel} -> ${q.toLabel})`);
+  T.push('');
+}
+T.push(`ALERTS — moves over 2% (big caps) or 4% (rest)`);
+if (!movers.length) T.push('  Nothing moved that far today.', '');
 if (movers.length) {
-  T.push('BIG MOVES TODAY');
-  for (const r of movers) T.push(`  ${nameOf(r.t)} (${r.t})  ${movePct(r.move)}  —  score now ${r.s}`);
+  for (const r of movers) T.push(`  ${nameOf(r.t)} (${r.t})  ${movePct(r.move)}  —  now ${r.s}/100`);
   T.push('');
 }
 if (reports.length) {
@@ -148,11 +157,11 @@ const row = (r, withWas) => {
       <td style="font:600 15px -apple-system,Segoe UI,Roboto,sans-serif;color:#111">
         ${esc(nameOf(r.t))} <span style="color:#999;font-weight:400">${esc(r.t)}</span></td>
       <td align="right" style="font:700 20px -apple-system,Segoe UI,Roboto,sans-serif;color:${col};white-space:nowrap">
-        ${r.s}</td>
+        ${r.s}<span style="font-size:12px;color:#aaa;font-weight:400">/100</span></td>
     </tr></table>
     ${bar}
     <div style="font:13px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;color:#666;margin-top:8px">
-      ${withWas && r.was != null ? `Was ${r.was}. ` : ''}Share price ${movePct(r.move)}${r.why ? `, ${esc(r.why)}` : ''}.
+      ${withWas && r.was != null ? `Was <b>${r.was}</b> ${esc(r.ago || 'yesterday')}. ` : ''}Share price ${movePct(r.move)}${r.why ? `, ${esc(r.why)}` : ''}.
       <span style="color:#999">Sitting at the ${band(r.s)} of its normal range.</span>
     </div></td></tr>`;
 };
@@ -181,16 +190,30 @@ const html = `<!doctype html><html><body style="margin:0;padding:0;background:#f
   ${section('Moved to the cheap end', cheaper, true)}
   ${section('Moved to the expensive end', pricier, true)}
   ${section('Quietly got cheaper over the last month', drifting, true)}
-  ${movers.length ? `
+  ${quads.length ? `
   <tr><td style="padding:26px 0 4px;font:600 12px -apple-system,Segoe UI,Roboto,sans-serif;
-    letter-spacing:.08em;text-transform:uppercase;color:#888">Big moves today</td></tr>
+    letter-spacing:.08em;text-transform:uppercase;color:#888">Changed quadrant</td></tr>
+  <tr><td><table width="100%" cellpadding="0" cellspacing="0">${quads.map(q => `
+    <tr><td style="padding:11px 0;border-bottom:1px solid #eee">
+      <div style="font:600 15px -apple-system,Segoe UI,Roboto,sans-serif;color:#111">
+        ${esc(nameOf(q.t))} <span style="color:#999;font-weight:400">${esc(q.t)}</span></div>
+      <div style="font:13px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;color:#666;margin-top:4px">
+        <b>${esc(q.from)} &rarr; ${esc(q.to)}</b> &nbsp;
+        <span style="color:#999">${esc(q.fromLabel)} &rarr; ${esc(q.toLabel)}</span></div>
+    </td></tr>`).join('')}</table></td></tr>` : ''}
+
+  <tr><td style="padding:26px 0 4px;font:600 12px -apple-system,Segoe UI,Roboto,sans-serif;
+    letter-spacing:.08em;text-transform:uppercase;color:#888">Alerts &mdash; moves over 2% (big caps) or 4% (rest)</td></tr>
+  ${!movers.length ? `<tr><td style="font:14px -apple-system,Segoe UI,Roboto,sans-serif;color:#777;padding:6px 0 0">
+    Nothing moved that far today.</td></tr>` : ''}
+  ${movers.length ? `
   <tr><td><table width="100%" cellpadding="0" cellspacing="0">${movers.map(r => `
     <tr><td style="padding:9px 0;border-bottom:1px solid #eee;font:14px -apple-system,Segoe UI,Roboto,sans-serif;color:#111">
       ${esc(nameOf(r.t))} <span style="color:#999">${esc(r.t)}</span></td>
     <td align="right" style="padding:9px 0;border-bottom:1px solid #eee;font:600 14px -apple-system,Segoe UI,Roboto,sans-serif;
       color:${r.move >= 0 ? '#1a7f5a' : '#a33'}">${movePct(r.move)}</td>
     <td align="right" style="padding:9px 0 9px 14px;border-bottom:1px solid #eee;font:13px -apple-system,Segoe UI,Roboto,sans-serif;color:#999">
-      score ${r.s}</td></tr>`).join('')}</table></td></tr>` : ''}
+      ${r.s}/100</td></tr>`).join('')}</table></td></tr>` : ''}
 
   ${reports.length ? `
   <tr><td style="padding:26px 0 4px;font:600 12px -apple-system,Segoe UI,Roboto,sans-serif;

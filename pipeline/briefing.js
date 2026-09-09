@@ -159,6 +159,31 @@ const creeping = drift
   .filter(d => d.dTotal <= -0.08 && Math.abs(d.dBands) > Math.abs(d.dPrice) * 0.5)
   .sort((a, b) => a.dTotal - b.dTotal);
 
+// Quadrant moves. The corridor score says how cheap a name is; the quadrant
+// pairs that with whether the model sees upside at all, so a name can get
+// cheaper and still cross into a worse quadrant. Read from the snapshot series
+// rather than recomputed, so the brief and the dashboard cannot disagree.
+const QUAD_LABEL = {
+  UI: 'cheap, with upside', UE: 'upside, but pricey',
+  DI: 'cheap, no upside', DE: 'pricey, no upside', OOS: 'out of scope'
+};
+const snapPath = join(__dir, 'data', 'snapshots.json');
+const quadrantMoves = [];
+if (existsSync(snapPath)) {
+  const snap = JSON.parse(readFileSync(snapPath, 'utf8'));
+  const n = snap.dates.length;
+  if (n >= 2) {
+    for (const s of byCap) {
+      const series = snap.snapshots[s.t];
+      if (!series) continue;
+      const now = series[n - 1], prev = series[n - 2];
+      if (!now || !prev || now === prev || now === '—' || prev === '—') continue;
+      quadrantMoves.push({ t: s.t, from: prev, to: now,
+                           fromLabel: QUAD_LABEL[prev] ?? prev, toLabel: QUAD_LABEL[now] ?? now });
+    }
+  }
+}
+
 // ── console ─────────────────────────────────────────────────────────────────
 const D = DATES[idx];
 console.log(`\n═══ Corridor briefing — ${D} ═══\n`);
@@ -189,6 +214,13 @@ if (creeping.length) {
 if (deepValue.length) console.log(`AT OR BELOW −1.5σ: ${deepValue.map(r => r.t).join(', ')}\n`);
 if (extreme.length)   console.log(`AT OR ABOVE +1.5σ: ${extreme.map(r => r.t).join(', ')}\n`);
 
+if (quadrantMoves.length) {
+  console.log('QUADRANT MOVES');
+  for (const q of quadrantMoves)
+    console.log(`  ${q.t.padEnd(6)} ${q.from} → ${q.to}   (${q.fromLabel} → ${q.toLabel})`);
+  console.log();
+}
+
 console.log(`MOVERS (mega >${cfg.alerts.tiers[0].movePct}%, others >${cfg.alerts.tiers[1].movePct}%)`);
 if (movers.length) {
   for (const r of movers)
@@ -215,7 +247,7 @@ const out = {
   suppressed: suppressed.map(r => ({ t: r.t, move: r.move, mcapM: r.mcapM })),
   becameAttractive: becameAttractive.map(r => ({ ...r, cause: cause(r) })),
   becameStretched: becameStretched.map(r => ({ ...r, cause: cause(r) })),
-  movers, creeping, deepValue: deepValue.map(r => r.t), extreme: extreme.map(r => r.t),
+  movers, creeping, quadrantMoves, lookbackSessions: LOOKBACK, deepValue: deepValue.map(r => r.t), extreme: extreme.map(r => r.t),
   reportsSoon: soon.map(r => ({ t: r.t, date: r.nextReport, epsSource: r.epsSource })),
   all: rows
 };
