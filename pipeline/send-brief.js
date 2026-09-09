@@ -45,8 +45,22 @@ const NAMES = { NVDA:'Nvidia', AAPL:'Apple', GOOGL:'Alphabet', MSFT:'Microsoft',
   MRVL:'Marvell', UBER:'Uber', LITE:'Lumentum', COHR:'Coherent', XPEV:'XPeng' };
 const nameOf = t => NAMES[t] || t;
 const score = pos => Math.round(pos * 100);
-const band = s => s < 45 ? 'cheap end' : s < 75 ? 'middle' : 'expensive end';
-const bandColour = s => s < 45 ? '#1a7f5a' : s < 75 ? '#8a6d1f' : '#a33';
+// 0 and 100 are the edges of the range the stock normally trades in, not hard
+// limits — that range covers roughly 87% of days, so about one day in eight the
+// score lands outside it. Going outside is a stronger signal than sitting at
+// the edge, so we report it rather than clamping the number and losing it.
+const band = s =>
+  s < 0   ? 'below its normal range' :
+  s < 45  ? 'cheap end' :
+  s < 75  ? 'middle' :
+  s <= 100 ? 'expensive end' :
+             'above its normal range';
+const bandColour = s =>
+  s < 0    ? '#0d5c40' :
+  s < 45   ? '#1a7f5a' :
+  s < 75   ? '#8a6d1f' :
+  s <= 100 ? '#a33' :
+             '#7a1010';
 const movePct = v => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(1) + '%';
 // Was the move driven by the share price, or by earnings rising underneath it?
 const driver = (dBands, dPrice) => {
@@ -87,13 +101,17 @@ const subject = bits.length ? `Corridor brief — ${bits.join(', ')}` : 'Corrido
 // ── plain text ──────────────────────────────────────────────────────────────
 const T = [];
 T.push(`CORRIDOR BRIEF`, prettyDate, '');
-T.push(`Each stock scores 0-100 against its own normal valuation range.`);
-T.push(`0 = as cheap as it usually gets.  100 = as expensive as it usually gets.`, '');
+T.push(`Each stock scores against the range it normally trades in.`);
+T.push(`  0  = the cheap edge of that range`);
+T.push(`  100 = the expensive edge`);
+T.push(`Scores can go past either end. Above 100 means it is more expensive`);
+T.push(`than it normally gets; below 0, cheaper. That happens about one day`);
+T.push(`in eight, and is a stronger signal than sitting at the edge.`, '');
 const textRows = (title, rows, withWas) => {
   if (!rows.length) return;
   T.push(title.toUpperCase());
   for (const r of rows) {
-    T.push(`  ${nameOf(r.t)} (${r.t})  —  ${r.s}/100, ${band(r.s)}`);
+    T.push(`  ${nameOf(r.t)} (${r.t})  —  score ${r.s}, ${band(r.s)}`);
     T.push(`     ${withWas ? `was ${r.was}. ` : ''}Share price ${movePct(r.move)}${r.why ? `, ${r.why}` : ''}.`);
   }
   T.push('');
@@ -103,7 +121,7 @@ textRows('Moved to the expensive end', pricier, true);
 textRows('Quietly got cheaper over the last month', drifting, true);
 if (movers.length) {
   T.push('BIG MOVES TODAY');
-  for (const r of movers) T.push(`  ${nameOf(r.t)} (${r.t})  ${movePct(r.move)}  —  now ${r.s}/100`);
+  for (const r of movers) T.push(`  ${nameOf(r.t)} (${r.t})  ${movePct(r.move)}  —  score now ${r.s}`);
   T.push('');
 }
 if (reports.length) {
@@ -130,7 +148,7 @@ const row = (r, withWas) => {
       <td style="font:600 15px -apple-system,Segoe UI,Roboto,sans-serif;color:#111">
         ${esc(nameOf(r.t))} <span style="color:#999;font-weight:400">${esc(r.t)}</span></td>
       <td align="right" style="font:700 20px -apple-system,Segoe UI,Roboto,sans-serif;color:${col};white-space:nowrap">
-        ${r.s}<span style="font-size:12px;color:#aaa;font-weight:400">/100</span></td>
+        ${r.s}</td>
     </tr></table>
     ${bar}
     <div style="font:13px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;color:#666;margin-top:8px">
@@ -154,8 +172,10 @@ const html = `<!doctype html><html><body style="margin:0;padding:0;background:#f
   <tr><td style="padding:18px 0 0">
     <div style="background:#f4f7fb;border-left:3px solid #cbd8e8;padding:12px 14px;border-radius:0 6px 6px 0;
       font:13px/1.6 -apple-system,Segoe UI,Roboto,sans-serif;color:#445">
-      Each stock scores <b>0&ndash;100</b> against the range it normally trades in.<br>
-      <b>0</b> = as cheap as it usually gets &nbsp;·&nbsp; <b>100</b> = as expensive as it usually gets.
+      Each stock scores against the range it normally trades in.<br>
+      <b>0</b> = the cheap edge &nbsp;·&nbsp; <b>100</b> = the expensive edge.<br>
+      <span style="color:#667">Scores can go past either end &mdash; above 100 is more expensive than it
+      normally gets, below 0 is cheaper. Happens roughly one day in eight.</span>
     </div></td></tr>
 
   ${section('Moved to the cheap end', cheaper, true)}
@@ -170,7 +190,7 @@ const html = `<!doctype html><html><body style="margin:0;padding:0;background:#f
     <td align="right" style="padding:9px 0;border-bottom:1px solid #eee;font:600 14px -apple-system,Segoe UI,Roboto,sans-serif;
       color:${r.move >= 0 ? '#1a7f5a' : '#a33'}">${movePct(r.move)}</td>
     <td align="right" style="padding:9px 0 9px 14px;border-bottom:1px solid #eee;font:13px -apple-system,Segoe UI,Roboto,sans-serif;color:#999">
-      ${r.s}/100</td></tr>`).join('')}</table></td></tr>` : ''}
+      score ${r.s}</td></tr>`).join('')}</table></td></tr>` : ''}
 
   ${reports.length ? `
   <tr><td style="padding:26px 0 4px;font:600 12px -apple-system,Segoe UI,Roboto,sans-serif;
