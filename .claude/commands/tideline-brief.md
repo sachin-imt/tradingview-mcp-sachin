@@ -1,5 +1,5 @@
-Send the daily corridor briefing and move alerts. This is the DELIVERY step.
-Run `/aj-signals` first — it produces the data this reads.
+Send the daily Tideline brief and move alerts. This is the DELIVERY step.
+Run `/tideline` first — it produces the data this reads.
 
 ## Schedule
 
@@ -43,7 +43,10 @@ non-empty; drop empty sections rather than printing "none".
    thresholds; this is a deliberate user decision, do not volatility-normalise.
 5. **Reports within 14 days** — where the corridor is least reliable and the
    estimate cutover risk sits.
-6. **Held cutovers**, if `apply-estimates.js` flagged any. These need a human.
+6. **Estimate cutovers.** Switches that passed both gates are applied
+   automatically and must be reported in plain words, since an automated change
+   nobody sees silently redraws every band for that name. Held ones need a
+   human decision and should be called out as such.
 
 The brief is capped at **15 changes**, walked in market-cap order, so the
 largest positions can never be crowded out. If names were suppressed, say how
@@ -76,5 +79,7 @@ claim a WhatsApp send happened.
 
 ## Related
 
-- `/aj-signals` — capture and recompute (run first)
+- `/tideline` — capture and recompute (run first)
 - Dashboard: https://sachin-imt.github.io/tradingview-mcp-sachin/
+
+- Runs: https://github.com/sachin-imt/tradingview-mcp-sachin/actions

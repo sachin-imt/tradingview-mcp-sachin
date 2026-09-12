@@ -100,11 +100,11 @@ if (cheaper.length) bits.push(`${cheaper.length} cheaper`);
 if (pricier.length) bits.push(`${pricier.length} pricier`);
 if (!cheaper.length && !pricier.length && drifting.length) bits.push(`${drifting.length} drifting cheaper`);
 if (movers.length) bits.push(`${movers.length} big move${movers.length === 1 ? '' : 's'}`);
-const subject = bits.length ? `Corridor brief — ${bits.join(', ')}` : 'Corridor brief — quiet day';
+const subject = bits.length ? `Tideline — ${bits.join(', ')}` : 'Tideline — quiet day';
 
 // ── plain text ──────────────────────────────────────────────────────────────
 const T = [];
-T.push(`CORRIDOR BRIEF`, prettyDate, '');
+T.push(`TIDELINE`, prettyDate, '');
 T.push(`Each stock scores against the range it normally trades in.`);
 T.push(`  0  = the cheap edge of that range`);
 T.push(`  100 = the expensive edge`);
@@ -186,7 +186,7 @@ const html = `<!doctype html><html><body style="margin:0;padding:0;background:#f
 <tr><td align="center">
 <table width="100%" style="max-width:560px;background:#fff;border-radius:10px;padding:28px 26px" cellpadding="0" cellspacing="0">
 
-  <tr><td style="font:700 21px -apple-system,Segoe UI,Roboto,sans-serif;color:#111">Corridor brief</td></tr>
+  <tr><td style="font:700 21px -apple-system,Segoe UI,Roboto,sans-serif;color:#111">Tideline</td></tr>
   <tr><td style="font:14px -apple-system,Segoe UI,Roboto,sans-serif;color:#888;padding-top:3px">${esc(prettyDate)}</td></tr>
 
   <tr><td style="padding:18px 0 0">
@@ -310,7 +310,7 @@ function smtpSend() {
       const bnd = 'b_' + Math.random().toString(36).slice(2);
       const stuff = s => s.split('\n').map(l => (l === '.' ? '..' : l)).join('\r\n');
       const msg = [
-        `From: Corridor Brief <${SMTP_USER}>`,
+        `From: Tideline <${SMTP_USER}>`,
         `To: ${BRIEF_TO}`,
         `Subject: ${subject}`,
         `Date: ${new Date().toUTCString()}`,
