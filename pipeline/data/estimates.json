@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-12T02:23:00.129Z",
+  "fetchedAt": "2026-09-12T11:36:03.582Z",
   "source": "finnhub-free",
   "note": "Observational only. apply-estimates.js decides when a name switches off AJ.",
   "coverage": "21/22",
@@ -195,7 +195,7 @@
     },
     "ORCL": {
       "ticker": "ORCL",
-      "ajEps": 8.3,
+      "ajEps": 9.1463,
       "lastReport": "2026-09-30",
       "lastActual": 1.92,
       "history": [
@@ -254,7 +254,7 @@
       ],
       "nextReport": "2026-12-08",
       "status": "ok",
-      "vsAj": 10.2
+      "vsAj": 0
     },
     "META": {
       "ticker": "META",
