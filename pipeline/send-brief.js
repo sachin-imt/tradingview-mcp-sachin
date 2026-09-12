@@ -85,6 +85,7 @@ const drifting = (b.creeping || []).map(c => ({
   why: driver(c.dBands, c.dPrice), ago: `${WEEKS} weeks ago` }));
 const movers = (b.movers || []).map(r => ({ t: r.t, s: score(r.pos), move: r.move }));
 const quads = b.quadrantMoves || [];
+const cut = b.cutovers || { applied: [], held: [] };
 const reports = (b.reportsSoon || []).map(r => ({ t: r.t, date: r.date }));
 
 const nothing = !cheaper.length && !pricier.length && !drifting.length && !movers.length && !quads.length;
@@ -122,6 +123,16 @@ const textRows = (title, rows, withWas) => {
 textRows('Moved to the cheap end', cheaper, true);
 textRows('Moved to the expensive end', pricier, true);
 textRows('Quietly got cheaper over the last month', drifting, true);
+if (cut.applied.length || cut.held.length) {
+  T.push('EARNINGS ESTIMATE UPDATED');
+  for (const a of cut.applied)
+    T.push(a.retired
+      ? `  ${nameOf(a.t)} (${a.t}) removed from coverage.`
+      : `  ${nameOf(a.t)} (${a.t}) now uses the market's forecast (${a.from} -> ${a.to} per share) after reporting.`);
+  for (const a of cut.held)
+    T.push(`  ${nameOf(a.t)} (${a.t}) NEEDS YOUR CALL — ${(a.reasons || [a.reason]).join('; ')}`);
+  T.push('');
+}
 if (quads.length) {
   T.push('CHANGED QUADRANT');
   for (const q of quads) T.push(`  ${nameOf(q.t)} (${q.t})  ${q.from} -> ${q.to}   (${q.fromLabel} -> ${q.toLabel})`);
@@ -190,6 +201,16 @@ const html = `<!doctype html><html><body style="margin:0;padding:0;background:#f
   ${section('Moved to the cheap end', cheaper, true)}
   ${section('Moved to the expensive end', pricier, true)}
   ${section('Quietly got cheaper over the last month', drifting, true)}
+  ${(cut.applied.length || cut.held.length) ? `
+  <tr><td style="padding:26px 0 4px;font:600 12px -apple-system,Segoe UI,Roboto,sans-serif;
+    letter-spacing:.08em;text-transform:uppercase;color:#888">Earnings estimate updated</td></tr>
+  <tr><td style="font:13px/1.7 -apple-system,Segoe UI,Roboto,sans-serif;color:#555;padding-top:4px">
+    ${cut.applied.map(a => a.retired
+      ? `<b>${esc(nameOf(a.t))}</b> removed from coverage.`
+      : `<b>${esc(nameOf(a.t))}</b> now uses the market's forecast (${a.from} &rarr; ${a.to} per share) after reporting.`).join('<br>')}
+    ${cut.held.map(a => `<span style="color:#a33"><b>${esc(nameOf(a.t))}</b> needs your call &mdash; ${esc((a.reasons||[a.reason]).join('; '))}</span>`).join('<br>')}
+  </td></tr>` : ''}
+
   ${quads.length ? `
   <tr><td style="padding:26px 0 4px;font:600 12px -apple-system,Segoe UI,Roboto,sans-serif;
     letter-spacing:.08em;text-transform:uppercase;color:#888">Changed quadrant</td></tr>

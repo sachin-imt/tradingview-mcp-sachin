@@ -184,6 +184,22 @@ if (existsSync(snapPath)) {
   }
 }
 
+// Cutovers applied or held since the last brief. An estimate switch redraws
+// every band for that name, so an automated one the reader never sees is worse
+// than a tedious one they have to approve.
+const cutPath = join(__dir, 'data', 'cutover-log.json');
+let cutovers = { applied: [], held: [] };
+if (existsSync(cutPath)) {
+  const log = JSON.parse(readFileSync(cutPath, 'utf8'));
+  const recent = (log.events || []).filter(e =>
+    (Date.now() - Date.parse(e.at)) / 864e5 <= 2);
+  for (const e of recent) for (const a of e.actions || []) {
+    if (a.kind === 'switch') cutovers.applied.push(a);
+    else if (a.kind === 'held' || a.kind === 'blocked') cutovers.held.push(a);
+    else if (a.kind === 'retire') cutovers.applied.push({ ...a, retired: true });
+  }
+}
+
 // ── console ─────────────────────────────────────────────────────────────────
 const D = DATES[idx];
 console.log(`\n═══ Corridor briefing — ${D} ═══\n`);
@@ -213,6 +229,15 @@ if (creeping.length) {
 
 if (deepValue.length) console.log(`AT OR BELOW −1.5σ: ${deepValue.map(r => r.t).join(', ')}\n`);
 if (extreme.length)   console.log(`AT OR ABOVE +1.5σ: ${extreme.map(r => r.t).join(', ')}\n`);
+
+if (cutovers.applied.length || cutovers.held.length) {
+  console.log('ESTIMATE CUTOVERS');
+  for (const a of cutovers.applied)
+    console.log(`  APPLIED  ${a.t.padEnd(6)} ${a.retired ? 'retired from coverage' : `eps ${a.from} → ${a.to}`}`);
+  for (const a of cutovers.held)
+    console.log(`  HELD     ${a.t.padEnd(6)} ${(a.reasons || [a.reason]).join('; ')}`);
+  console.log();
+}
 
 if (quadrantMoves.length) {
   console.log('QUADRANT MOVES');
@@ -247,7 +272,7 @@ const out = {
   suppressed: suppressed.map(r => ({ t: r.t, move: r.move, mcapM: r.mcapM })),
   becameAttractive: becameAttractive.map(r => ({ ...r, cause: cause(r) })),
   becameStretched: becameStretched.map(r => ({ ...r, cause: cause(r) })),
-  movers, creeping, quadrantMoves, lookbackSessions: LOOKBACK, deepValue: deepValue.map(r => r.t), extreme: extreme.map(r => r.t),
+  movers, creeping, quadrantMoves, cutovers, lookbackSessions: LOOKBACK, deepValue: deepValue.map(r => r.t), extreme: extreme.map(r => r.t),
   reportsSoon: soon.map(r => ({ t: r.t, date: r.nextReport, epsSource: r.epsSource })),
   all: rows
 };

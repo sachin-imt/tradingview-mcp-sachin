@@ -54,17 +54,22 @@ jobs:
           FINNHUB_KEY: ${{ secrets.FINNHUB_KEY }}
         continue-on-error: true
 
+      # Applies a cutover once a company has reported. The sanity gate still
+      # holds anything large or unit-suspect for a human — this only commits the
+      # switches that pass both checks, which is the boring majority.
+      # MUST run before build-eps-series: that script anchors a name still on
+      # AJ's estimate to his level, and only takes the raw consensus curve once
+      # the name has switched. Running it first would build the curve against
+      # the estimate we are about to replace.
+      - name: Apply estimate cutovers
+        run: node pipeline/apply-estimates.js --apply
+        continue-on-error: true
+
       # Rebuilds the daily NTM accrual curve so the corridor slopes. Must run
       # after prices (it needs the date axis) and before update-data, which
       # consumes eps.json to compute the bands.
       - name: Build daily EPS accrual series
         run: node pipeline/build-eps-series.js
-        continue-on-error: true
-
-      # Reports only. Never mutates config: a switch that moves a corridor more
-      # than the gate allows waits for a human.
-      - name: Check estimate cutovers (dry run)
-        run: node pipeline/apply-estimates.js
         continue-on-error: true
 
       - name: Update computed data (bands, snapshots, eps sync)

@@ -1,6 +1,6 @@
 {
   "date": "2026-09-11",
-  "generatedAt": "2026-09-11T23:38:40.783Z",
+  "generatedAt": "2026-09-12T02:35:19.907Z",
   "maxChanges": 15,
   "changeCount": 5,
   "truncated": false,
@@ -204,6 +204,24 @@
     }
   ],
   "quadrantMoves": [],
+  "cutovers": {
+    "applied": [
+      {
+        "t": "ORCL",
+        "kind": "switch",
+        "from": 8.3,
+        "to": 9.1463,
+        "approx": true,
+        "quarters": 3,
+        "derived": 1,
+        "reportedPeriod": "2026-09-30",
+        "baseline": "2026-06-30",
+        "change": 0.10196385542168666,
+        "impliedPe": 17.8
+      }
+    ],
+    "held": []
+  },
   "lookbackSessions": 20,
   "deepValue": [
     "AVGO"
@@ -556,7 +574,7 @@
       "lo": 116.99680000000001,
       "hi": 178.9978,
       "med": 147.9973,
-      "epsSource": "aj",
+      "epsSource": "cons",
       "nextReport": "2026-12-08",
       "breached": false,
       "zoneChanged": false,

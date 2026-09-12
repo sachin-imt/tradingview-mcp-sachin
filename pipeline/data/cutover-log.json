@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "at": "2026-09-12T02:34:53.548Z",
+      "actions": [
+        {
+          "t": "ORCL",
+          "kind": "switch",
+          "from": 8.3,
+          "to": 9.1463,
+          "approx": true,
+          "quarters": 3,
+          "derived": 1,
+          "reportedPeriod": "2026-09-30",
+          "baseline": "2026-06-30",
+          "change": 0.10196385542168666,
+          "impliedPe": 17.8
+        }
+      ]
+    }
+  ]
+}
