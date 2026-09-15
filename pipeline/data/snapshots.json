@@ -18,10 +18,12 @@
     "Sep 8",
     "Sep 9",
     "Sep 10",
-    "Sep 11"
+    "Sep 11",
+    "Sep 14"
   ],
   "snapshots": {
     "NVDA": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -61,9 +63,11 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "ASML": [
+      "UE",
       "UE",
       "UE",
       "UE",
@@ -103,9 +107,11 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "TSM": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -145,6 +151,7 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "COHR": [
@@ -166,9 +173,11 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "INTC": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -208,9 +217,11 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "META": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -250,9 +261,11 @@
       "UE",
       "UE",
       "UE",
+      "UE",
       "UE"
     ],
     "GOOGL": [
+      "UE",
       "UE",
       "UE",
       "UE",
@@ -292,9 +305,11 @@
       "UE",
       "UE",
       "UE",
+      "UE",
       "UE"
     ],
     "AAPL": [
+      "UE",
       "UE",
       "UE",
       "UE",
@@ -334,6 +349,7 @@
       "UE",
       "UE",
       "UE",
+      "UE",
       "UE"
     ],
     "UBER": [
@@ -355,9 +371,11 @@
       "UE",
       "UE",
       "UE",
+      "UE",
       "UE"
     ],
     "MSFT": [
+      "DE",
       "DE",
       "DE",
       "DE",
@@ -397,6 +415,7 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "XPEV": [
@@ -418,9 +437,11 @@
       "OOS",
       "OOS",
       "OOS",
+      "OOS",
       "OOS"
     ],
     "SNDK": [
+      "UI",
       "UI",
       "UI",
       "UI",
@@ -460,6 +481,7 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ],
     "ORCL": [
@@ -481,8 +503,9 @@
       "UI",
       "UI",
       "UI",
+      "UI",
       "UI"
     ]
   },
-  "lastUpdated": "2026-09-15T00:04:00.998Z"
+  "lastUpdated": "2026-09-15T12:39:07.282Z"
 }
