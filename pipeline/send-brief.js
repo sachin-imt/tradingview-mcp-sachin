@@ -331,6 +331,6 @@ function smtpSend() {
 }
 
 smtpSend().then(() => {
-  writeFileSync(sentPath, JSON.stringify({ date: b.date, sentAt: new Date().toISOString(), to: BRIEF_TO, subject }, null, 2) + '\n');
-  console.log(`✓ Sent "${subject}" to ${BRIEF_TO}`);
+  writeFileSync(sentPath, JSON.stringify({ date: b.date, sentAt: new Date().toISOString(), subject }, null, 2) + '\n');
+  console.log(`✓ Sent "${subject}"`);
 }).catch(e => { console.error(`Send failed: ${e.message}`); process.exit(1); });

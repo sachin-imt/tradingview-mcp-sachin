@@ -65,9 +65,10 @@ sessions, roughly half from earnings accrual" beats "GOOGL looking attractive".
 
 ## Sending
 
-**Confirmed recipient: sachin.imt@gmail.com**, via the connected Gmail. The user
+**Recipient: the address in the `BRIEF_TO` repo secret** (in a local run, the one
+confirmed in the scheduled task). Never write it into this repo — it is public. The user
 gave explicit standing authorisation on 2026-09-09 for this recurring brief to
-this address.
+that address.
 
 That authorisation covers this daily brief and nothing else. Any other send —
 a different recipient, a one-off, anything with an attachment — needs asking
