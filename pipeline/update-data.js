@@ -102,23 +102,43 @@ function computeBands(config, epsData, ajDetails) {
   return { dates, bands, source: ajDetails ? 'aj-details.json (exact) + config fallback' : 'config only (interpolated)', lastUpdated: new Date().toISOString() };
 }
 
-function computeQuadrant(stock, price, corridor) {
-  if (!corridor || !corridor.eps) return 'OOS';
-  const upside = stock.iu;
-  const peg = stock.ajPeg;
-  if (upside == null || peg == null) return 'OOS';
-  if (upside > 0 && peg <= 1) return 'UI';
-  if (upside > 0 && peg > 1) return 'UE';
-  if (upside <= 0 && peg <= 1) return 'DI';
+/**
+ * Cockpit quadrant for one stock on one day.
+ *
+ * AJ published implied upside (iu) and PEG for each name on a reference date.
+ * Both move with the market afterwards, and both move the same way: with the
+ * share price relative to fair value. So one ratio drives both axes:
+ *
+ *   r = (price / refPrice) x (refMedian / medianToday)
+ *   upside = (1 + iu) / r - 1          PEG = peg x r
+ *
+ * At the reference date r = 1 and this reproduces AJ's Cockpit exactly. After
+ * it, a falling price pushes r down, and so does the median rising underneath
+ * as earnings accrue — either one moves a name toward Upside + Inexpensive.
+ *
+ * The previous version accepted a price and then ignored it, reading AJ's
+ * static iu/ajPeg, so every day recorded the same quadrant for every name.
+ */
+function cockpitPoint(price, corridor, medNow) {
+  const ref = corridor?.cockpitRef;
+  if (!ref || price == null || medNow == null || medNow <= 0) return null;
+  const r = (price / ref.price) * (ref.med / medNow);
+  return { upside: (1 + ref.iu) / r - 1, peg: ref.peg * r, r };
+}
+
+function computeQuadrant(price, corridor, medNow) {
+  const pt = cockpitPoint(price, corridor, medNow);
+  if (!pt) return 'OOS';
+  if (pt.upside > 0 && pt.peg <= 1) return 'UI';
+  if (pt.upside > 0 && pt.peg > 1) return 'UE';
+  if (pt.upside <= 0 && pt.peg <= 1) return 'DI';
   return 'DE';
 }
 
-function computeCorrPos(price, corridor) {
-  if (!corridor) return null;
-  const low = corridor.bL || (corridor.eps * corridor.peL);
-  const high = corridor.bH || (corridor.eps * corridor.peH);
-  if (high === low) return 0.5;
-  return Math.max(0, Math.min(1, (price - low) / (high - low)));
+/** Position within the day's own ±1.5σ bands — can pass 0 or 1. */
+function computeCorrPos(price, lo, hi) {
+  if (price == null || lo == null || hi == null || hi <= lo) return null;
+  return (price - lo) / (hi - lo);
 }
 
 function main() {
@@ -141,113 +161,6 @@ function main() {
   const today = dates[lastIdx];
 
   console.log(`Computing data for ${dates.length} dates, latest: ${today}`);
-
-  // Load existing snapshots or start fresh
-  let snapData = { dates: [], snapshots: {} };
-  if (existsSync(snapPath)) {
-    snapData = JSON.parse(readFileSync(snapPath, 'utf8'));
-  }
-
-  // Compute latest snapshot
-  const snapshot = {};
-  const summary = { UI: 0, UE: 0, DI: 0, DE: 0, OOS: 0 };
-
-  // Yahoo settles the daily bar for the European and Asian listings on a different
-  // clock than the US ones, so on any given fetch a handful of names legitimately
-  // have no close yet for the session we just picked. Carry the most recent close
-  // forward rather than dropping the name to OOS — a stale-by-a-day price still
-  // puts it in the right quadrant, whereas OOS wrongly reads as "AJ dropped it".
-  const CARRY_MAX = 5;
-  const priceAt = ticker => {
-    const series = prices[ticker];
-    if (!series) return null;
-    for (let i = lastIdx; i >= 0 && i > lastIdx - CARRY_MAX; i--) {
-      if (series[i] != null) return series[i];
-    }
-    return null;
-  };
-
-  for (const stock of config.stocks) {
-    const price = priceAt(stock.t);
-    if (price == null) {
-      snapshot[stock.t] = 'OOS';
-      summary.OOS++;
-      continue;
-    }
-
-    const corridor = config.corridors[stock.t];
-    const quad = computeQuadrant(stock, price, corridor);
-    snapshot[stock.t] = quad;
-    summary[quad]++;
-
-    const corrPos = computeCorrPos(price, corridor);
-    if (corrPos !== null) {
-      const label = corrPos < 0.45 ? 'Attractive' : corrPos < 0.75 ? 'Fair Value' : 'Stretched';
-      const sym = (stock.cur || '$') + price.toLocaleString() + (stock.curK ? 'k' : '');
-      console.log(`  ${stock.t.padEnd(6)} ${sym.padEnd(11)} ${quad.padEnd(3)} Corridor: ${(corrPos * 100).toFixed(0).padStart(3)}% ${label}`);
-    }
-  }
-
-  // Append today's snapshot — or overwrite it if we already wrote one for this
-  // date. The daily cron often runs before every market has settled, so a first
-  // pass can record OOS for names whose price simply had not landed yet. Letting
-  // a later run rewrite the same date lets those self-correct instead of being
-  // frozen in permanently.
-  const todayLabel = new Date(today + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  const existingIdx = snapData.dates.indexOf(todayLabel);
-  if (existingIdx === -1) {
-    snapData.dates.push(todayLabel);
-    for (const [ticker, quad] of Object.entries(snapshot)) {
-      if (!snapData.snapshots[ticker]) snapData.snapshots[ticker] = [];
-      snapData.snapshots[ticker].push(quad);
-    }
-  } else {
-    const fixed = [];
-    for (const [ticker, quad] of Object.entries(snapshot)) {
-      if (!snapData.snapshots[ticker]) continue;
-      const prev = snapData.snapshots[ticker][existingIdx];
-      if (prev !== quad) fixed.push(`${ticker} ${prev}→${quad}`);
-      snapData.snapshots[ticker][existingIdx] = quad;
-    }
-    if (fixed.length) console.log(`Corrected ${todayLabel} snapshot: ${fixed.join(', ')}`);
-  }
-
-  // Heal earlier days that recorded OOS only because the price had not arrived
-  // yet. A name AJ genuinely does not cover has iu/ajPeg null and stays OOS
-  // regardless of price, so this cannot mask a real out-of-scope call.
-  const dateToPriceIdx = new Map(dates.map((d, i) => [
-    new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), i
-  ]));
-  const healed = [];
-  for (const stock of config.stocks) {
-    const series = snapData.snapshots[stock.t];
-    if (!series) continue;
-    snapData.dates.forEach((label, si) => {
-      if (series[si] !== 'OOS') return;
-      const pi = dateToPriceIdx.get(label);
-      if (pi == null) return;
-      const price = prices[stock.t]?.[pi];
-      if (price == null) return;
-      const q = computeQuadrant(stock, price, config.corridors[stock.t]);
-      if (q !== 'OOS') { series[si] = q; healed.push(`${stock.t} ${label}→${q}`); }
-    });
-  }
-  if (healed.length) console.log(`Healed stale OOS: ${healed.join(', ')}`);
-
-  // Trim to last 20 snapshots
-  if (snapData.dates.length > 20) {
-    const trim = snapData.dates.length - 20;
-    snapData.dates = snapData.dates.slice(trim);
-    for (const ticker of Object.keys(snapData.snapshots)) {
-      snapData.snapshots[ticker] = snapData.snapshots[ticker].slice(trim);
-    }
-  }
-
-  snapData.lastUpdated = new Date().toISOString();
-  writeFileSync(snapPath, JSON.stringify(snapData, null, 2));
-
-  console.log(`\nQuadrant summary: UI=${summary.UI} UE=${summary.UE} DI=${summary.DI} DE=${summary.DE} OOS=${summary.OOS}`);
-  console.log(`Wrote ${snapPath}`);
 
   // Load AJ Details data if present (preferred source for 5-band multiples + EPS)
   let ajDetails = null;
@@ -315,6 +228,50 @@ function main() {
   bandsData.bands1y = computeBands1y(config, epsData);
   writeFileSync(bandsPath, JSON.stringify(bandsData, null, 2));
   console.log(`Wrote ${bandsPath}: ${Object.keys(bandsData.bands).length} tickers 90-day + ${Object.keys(bandsData.bands1y).length} tickers 12-month × ${bandsData.dates.length} dates × 5 σ-bands`);
+
+  // ── quadrant snapshots ─────────────────────────────────────────────────────
+  // Recomputed for every session in the window rather than appended one day at
+  // a time. Every input is now derivable from prices and bands, so there is
+  // nothing to preserve between runs — and recomputing means a correction to
+  // the method fixes history too, instead of leaving months of stale rows.
+  const CARRY_MAX = 5;
+  const priceAt = (ticker, i) => {
+    const series = prices[ticker];
+    if (!series) return null;
+    for (let k = i; k >= 0 && k > i - CARRY_MAX; k--) if (series[k] != null) return series[k];
+    return null;
+  };
+  const SNAP_KEEP = 20;
+  const snapIdx = [];
+  for (let i = 0; i <= lastIdx; i++) {
+    const filled = tickers.filter(t => prices[t]?.[i] != null).length;
+    if (filled >= tickers.length / 2) snapIdx.push(i);
+  }
+  const keep = snapIdx.slice(-SNAP_KEEP);
+  const label = d => new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const snapData = { dates: keep.map(i => label(dates[i])), snapshots: {} };
+  for (const stock of config.stocks) {
+    const b = bandsData.bands[stock.t];
+    snapData.snapshots[stock.t] = keep.map(i =>
+      computeQuadrant(priceAt(stock.t, i), config.corridors[stock.t], b?.med?.[i]));
+  }
+  snapData.lastUpdated = new Date().toISOString();
+  writeFileSync(snapPath, JSON.stringify(snapData, null, 2));
+
+  const summary = { UI: 0, UE: 0, DI: 0, DE: 0, OOS: 0 };
+  for (const stock of config.stocks) {
+    const q = snapData.snapshots[stock.t].at(-1);
+    summary[q]++;
+    const b = bandsData.bands[stock.t];
+    const price = priceAt(stock.t, lastIdx);
+    const pos = computeCorrPos(price, b?.m15?.[lastIdx], b?.p15?.[lastIdx]);
+    if (pos != null) {
+      const zone = pos < 0.45 ? 'Attractive' : pos < 0.75 ? 'Fair Value' : 'Stretched';
+      console.log(`  ${stock.t.padEnd(6)} ${String(price).padEnd(10)} ${q.padEnd(3)} Corridor: ${(pos * 100).toFixed(0).padStart(4)}% ${zone}`);
+    }
+  }
+  console.log(`\nQuadrant summary (${today}): UI=${summary.UI} UE=${summary.UE} DI=${summary.DI} DE=${summary.DE} OOS=${summary.OOS}`);
+  console.log(`Wrote ${snapPath}: ${snapData.dates.length} sessions recomputed`);
 }
 
 main();

@@ -693,7 +693,9 @@ function switchCkView(v,btn){
 }
 
 // ═══ DATA HELPERS ═══
-function pr(t,i){return P[t]?P[t][i]:null;}
+// Carry the last close forward a few sessions, matching update-data.js, so a
+// local market holiday does not drop a name off the chart for a day.
+function pr(t,i){var a=P[t];if(!a)return null;for(var k=i;k>=0&&k>i-5;k--)if(a[k]!=null)return a[k];return null;}
 // Currency-aware money formatter. AJ quotes each name in its own listing currency
 // (€ for ASML/IFX/Aixtron, HK$ for Xiaomi, ₩ thousands for Samsung/SK Hynix).
 function curOf(t){var s=STOCKS.find(function(x){return x.t===t;});return s||{};}
@@ -710,16 +712,28 @@ function fmtS(d){return new Date(d+'T12:00:00').toLocaleDateString('en-US',{mont
 function calc(s,idx){
   var p=pr(s.t,idx);if(!p)return null;
   var c=C[s.t];if(!c||!c.eps)return null;
-  var cL=c.bL||(c.eps*c.peL),cM=c.bM||(c.eps*c.peM),cH=c.bH||(c.eps*c.peH);
-  var fpe=p/c.eps;
+  // Read the day's own bands, not the static config ones. The corridor rises as
+  // earnings accrue, so a fixed band would hide the very drift this view exists
+  // to show.
+  var B=(typeof BANDS!=='undefined')?BANDS[s.t]:null;
+  var at=function(k,fb){return (B&&B[k]&&B[k][idx]!=null)?B[k][idx]:fb;};
+  var cL=at('m15',c.bL||(c.eps*c.peL)),cM=at('med',c.bM||(c.eps*c.peM)),cH=at('p15',c.bH||(c.eps*c.peH));
+  var epsNow=c.peM?cM/c.peM:c.eps;
+  var fpe=p/epsNow;
   var corrPos=(p-cL)/(cH-cL);
   var prev=idx>0?pr(s.t,idx-1):null;
   var chg=prev?((p-prev)/prev*100):null;
-  var upside=(s.iu!=null)?s.iu:((c.tgt||cH)-p)/p;
-  var peg=(s.ajPeg!=null)?s.ajPeg:(s.epsGr?(fpe/s.epsGr):null);
-  var tgt=(s.iu!=null)?p*(1+s.iu):(c.tgt||cH);
+  // Both Cockpit axes move with price relative to fair value. One ratio drives
+  // both, calibrated so the reference date reproduces AJ's published Cockpit:
+  //   r = (price/refPrice) x (refMedian/medianToday)
+  //   upside = (1+iu)/r - 1,   PEG = peg x r
+  // Previously this read AJ's static iu/ajPeg whenever present — i.e. always —
+  // so every date drew the identical picture.
+  var ref=c.cockpitRef,upside=null,peg=null;
+  if(ref&&cM>0){var r=(p/ref.price)*(ref.med/cM);upside=(1+ref.iu)/r-1;peg=ref.peg*r;}
+  var tgt=(upside!=null)?p*(1+upside):(c.tgt||cH);
   var quad='OOS';
-  if(peg!==null){
+  if(peg!==null&&upside!==null){
     if(upside>0&&peg<=1)quad='UI';
     else if(upside>0&&peg>1)quad='UE';
     else if(upside<=0&&peg<=1)quad='DI';
@@ -732,8 +746,11 @@ function calc(s,idx){
 var PAD={t:45,r:25,b:45,l:50};
 var CW2=900,CH2=580,CWi=CW2-PAD.l-PAD.r,CHi=CH2-PAD.t-PAD.b;
 var X_MIN=-0.25,X_MAX=1.8,Y_MIN=0,Y_MAX=4.2;
-function toX(u){return PAD.l+((u-X_MIN)/(X_MAX-X_MIN))*CWi;}
-function toY(p){return PAD.t+((p-Y_MIN)/(Y_MAX-Y_MIN))*CHi;}
+// Pin a dot to the edge rather than let it leave the canvas — now that the
+// axes move with the market, an extreme day would otherwise make a name vanish.
+function clampV(v,a,b){return Math.max(a,Math.min(b,v));}
+function toX(u){return PAD.l+((clampV(u,X_MIN,X_MAX)-X_MIN)/(X_MAX-X_MIN))*CWi;}
+function toY(p){return PAD.t+((clampV(p,Y_MIN,Y_MAX)-Y_MIN)/(Y_MAX-Y_MIN))*CHi;}
 
 function drawCockpit(){
   var canvas=document.getElementById('ckChart');

@@ -265,7 +265,14 @@
       "rank90": 20,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 1000.26,
+        "med": 984,
+        "iu": 0.23,
+        "peg": 0.16
+      }
     },
     "SNDK": {
       "eps": 52,
@@ -287,7 +294,14 @@
       "rank90": 28,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 1737.99,
+        "med": 1671,
+        "iu": 0.22,
+        "peg": 0.21
+      }
     },
     "LITE": {
       "eps": 23.29,
@@ -309,7 +323,14 @@
       "rank90": 15,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 978.535,
+        "med": 908,
+        "iu": 0.79,
+        "peg": 0.47
+      }
     },
     "ORCL": {
       "eps": 9.1463,
@@ -332,7 +353,14 @@
       "epsSource": "cons",
       "epsAsOf": "2026-09-12",
       "epsBaselinePeriod": "2026-09-30",
-      "epsApprox": true
+      "epsApprox": true,
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 162.52,
+        "med": 148,
+        "iu": 0.25,
+        "peg": 0.43
+      }
     },
     "META": {
       "eps": 30.5,
@@ -354,7 +382,14 @@
       "rank90": 13,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 613.48,
+        "med": 598,
+        "iu": 0.17,
+        "peg": 0.67
+      }
     },
     "NVDA": {
       "eps": 16.16,
@@ -376,7 +411,14 @@
       "rank90": 12,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-09-30"
+      "epsBaselinePeriod": "2026-09-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 225.73,
+        "med": 224,
+        "iu": 0.6,
+        "peg": 0.27
+      }
     },
     "UBER": {
       "eps": 3.69,
@@ -398,7 +440,14 @@
       "rank90": 9,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 73.13,
+        "med": 74.8,
+        "iu": 0.04,
+        "peg": 2.78
+      }
     },
     "TSLA": {
       "eps": 4.8,
@@ -420,7 +469,14 @@
       "rank90": 16,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 368.16,
+        "med": 370,
+        "iu": 1.21,
+        "peg": 1.71
+      }
     },
     "AMZN": {
       "eps": 7.8,
@@ -442,7 +498,14 @@
       "rank90": 10,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 256.97,
+        "med": 256,
+        "iu": 0.26,
+        "peg": 1.06
+      }
     },
     "TSM": {
       "eps": 22.5,
@@ -468,6 +531,13 @@
       "sunset": {
         "at": "2026-10-14",
         "reason": "consensus EPS is TWD against a USD ADR price; retire rather than convert"
+      },
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 439,
+        "med": 432,
+        "iu": 0.26,
+        "peg": 0.74
       }
     },
     "PLTR": {
@@ -490,7 +560,14 @@
       "rank90": 27,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 170.3,
+        "med": 146,
+        "iu": 0.29,
+        "peg": 1.37
+      }
     },
     "AMD": {
       "eps": 11.82,
@@ -512,7 +589,14 @@
       "rank90": 5,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 505.74,
+        "med": 544,
+        "iu": 0.79,
+        "peg": 0.62
+      }
     },
     "ASML": {
       "eps": 53,
@@ -534,7 +618,14 @@
       "rank90": 4,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 1518,
+        "med": 1615,
+        "iu": 0.36,
+        "peg": 1.02
+      }
     },
     "INTC": {
       "eps": 3.6,
@@ -556,7 +647,14 @@
       "rank90": 21,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 104.47,
+        "med": 107,
+        "iu": 0.68,
+        "peg": 0.54
+      }
     },
     "MRVL": {
       "eps": 6.2,
@@ -578,7 +676,14 @@
       "rank90": 24,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-09-30"
+      "epsBaselinePeriod": "2026-09-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 225.41,
+        "med": 230,
+        "iu": 0.6,
+        "peg": 0.62
+      }
     },
     "AMAT": {
       "eps": 12.5,
@@ -600,7 +705,14 @@
       "rank90": 6,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-09-30"
+      "epsBaselinePeriod": "2026-09-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 472.79,
+        "med": 557,
+        "iu": 0.6,
+        "peg": 0.69
+      }
     },
     "AVGO": {
       "eps": 17.25,
@@ -622,7 +734,14 @@
       "rank90": 1,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-09-30"
+      "epsBaselinePeriod": "2026-09-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 368.56,
+        "med": 402,
+        "iu": 0.73,
+        "peg": 0.38
+      }
     },
     "MSFT": {
       "eps": 16.2,
@@ -644,7 +763,14 @@
       "rank90": 26,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 493.95,
+        "med": 410,
+        "iu": -0.01,
+        "peg": 1.28
+      }
     },
     "AAPL": {
       "eps": 8.8,
@@ -666,7 +792,14 @@
       "rank90": 11,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 316.22,
+        "med": 314,
+        "iu": 0.09,
+        "peg": 3.04
+      }
     },
     "GOOGL": {
       "eps": 11.5,
@@ -688,7 +821,14 @@
       "rank90": 3,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 338.36,
+        "med": 356,
+        "iu": 0.28,
+        "peg": 1.34
+      }
     },
     "COHR": {
       "eps": 16.38,
@@ -710,7 +850,14 @@
       "rank90": 14,
       "epsSource": "aj",
       "epsAsOf": "2026-09-08",
-      "epsBaselinePeriod": "2026-06-30"
+      "epsBaselinePeriod": "2026-06-30",
+      "cockpitRef": {
+        "date": "2026-09-08",
+        "price": 301.88,
+        "med": 339,
+        "iu": 0.84,
+        "peg": 0.5
+      }
     },
     "XPEV": {
       "eps": null,
@@ -888,5 +1035,9 @@
     ],
     "overrides": {},
     "maxChanges": 15
+  },
+  "cockpit": {
+    "_comment": "Cockpit axes move with the market. r = (price/refPrice) x (refMed/medToday); upside = (1+iu)/r - 1; PEG = peg x r. At the reference date r=1, so the plot reproduces AJ's Sep 8 Cockpit exactly; afterwards price moves and earnings accrual both shift the dots.",
+    "refDate": "2026-09-08"
   }
 }

@@ -122,11 +122,17 @@ for (const s of cfg.stocks) {
 
   let series = raw;
   if (cor.epsSource !== 'cons' && cor.eps != null) {
-    // Still on AJ: keep his level, adopt the consensus curve's SHAPE. Anchor on
-    // the last valid point so today's corridor is unchanged and only its slope
-    // is new.
-    let anchor = null;
-    for (let i = raw.length - 1; i >= 0; i--) if (raw[i] != null) { anchor = raw[i]; break; }
+    // Still on AJ: keep his level, adopt the consensus curve's SHAPE. Anchor at
+    // the date his estimate was TRUE (epsAsOf), not at the last date. Anchoring
+    // at the last date rescaled the whole curve every run so that "today" always
+    // equalled his number — the slope existed only as a redrawn history and the
+    // corridor never actually rose from one day to the next, which is the one
+    // thing accrual is supposed to do.
+    const asOf = cor.epsAsOf || DATES[DATES.length - 1];
+    let ai = -1;
+    for (let i = DATES.length - 1; i >= 0; i--) if (DATES[i] <= asOf && raw[i] != null) { ai = i; break; }
+    if (ai < 0) for (let i = 0; i < raw.length; i++) if (raw[i] != null) { ai = i; break; }
+    const anchor = ai >= 0 ? raw[ai] : null;
     if (anchor && anchor > 0) {
       const k = cor.eps / anchor;
       series = raw.map(v => v == null ? null : v * k);
