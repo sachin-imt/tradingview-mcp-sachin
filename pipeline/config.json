@@ -268,10 +268,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 1000.26,
+        "price": 1033,
         "med": 984,
         "iu": 0.23,
-        "peg": 0.16
+        "peg": 0.16,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "SNDK": {
@@ -297,10 +298,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 1737.99,
+        "price": 1760,
         "med": 1671,
         "iu": 0.22,
-        "peg": 0.21
+        "peg": 0.21,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "LITE": {
@@ -326,10 +328,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 978.535,
+        "price": 885,
         "med": 908,
         "iu": 0.79,
-        "peg": 0.47
+        "peg": 0.47,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "ORCL": {
@@ -356,10 +359,11 @@
       "epsApprox": true,
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 162.52,
+        "price": 167,
         "med": 148,
         "iu": 0.25,
-        "peg": 0.43
+        "peg": 0.43,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "META": {
@@ -385,10 +389,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 613.48,
+        "price": 615,
         "med": 598,
         "iu": 0.17,
-        "peg": 0.67
+        "peg": 0.67,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "NVDA": {
@@ -414,10 +419,11 @@
       "epsBaselinePeriod": "2026-09-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 225.73,
+        "price": 232,
         "med": 224,
         "iu": 0.6,
-        "peg": 0.27
+        "peg": 0.27,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "UBER": {
@@ -443,10 +449,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 73.13,
+        "price": 76.6,
         "med": 74.8,
         "iu": 0.04,
-        "peg": 2.78
+        "peg": 2.78,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "TSLA": {
@@ -472,10 +479,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 368.16,
+        "price": 356,
         "med": 370,
         "iu": 1.21,
-        "peg": 1.71
+        "peg": 1.71,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "AMZN": {
@@ -501,10 +509,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 256.97,
+        "price": 256,
         "med": 256,
         "iu": 0.26,
-        "peg": 1.06
+        "peg": 1.06,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "TSM": {
@@ -534,10 +543,11 @@
       },
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 439,
+        "price": 436,
         "med": 432,
         "iu": 0.26,
-        "peg": 0.74
+        "peg": 0.74,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "PLTR": {
@@ -563,10 +573,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 170.3,
+        "price": 173,
         "med": 146,
         "iu": 0.29,
-        "peg": 1.37
+        "peg": 1.37,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "AMD": {
@@ -592,10 +603,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 505.74,
+        "price": 487,
         "med": 544,
         "iu": 0.79,
-        "peg": 0.62
+        "peg": 0.62,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "ASML": {
@@ -621,10 +633,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 1518,
+        "price": 1529,
         "med": 1615,
         "iu": 0.36,
-        "peg": 1.02
+        "peg": 1.02,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "INTC": {
@@ -650,10 +663,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 104.47,
+        "price": 100,
         "med": 107,
         "iu": 0.68,
-        "peg": 0.54
+        "peg": 0.54,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "MRVL": {
@@ -679,10 +693,11 @@
       "epsBaselinePeriod": "2026-09-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 225.41,
+        "price": 226,
         "med": 230,
         "iu": 0.6,
-        "peg": 0.62
+        "peg": 0.62,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "AMAT": {
@@ -708,10 +723,11 @@
       "epsBaselinePeriod": "2026-09-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 472.79,
+        "price": 466,
         "med": 557,
         "iu": 0.6,
-        "peg": 0.69
+        "peg": 0.69,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "AVGO": {
@@ -737,10 +753,11 @@
       "epsBaselinePeriod": "2026-09-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 368.56,
+        "price": 362,
         "med": 402,
         "iu": 0.73,
-        "peg": 0.38
+        "peg": 0.38,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "MSFT": {
@@ -766,10 +783,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 493.95,
+        "price": 495,
         "med": 410,
         "iu": -0.01,
-        "peg": 1.28
+        "peg": 1.28,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "AAPL": {
@@ -795,10 +813,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 316.22,
+        "price": 318,
         "med": 314,
         "iu": 0.09,
-        "peg": 3.04
+        "peg": 3.04,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "GOOGL": {
@@ -824,10 +843,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 338.36,
+        "price": 333,
         "med": 356,
         "iu": 0.28,
-        "peg": 1.34
+        "peg": 1.34,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "COHR": {
@@ -853,10 +873,11 @@
       "epsBaselinePeriod": "2026-06-30",
       "cockpitRef": {
         "date": "2026-09-08",
-        "price": 301.88,
+        "price": 283,
         "med": 339,
         "iu": 0.84,
-        "peg": 0.5
+        "peg": 0.5,
+        "priceSource": "AJ Details, Sep 8 2026 09:00 ET"
       }
     },
     "XPEV": {
@@ -1037,7 +1058,7 @@
     "maxChanges": 15
   },
   "cockpit": {
-    "_comment": "Cockpit axes move with the market. r = (price/refPrice) x (refMed/medToday); upside = (1+iu)/r - 1; PEG = peg x r. At the reference date r=1, so the plot reproduces AJ's Sep 8 Cockpit exactly; afterwards price moves and earnings accrual both shift the dots.",
+    "_comment": "Cockpit axes move with the market. r = (price/refPrice) x (refMed/medToday); upside = (1+iu)/r - 1; PEG = peg x r. refPrice is the price AJ himself published alongside iu and PEG (a 09:00 ET pre-market quote), not our close: pairing his readings with a different price pinned our Sep 8 dots to his picture regardless of how Sep 8 traded.",
     "refDate": "2026-09-08"
   }
 }
